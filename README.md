@@ -31,15 +31,15 @@ UMC 9th 프로젝트 아름답 - Backend
 ### (2) COMMIT 메시지
 
 - 형식 
-  - `type: 작업내용`
+  - `[Type] #이슈번호 작업내용`
 - 규칙
   - 커밋은 하나의 목적 단위로 작성
   - 불필요하게 여러 작업을 한 커밋에 포함 ❌
   - 메시지는 한글로 작성
 - 예시
-  - `feat: 회원가입 API 구현`
-  - `fix: 로그인 토큰 재발급 오류 수정`
-  - `refactor: UserService 로직 분리`
+  - `[Feat] #2 회원가입 API 구현`
+  - `[Fix] #3 로그인 토큰 재발급 오류 수정`
+  - `[Refactor] #4 UserService 로직 분리`
 
 
 ### (3) Pull Request
