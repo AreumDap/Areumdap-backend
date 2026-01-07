@@ -56,8 +56,6 @@ public class GeneralExceptionAdvice extends ResponseEntityExceptionHandler {
         return ApiResponse.error(ErrorStatus.INTERNAL_SERVER_ERROR);
     }
 
-
-
     @Override
     protected  ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException e,
