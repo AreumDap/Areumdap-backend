@@ -24,4 +24,5 @@ public record PageResponse<T>(
                 page.isLast()
         );
     }
+
 }
