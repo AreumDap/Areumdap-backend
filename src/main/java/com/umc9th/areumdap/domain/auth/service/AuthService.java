@@ -1,6 +1,7 @@
 package com.umc9th.areumdap.domain.auth.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
+import com.umc9th.areumdap.common.jwt.JwtService;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.auth.dto.request.ConfirmEmailVerificationCodeRequest;
 import com.umc9th.areumdap.domain.auth.dto.request.LoginRequest;
@@ -13,11 +14,14 @@ import com.umc9th.areumdap.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AuthService {
 
+    private final JwtService jwtService;
     private final UserCommandService userCommandService;
     private final UserQueryService userQueryService;
     private final EmailVerificationService emailVerificationService;
@@ -47,11 +51,16 @@ public class AuthService {
     // 로그인
     public LoginResponse login(LoginRequest request) {
         User user = userQueryService.getUserByEmail(request.email());
-        validatePasswordMatch(user.getEmail(), passwordEncoder.encode(request.password()));
-        return null;
+        validatePasswordMatch(request.password(), user.getPassword());
+
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        user.updateRefreshToken(refreshToken);
+        return LoginResponse.from(user, accessToken, refreshToken);
     }
 
-    private void validatePasswordMatch(String storedPassword, String inputPassword){
+    private void validatePasswordMatch(String inputPassword, String storedPassword){
         if(!passwordEncoder.matches(inputPassword, storedPassword))
             throw new GeneralException(ErrorStatus.INVALID_PASSWORD);
     }
