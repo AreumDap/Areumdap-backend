@@ -1,3 +1,18 @@
 spring:
   application:
     name: areumdap-be
+
+  profiles:
+    default: dev
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
