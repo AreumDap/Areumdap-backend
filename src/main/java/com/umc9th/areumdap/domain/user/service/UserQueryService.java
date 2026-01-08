@@ -28,9 +28,15 @@ public class UserQueryService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.EMAIL_NOT_FOUND2));
     }
 
-    // 유저 아이디로 유저 정보 가져오기
+    // 유저 아이디 + 삭제 여부로 유저 정보 가져오기
     public User getUserByIdAndDeletedFalse(Long userId) {
         return userRepository.findByIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    // Refresh Token으로 유저 정보 가져오기
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 

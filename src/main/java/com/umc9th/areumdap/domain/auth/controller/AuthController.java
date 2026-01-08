@@ -7,6 +7,7 @@ import com.umc9th.areumdap.domain.auth.dto.request.LoginRequest;
 import com.umc9th.areumdap.domain.auth.dto.request.SendEmailVerificationCodeRequest;
 import com.umc9th.areumdap.domain.auth.dto.request.SignUpRequest;
 import com.umc9th.areumdap.domain.auth.dto.response.LoginResponse;
+import com.umc9th.areumdap.domain.auth.dto.response.ReissueAccessTokenResponse;
 import com.umc9th.areumdap.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -112,5 +113,19 @@ public class AuthController {
         return ApiResponse.success(SuccessStatus.LOGOUT_SUCCESS);
     }
 
+    @PostMapping("/token/reissue")
+    @Operation(summary = "토큰 재발급")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Access Token 재발급 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReissueAccessTokenResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Refresh Token이 유효하지 않거나 일치하지 않는 경우", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Refresh Token에서 파싱한 유저가 존재하지 않는 경우", content = @Content())
+    })
+    public ResponseEntity<ApiResponse<ReissueAccessTokenResponse>> reissueAccessToken(
+            @RequestHeader("Authorization") String token
+    ) {
+        String refreshToken = token.replace("Bearer ","".trim());
 
+        ReissueAccessTokenResponse response = authService.reissueAccessToken(refreshToken);
+        return ApiResponse.success(SuccessStatus.REISSUE_TOKEN_SUCCESS, response);
+    }
 }
