@@ -79,7 +79,7 @@ public class AuthService {
     // 토큰 재발급
     public ReissueAccessTokenResponse reissueAccessToken(String refreshToken) {
         Claims claims = jwtService.validateRefreshToken(refreshToken);
-        User user = userQueryService.getUserById(Long.parseLong(claims.getSubject()));
+        User user = userQueryService.getUserByIdAndDeletedFalse(Long.parseLong(claims.getSubject()));
 
         if(!refreshTokenHasher.matches(refreshToken, user.getRefreshToken()))
             throw new GeneralException(ErrorStatus.REFRESH_TOKEN_MISMATCH);

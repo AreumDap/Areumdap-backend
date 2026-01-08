@@ -50,8 +50,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
         } catch (GeneralException e) {
             handleGeneralJwtError(e.getErrorStatus(), response);
+            return;
         } catch (Exception e) {
             handleJwtError(e.getMessage(), response);
+            return;
         }
         filterChain.doFilter(request, response);
     }

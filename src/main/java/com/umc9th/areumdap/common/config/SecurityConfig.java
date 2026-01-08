@@ -41,6 +41,7 @@ public class SecurityConfig {
             "/api/auth/email-verification/confirm",
             "/api/auth/signup",
             "/api/auth/login",
+            "/api/auth/token/reissue"
     };
 
     @Bean
