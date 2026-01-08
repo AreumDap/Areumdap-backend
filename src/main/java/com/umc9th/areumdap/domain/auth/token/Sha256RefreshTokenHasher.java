@@ -10,7 +10,6 @@ public class Sha256RefreshTokenHasher implements RefreshTokenHasher {
 
     private final String secret;
 
-
     public Sha256RefreshTokenHasher(
             @Value("${jwt.secret}") String secret
     ) {
@@ -26,4 +25,5 @@ public class Sha256RefreshTokenHasher implements RefreshTokenHasher {
     public boolean matches(String refreshToken, String hashedToken) {
         return hash(refreshToken).equals(hashedToken);
     }
+
 }

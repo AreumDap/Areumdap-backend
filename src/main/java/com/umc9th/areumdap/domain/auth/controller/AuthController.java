@@ -11,7 +11,6 @@ import com.umc9th.areumdap.domain.auth.dto.response.ReissueAccessTokenResponse;
 import com.umc9th.areumdap.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -128,4 +127,5 @@ public class AuthController {
         ReissueAccessTokenResponse response = authService.reissueAccessToken(refreshToken);
         return ApiResponse.success(SuccessStatus.REISSUE_TOKEN_SUCCESS, response);
     }
+
 }

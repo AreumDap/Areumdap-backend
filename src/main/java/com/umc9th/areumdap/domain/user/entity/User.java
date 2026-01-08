@@ -69,10 +69,6 @@ public class User extends BaseEntity {
     }
 
     // 로그아웃 시 RefreshToken 제거
-    public void clearRefreshToken(User user) {
-        user.clearRefreshToken();
-    }
-
     public void clearRefreshToken() {
         this.refreshToken = null;
     }
