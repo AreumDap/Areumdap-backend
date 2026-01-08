@@ -52,7 +52,7 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = false;
+    private boolean deleted = false;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
@@ -66,6 +66,27 @@ public class User extends BaseEntity {
 
     public void updateRefreshToken(String newRefreshToken) {
         this.refreshToken = newRefreshToken;
+    }
+
+    // 로그아웃 시 RefreshToken 제거
+    public void clearRefreshToken(User user) {
+        user.clearRefreshToken();
+    }
+
+    public void clearRefreshToken() {
+        this.refreshToken = null;
+    }
+
+    // 탈퇴 처리
+    public void withdraw() {
+        this.deleted = true;
+        this.deletedAt = LocalDateTime.now();
+        this.email = null;
+        this.password = null;
+        this.refreshToken = null;
+        this.name = null;
+        this.birth = null;
+        this.age = null;
     }
 
 }

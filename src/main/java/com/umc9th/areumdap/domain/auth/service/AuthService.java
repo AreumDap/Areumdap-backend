@@ -31,7 +31,7 @@ public class AuthService {
     // 이메일 인증 코드 요청
     public void sendEmailVerificationCode(SendEmailVerificationCodeRequest request) {
         emailVerificationService.sendEmailVerificationCode(request.email());
-    };
+    }
 
     // 이메일 인증 코드 확인
     public void confirmEmailVerificationCode(ConfirmEmailVerificationCodeRequest request) {
@@ -48,9 +48,15 @@ public class AuthService {
         userCommandService.registerUser(request.name(),request.birth(), request.email(),encodedPassword);
     }
 
+    // 회원탈퇴
+    public void withdraw(Long userId){
+        User user = userQueryService.getUserByIdAndDeletedFalse(userId);
+        userCommandService.withdraw(user);
+    }
+
     // 로그인
     public LoginResponse login(LoginRequest request) {
-        User user = userQueryService.getUserByEmail(request.email());
+        User user = userQueryService.getUserByEmailAndDeletedFalse(request.email());
         validatePasswordMatch(request.password(), user.getPassword());
 
         String accessToken = jwtService.generateAccessToken(user);
@@ -58,6 +64,12 @@ public class AuthService {
 
         user.updateRefreshToken(refreshToken);
         return LoginResponse.from(user, accessToken, refreshToken);
+    }
+
+    // 로그아웃
+    public void logout(Long userId){
+        User user = userQueryService.getUserByIdAndDeletedFalse(userId);
+        userCommandService.clearRefreshToken(user);
     }
 
     private void validatePasswordMatch(String inputPassword, String storedPassword){

@@ -27,9 +27,19 @@ public class UserCommandService {
                         .age(age)
                         .email(email)
                         .password(password)
-                        .isDeleted(false)
+                        .deleted(false)
                         .build()
         );
+    }
+
+    // 회원탈퇴 시 소프트 delete 방식 적용
+    public void withdraw(User user){
+        user.withdraw();
+    }
+
+    // 로그아웃 시 RefreshToken 제거
+    public void clearRefreshToken(User user) {
+        user.clearRefreshToken();
     }
 
 }

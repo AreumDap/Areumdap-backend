@@ -37,7 +37,7 @@ public enum ErrorStatus implements BaseStatus {
     /**
      * User
      */
-
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_404", "유저가 존재하지 않습니다."),
 
     /**
      * JWT

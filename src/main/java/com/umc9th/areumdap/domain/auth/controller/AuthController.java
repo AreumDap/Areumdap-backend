@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth", description = "인증 API")
@@ -70,6 +71,19 @@ public class AuthController {
         return ApiResponse.success(SuccessStatus.SIGNUP_SUCCESS);
     }
 
+    @DeleteMapping("/withdraw")
+    @Operation(summary = "회원탈퇴")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원탈퇴 성공", content = @Content(mediaType = "application/json")),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content)
+    })
+    public ResponseEntity<ApiResponse<Void>> withdraw(
+            @AuthenticationPrincipal Long userId
+    ) {
+        authService.withdraw(userId);
+        return ApiResponse.success(SuccessStatus.WITHDRAW_SUCCESS);
+    }
+
     @PostMapping("/login")
     @Operation(summary = "로그인")
     @ApiResponses(value = {
@@ -84,5 +98,19 @@ public class AuthController {
         LoginResponse response = authService.login(loginRequest);
         return ApiResponse.success(SuccessStatus.LOGIN_SUCCESS, response);
     }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "로그아웃 성공", content = @Content(mediaType = "application/json")),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content)
+    })
+    public ResponseEntity<ApiResponse<Void>> logout(
+            @AuthenticationPrincipal Long userId
+    ) {
+        authService.logout(userId);
+        return ApiResponse.success(SuccessStatus.LOGOUT_SUCCESS);
+    }
+
 
 }

@@ -23,8 +23,15 @@ public class UserQueryService {
     }
 
     // 이메일로 유저 정보 가져오기
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
+    public User getUserByEmailAndDeletedFalse(String email) {
+        return userRepository.findByEmailAndDeletedFalse(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.EMAIL_NOT_FOUND2));
     }
+
+    // 유저 아이디로 유저 정보 가져오기
+    public User getUserByIdAndDeletedFalse(Long userId) {
+        return userRepository.findByIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
 }
