@@ -10,18 +10,18 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtService {
 
-    private final Key secretKey;
+    private final SecretKey secretKey;
     @Getter
-    private final Long accessTokenExpiration;
+    private final long accessTokenExpiration;
     @Getter
-    private final Long refreshTokenExpiration;
+    private final long refreshTokenExpiration;
 
     public JwtService(
             @Value("${jwt.secret}") String secret,
@@ -39,13 +39,13 @@ public class JwtService {
         Date expiration = new Date(now.getTime() + accessTokenExpiration);
 
         return Jwts.builder()
-                .setSubject(user.getId().toString())
+                .subject(user.getId().toString())
                 .claim("email", user.getEmail())
                 .claim("name", user.getName())
-                .claim("loginType", user.getOauthProvider().toString())
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .claim("loginType", user.getOauthProvider().name())
+                .issuedAt(now)
+                .expiration(expiration)
+                .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -55,50 +55,44 @@ public class JwtService {
         Date expiration = new Date(now.getTime() + refreshTokenExpiration);
 
         return Jwts.builder()
-                .setSubject(user.getId().toString())
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .subject(user.getId().toString())
+                .issuedAt(now)
+                .expiration(expiration)
+                .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
     }
 
     // Access Token 검증
-    public void validateAccessToken(String token) {
-        if (token == null || token.isEmpty()) {
+    public void validateAccessToken(String accessToken) {
+        if (accessToken == null || accessToken.isBlank()) {
             throw new GeneralException(ErrorStatus.JWT_TOKEN_NOT_FOUND);
         }
-        getClaims(token);
+        parseClaims(accessToken);
     }
 
     // Refresh Token 검증
     public Claims validateRefreshToken(String refreshToken) {
-        return getClaims(refreshToken);
+        return parseClaims(refreshToken);
     }
 
     // AccessToken에서 userId 추출
     public Long getUserIdFromJwtToken(String token) {
         try {
-            return Long.parseLong(
-                    Jwts.parserBuilder()
-                            .setSigningKey(secretKey)
-                            .build()
-                            .parseClaimsJws(token)
-                            .getBody()
-                            .getSubject()
-            );
+            Claims claims = parseClaims(token);
+            return Long.parseLong(claims.getSubject());
         } catch (Exception e) {
             throw new GeneralException(ErrorStatus.JWT_EXTRACT_ID_FAILED);
         }
     }
 
     // 내부 Claims 파싱 로직, 만료된 토큰, 서명 불일치 등의 예외 처리
-    private Claims getClaims(String token) {
+    private Claims parseClaims(String token) {
         try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
+            return Jwts.parser()
+                    .verifyWith(secretKey)
                     .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+                    .parseSignedClaims(token)
+                    .getPayload();
         } catch (SecurityException e) {
             throw new GeneralException(ErrorStatus.JWT_INVALID_SIGNATURE);
         } catch (MalformedJwtException e) {

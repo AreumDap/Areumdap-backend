@@ -122,7 +122,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<ReissueAccessTokenResponse>> reissueAccessToken(
             @RequestHeader("Authorization") String token
     ) {
-        String refreshToken = token.replace("Bearer ","".trim());
+        String refreshToken = token.substring(7).trim();
 
         ReissueAccessTokenResponse response = authService.reissueAccessToken(refreshToken);
         return ApiResponse.success(SuccessStatus.REISSUE_TOKEN_SUCCESS, response);

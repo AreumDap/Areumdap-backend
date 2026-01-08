@@ -35,7 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        try{
+        try {
             String accessToken = resolveToken(request);
             if (accessToken != null) {
                 jwtService.validateAccessToken(accessToken);
@@ -48,18 +48,18 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
-            filterChain.doFilter(request, response);
-        } catch (GeneralException e){
+        } catch (GeneralException e) {
             handleGeneralJwtError(e.getErrorStatus(), response);
-        } catch (Exception e){
+        } catch (Exception e) {
             handleJwtError(e.getMessage(), response);
         }
+        filterChain.doFilter(request, response);
     }
 
     // Authorization Header에서 JWT 추출
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if(bearerToken != null && bearerToken.startsWith("Bearer ")) {
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
         return null;
@@ -78,13 +78,13 @@ public class JwtFilter extends OncePerRequestFilter {
     private void handleGeneralJwtError(BaseStatus errorStatus, HttpServletResponse response) throws IOException {
         log.error("[*] GeneralException in JWT Filter → {}", errorStatus.getMessage());
         ApiResponse<?> errorResponse = ApiResponse.error(errorStatus).getBody();
-        setHttpServletResponse(errorStatus.getHttpStatus().value(),errorResponse,response);
+        setHttpServletResponse(errorStatus.getHttpStatus().value(), errorResponse, response);
     }
 
     /// Http 응답 JSON 포맷 설정
     private void setHttpServletResponse(
             int status,
-            ApiResponse<?>errorResponse,
+            ApiResponse<?> errorResponse,
             HttpServletResponse response
     ) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

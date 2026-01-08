@@ -27,7 +27,7 @@ public class User extends BaseEntity {
     private String oauthId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "oauth_provider", columnDefinition = "oauth_provider_enum")
+    @Column(name = "oauth_provider", columnDefinition = "oauth_provider_enum",nullable = false)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private OAuthProvider oauthProvider;
 
