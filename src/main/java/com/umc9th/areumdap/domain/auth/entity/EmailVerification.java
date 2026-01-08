@@ -21,6 +21,15 @@ public class EmailVerification extends BaseEntity {
     @Column(name = "is_verified", nullable = false)
     private boolean isVerified = false;
 
-    @Column(name ="verification_code", length = 4)
+    @Column(name ="verification_code", length = 6)
     private String verificationCode;
+
+    public void updateVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public void updateIsVerified(boolean isVerified) {
+        this.isVerified = isVerified;
+    }
+
 }

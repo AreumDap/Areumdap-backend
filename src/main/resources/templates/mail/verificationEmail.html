@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이메일 인증</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', Dotum, '돋움', sans-serif;">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f4f4f4;">
+    <tr>
+        <td align="center">
+            <table width="600" border="0" cellspacing="0" cellpadding="0"
+                   style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+
+                <tr>
+                    <td style="padding: 40px 30px;">
+                        <h2 style="margin: 0 0 20px 0; font-size: 24px; font-weight: 600; color: #333333;">이메일 인증 코드를
+                            확인해주세요.</h2>
+                        <p style="margin: 0 0 30px 0; font-size: 16px; line-height: 1.5; color: #555555;">
+                            안녕하세요. Areumdap에 가입해주셔서 감사합니다.<br>
+                            아래 인증 코드를 입력하여 이메일 인증을 완료해주세요.
+                        </p>
+
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td align="center"
+                                    style="padding: 20px; background-color: #f9f9f9; border-radius: 4px;">
+                                    <span style="font-size: 32px; font-weight: bold; color: #016794; letter-spacing: 8px;"
+                                          th:text="${verificationCode}"> 123456 </span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="margin: 30px 0 0 0; font-size: 14px; color: #888888;">
+                            * 이 인증 코드는 5분 동안 유효합니다.<br>
+                            * 본인이 요청하지 않은 인증 메일이라면 이 메일을 무시해주세요.
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

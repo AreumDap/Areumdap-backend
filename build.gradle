@@ -33,7 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // Springdoc OpenAPI (Swagger)
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0"
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'
@@ -46,7 +46,11 @@ dependencies {
     // PostgreSQL
     runtimeOnly 'org.postgresql:postgresql'
 
+    // Email
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 }
 
 tasks.named('test') {
