@@ -32,6 +32,9 @@ dependencies {
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    // Springdoc OpenAPI (Swagger)
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0"
+
     // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
