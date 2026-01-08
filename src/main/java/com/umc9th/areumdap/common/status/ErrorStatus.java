@@ -25,10 +25,19 @@ public enum ErrorStatus implements BaseStatus {
     /**
      * Auth
      */
-    VERIFICATION_CODE_EXPIRED( HttpStatus.UNAUTHORIZED,"AUTH_401", "인증 코드가 만료되었습니다."),
-    INVALID_VERIFICATION_CODE( HttpStatus.UNAUTHORIZED, "AUTH_401","인증 코드가 일치하지 않습니다."),
-    EMAIL_NOT_FOUND( HttpStatus.NOT_FOUND,"AUTH_404", "인증 요청한 이메일이 아닙니다."),
-    SEND_VERIFICATION_CODE_EMAIL_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_500","이메일 인증 코드 발송 중 오류가 발생했습니다.");
+    VERIFICATION_CODE_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH_401", "인증 코드가 만료되었습니다."),
+    INVALID_VERIFICATION_CODE(HttpStatus.UNAUTHORIZED, "AUTH_401", "인증 코드가 일치하지 않습니다."),
+    EMAIL_NOT_VERIFIED(HttpStatus.UNAUTHORIZED, "AUTH_401", "이메일 인증이 완료되지 않았습니다."),
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH_401", "비밀번호가 올바르지 않습니다."),
+    EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_404", "인증 요청한 이메일이 아닙니다."),
+    EMAIL_NOT_FOUND2(HttpStatus.NOT_FOUND, "AUTH_404", "존재하지 않는 이메일입니다"),
+    EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT,"AUTH_409", "이미 존재하는 이메일입니다."),
+    SEND_VERIFICATION_CODE_EMAIL_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_500", "이메일 인증 코드 발송 중 오류가 발생했습니다.");
+
+    /**
+     * User
+     */
+
 
     private final HttpStatus httpStatus;
     private final String code;

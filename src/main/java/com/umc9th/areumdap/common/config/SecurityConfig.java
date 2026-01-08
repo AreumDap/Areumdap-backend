@@ -28,6 +28,7 @@ public class SecurityConfig {
     private static final String[] AUTH_URIS = {
             "/api/auth/email-verification",
             "/api/auth/email-verification/confirm",
+            "/api/auth/signup"
     };
 
     @Bean

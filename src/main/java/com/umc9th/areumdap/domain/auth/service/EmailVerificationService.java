@@ -47,6 +47,13 @@ public class EmailVerificationService {
         emailVerification.updateIsVerified(true);
     }
 
+    // 회원가입 시 해당 이메일로 요청을 했는지 확인
+    public void validateEmailVerified(String email) {
+        if (!emailVerificationRepository.existsByEmailAndVerifiedTrue(email)) {
+            throw new GeneralException(ErrorStatus.EMAIL_NOT_VERIFIED);
+        }
+    }
+
     // EmailVerification 등록
     private void registerEmailVerification(
             String email, String verificationCode
@@ -55,7 +62,7 @@ public class EmailVerificationService {
                 EmailVerification.builder()
                         .email(email)
                         .verificationCode(verificationCode)
-                        .isVerified(false)
+                        .verified(false)
                         .build()
         );
     }
