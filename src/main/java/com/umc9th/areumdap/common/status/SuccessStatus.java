@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 public enum SuccessStatus implements BaseStatus {
 
     // 예시
-    COMMON_SUCCESS_STATUS(HttpStatus.OK, "COOMON_2OO", "성공적으로 처리되었습니다.");
+    COMM_SUCCESS_STATUS(HttpStatus.OK, "COMM_200", "성공적으로 처리되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

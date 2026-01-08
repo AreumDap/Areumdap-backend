@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorStatus implements BaseStatus {
 
     // 예시
-    COMMON_ERROR_STATUS(HttpStatus.BAD_REQUEST, "COMM_400", "잘못된 요청입니다."),
+    COMM_ERROR_STATUS(HttpStatus.BAD_REQUEST, "COMM_400", "잘못된 요청입니다."),
 
     /**
      * Common
