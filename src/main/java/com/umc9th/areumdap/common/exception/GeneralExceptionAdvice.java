@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class GeneralExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(GeneralException.class)
