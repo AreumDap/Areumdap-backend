@@ -63,7 +63,7 @@ public class OAuthNaverService {
         OAuthNaverTokenResponse naverToken = oAuthNaverClient.getToken(request.code(), request.state());
         OAuthUserInfo naverUserInfo = oAuthNaverClient.getUserInfo(naverToken.accessToken());
 
-        Optional<User> userOptional = userQueryService.getUserByOauthInfo(naverUserInfo);
+        Optional<User> userOptional = userCommandService.getUserByOauthInfo(naverUserInfo);
         User user = userOptional.orElseGet(() -> userCommandService.registerOAuthUser(
                 naverUserInfo.oauthId(),
                 naverUserInfo.oauthProvider(),

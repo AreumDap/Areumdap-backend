@@ -48,7 +48,7 @@ public class OAuthKakaoService {
         OAuthKakaoTokenResponse kakaoToken = oAuthKakaoClient.getToken(request.code());
         OAuthUserInfo kakaoUserInfo = oAuthKakaoClient.getUserInfo(kakaoToken.accessToken());
 
-        Optional<User> userOptional = userQueryService.getUserByOauthInfo(kakaoUserInfo);
+        Optional<User> userOptional = userCommandService.getUserByOauthInfo(kakaoUserInfo);
         User user = userOptional.orElseGet(() -> userCommandService.registerOAuthUser(
                 kakaoUserInfo.oauthId(),
                 kakaoUserInfo.oauthProvider(),
