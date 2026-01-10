@@ -22,7 +22,7 @@ public record OAuthNaverProperties(
 ) {
     @Override
     public String toString() {
-        return "OAuthKakaoProperties[" +
+        return "OAuthNaverProperties[" +
                 "clientId=" + clientId +
                 ", clientSecret=***" +
                 ", redirectUri=" + redirectUri +

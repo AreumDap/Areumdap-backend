@@ -10,4 +10,14 @@ public record OAuthKakaoProperties(
         String authBaseUrl,
         String apiBaseUrl
 ) {
+    @Override
+    public String toString() {
+        return "OAuthKakaoProperties[" +
+                "clientId=" + clientId +
+                ", clientSecret=***" +
+                ", redirectUri=" + redirectUri +
+                ", authBaseUrl=" + authBaseUrl +
+                ", apiBaseUrl=" + apiBaseUrl +
+                ']';
+    }
 }

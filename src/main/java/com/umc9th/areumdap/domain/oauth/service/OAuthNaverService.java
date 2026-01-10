@@ -17,7 +17,6 @@ import com.umc9th.areumdap.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.SecureRandom;
@@ -26,7 +25,6 @@ import java.util.Base64;
 import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class OAuthNaverService {
 

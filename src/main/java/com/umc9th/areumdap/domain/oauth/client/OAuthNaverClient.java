@@ -34,16 +34,18 @@ public class OAuthNaverClient {
     public OAuthNaverTokenResponse getToken(String code, String state) {
 
         String url = buildTokenRequestUrl(code, state);
-        OAuthNaverTokenResponse response = naverAuthWebClient.get()
-                .uri(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(OAuthNaverTokenResponse.class)
-                .onErrorResume(e -> {
-                    log.error("[NAVER][TOKEN] token api call failed. message={}", e.getMessage(), e);
-                    return Mono.error(new GeneralException(ErrorStatus.INTERNAL_SERVER_ERROR));
-                })
-                .block();
+        OAuthNaverTokenResponse response =
+                naverAuthWebClient.get()
+                        .uri(url)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .retrieve()
+                        .onStatus(
+                                HttpStatusCode::isError,
+                                r -> r.bodyToMono(String.class)
+                                        .flatMap(body -> handleUserInfoError(r.statusCode(), body))
+                        )
+                        .bodyToMono(OAuthNaverTokenResponse.class)
+                        .block();
 
         validateTokenResponse(response);
         return response;
@@ -99,7 +101,9 @@ public class OAuthNaverClient {
                 response.error() != null ||
                 !StringUtils.hasText(response.accessToken())) {
 
-            log.error("[NAVER][TOKEN] invalid response: {}", response);
+            log.error("[NAVER][TOKEN] invalid response: error={}, hasAccessToken={}",
+                    response != null ? response.error() : "null",
+                    response != null && StringUtils.hasText(response.accessToken()));
             throw new GeneralException(ErrorStatus.INTERNAL_SERVER_ERROR);
         }
     }
