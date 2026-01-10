@@ -45,8 +45,7 @@ public class UserQueryService {
 
     // 소셜 유저 정보로 조회
     public Optional<User> getUserByOauthInfo(OAuthUserInfo oAuthUserInfo) {
-        return userRepository.findByOauthIdAndOauthProviderAndNameAndEmailAndDeletedFalse(
-                oAuthUserInfo.oauthId(),oAuthUserInfo.oauthProvider(), oAuthUserInfo.nickname(), oAuthUserInfo.email());
+        return userRepository.findByOauthIdAndOauthProviderAndDeletedFalse(oAuthUserInfo.oauthId(),oAuthUserInfo.oauthProvider());
     }
 
 

@@ -39,7 +39,7 @@ public class OAuthKakaoService {
                         .queryParam("client_id", oAuthKakaoProperties.clientId())
                         .queryParam("redirect_uri", oAuthKakaoProperties.redirectUri())
                         .queryParam("response_type", "code")
-                        .queryParam("scope", "profile_nickname, account_email")
+                        .queryParam("scope", "profile_nickname,account_email")
                         .build()
                         .toUriString()
         );
@@ -51,7 +51,7 @@ public class OAuthKakaoService {
         OAuthUserInfo kakaoUserInfo = oAuthKakaoClient.getUserInfo(kakaoToken.accessToken());
 
         Optional<User> userOptional = userQueryService.getUserByOauthInfo(kakaoUserInfo);
-        User user = userOptional.orElseGet(() -> userCommandService.registerKakaoUser(
+        User user = userOptional.orElseGet(() -> userCommandService.registerOAuthUser(
                 kakaoUserInfo.oauthId(),
                 kakaoUserInfo.oauthProvider(),
                 kakaoUserInfo.nickname(),

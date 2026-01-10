@@ -33,7 +33,7 @@ public class UserCommandService {
     }
 
     // 카카오 유저 등록
-    public User registerKakaoUser(String oauthId, OAuthProvider provider,String name, String email) {
+    public User registerOAuthUser(String oauthId, OAuthProvider provider,String name, String email) {
         return userRepository.save(
                 User.builder()
                         .oauthId(oauthId)

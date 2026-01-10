@@ -70,8 +70,6 @@ public class OAuthNaverClient {
         }
 
         OAuthNaverUserInfoResponse.Response user = response.response();
-        log.info("[NAVER][USER] user={}", user);
-
         return new OAuthUserInfo(
                 OAuthProvider.NAVER,
                 user.id(),

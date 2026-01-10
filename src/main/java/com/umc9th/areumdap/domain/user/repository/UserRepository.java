@@ -12,5 +12,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findById(Long id);
     Optional<User> findByEmailAndDeletedFalse(String email);
     Optional<User> findByIdAndDeletedFalse(Long id);
-    Optional<User> findByOauthIdAndOauthProviderAndNameAndEmailAndDeletedFalse(String oauthId, OAuthProvider oauthProvider, String name, String email);
+    Optional<User> findByOauthIdAndOauthProviderAndDeletedFalse(String oauthId, OAuthProvider oauthProvider);
 }

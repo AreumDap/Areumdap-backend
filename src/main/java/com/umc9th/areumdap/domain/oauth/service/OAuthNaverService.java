@@ -66,7 +66,7 @@ public class OAuthNaverService {
         OAuthUserInfo naverUserInfo = oAuthNaverClient.getUserInfo(naverToken.accessToken());
 
         Optional<User> userOptional = userQueryService.getUserByOauthInfo(naverUserInfo);
-        User user = userOptional.orElseGet(() -> userCommandService.registerKakaoUser(
+        User user = userOptional.orElseGet(() -> userCommandService.registerOAuthUser(
                 naverUserInfo.oauthId(),
                 naverUserInfo.oauthProvider(),
                 naverUserInfo.nickname(),

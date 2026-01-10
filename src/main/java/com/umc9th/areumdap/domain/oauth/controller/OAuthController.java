@@ -62,9 +62,6 @@ public class OAuthController {
             HttpServletResponse response
     ) throws IOException {
 
-        log.info("OAuth test callback code = {}", code);
-        log.info("OAuth test callback error = {}", error);
-
         // 그냥 화면에 보여주기
         response.setContentType("text/plain;charset=UTF-8");
         response.getWriter().write(
