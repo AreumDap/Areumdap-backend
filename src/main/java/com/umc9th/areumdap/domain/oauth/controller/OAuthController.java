@@ -7,7 +7,8 @@ import com.umc9th.areumdap.domain.oauth.dto.request.OAuthKakaoLoginRequest;
 import com.umc9th.areumdap.domain.oauth.dto.request.OAuthNaverLoginRequest;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthKakaoLoginUrlResponse;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthNaverLoginUrlResponse;
-import com.umc9th.areumdap.domain.oauth.service.OAuthService;
+import com.umc9th.areumdap.domain.oauth.service.OAuthKakaoService;
+import com.umc9th.areumdap.domain.oauth.service.OAuthNaverService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,7 +30,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuthController {
 
-    private final OAuthService oauthService;
+    private final OAuthNaverService oauthNaverService;
+    private final OAuthKakaoService oAuthKakaoService;
 
     @GetMapping("/kakao/login-uri")
     @Operation(summary = "카카오 로그인 URL 조회", description = "카카오 로그인 창을 띄우기 위한 URL 조회")
@@ -37,7 +39,7 @@ public class OAuthController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",description = "카카오 로그인 URL 조회 성공", content = @Content(schema = @Schema(implementation = OAuthKakaoLoginUrlResponse.class)))
     })
     public ResponseEntity<ApiResponse<OAuthKakaoLoginUrlResponse>> getOAuthKakaoLoginUrl(){
-        OAuthKakaoLoginUrlResponse response = oauthService.getKakaoLoginUrl();
+        OAuthKakaoLoginUrlResponse response = oAuthKakaoService.getKakaoLoginUrl();
         return ApiResponse.success(SuccessStatus.GET_KAKAO_LOGIN_URL_SUCCESS,response);
     }
 
@@ -49,7 +51,7 @@ public class OAuthController {
     public ResponseEntity<ApiResponse<LoginResponse>> oAuthKakaoLogin(
             @Valid @RequestBody OAuthKakaoLoginRequest oauthKakaoLoginRequest
             ) {
-        LoginResponse response = oauthService.kakaoLogin(oauthKakaoLoginRequest);
+        LoginResponse response = oAuthKakaoService.kakaoLogin(oauthKakaoLoginRequest);
         return ApiResponse.success(SuccessStatus.KAKAO_LOGIN_SUCCESS,response);
     }
 
@@ -78,26 +80,20 @@ public class OAuthController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",description = "네이버 로그인 URL 조회 성공", content = @Content(schema = @Schema(implementation = OAuthNaverLoginUrlResponse.class)))
     })
     public ResponseEntity<ApiResponse<OAuthNaverLoginUrlResponse>> getOAuthNaverLoginUrl(){
-        OAuthNaverLoginUrlResponse response = oauthService.getNaverLoginUrl();
+        OAuthNaverLoginUrlResponse response = oauthNaverService.getNaverLoginUrl();
         return ApiResponse.success(SuccessStatus.GET_NAVER_LOGIN_URL_SUCCESS,response);
     }
-
 
     @GetMapping("/naver/login")
     @Operation(summary = "네이버 로그인 콜백", description = "네이버 로그인 콜백 후 JWT 발급")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "200",
-                    description = "네이버 로그인 성공",
-                    content = @Content(schema = @Schema(implementation = LoginResponse.class))
-            )
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "네이버 로그인 성공", content = @Content(schema = @Schema(implementation = LoginResponse.class)))
     })
     public ResponseEntity<ApiResponse<LoginResponse>> oAuthNaverLogin(
             @RequestParam String code,
             @RequestParam String state
     ) {
-
-        LoginResponse response = oauthService.naverLogin(new OAuthNaverLoginRequest(code, state));
+        LoginResponse response = oauthNaverService.naverLogin(new OAuthNaverLoginRequest(code, state));
         return ApiResponse.success(SuccessStatus.NAVER_LOGIN_SUCCESS, response);
     }
 

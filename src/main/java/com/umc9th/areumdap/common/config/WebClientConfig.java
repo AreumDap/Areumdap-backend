@@ -1,5 +1,8 @@
 package com.umc9th.areumdap.common.config;
 
+import com.umc9th.areumdap.domain.oauth.properties.OAuthKakaoProperties;
+import com.umc9th.areumdap.domain.oauth.properties.OAuthNaverProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -8,11 +11,14 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebClientConfig {
 
     private static final int MAX_IN_MEMORY_SIZE = 2 * 1024 * 1024;
+    private final OAuthNaverProperties oAuthNaverProperties;
+    private final OAuthKakaoProperties oAuthKakaoProperties;
 
-    private WebClient baseWebClient(String baseUrl) {
+    private WebClient buildWebClient(String baseUrl) {
         return WebClient.builder()
                 .baseUrl(baseUrl)
                 .defaultHeader(
@@ -32,7 +38,7 @@ public class WebClientConfig {
 
     @Bean(name = "kakaoAuthWebClient")
     public WebClient oAuthKakaoWebClient() {
-        return baseWebClient("https://kauth.kakao.com");
+        return buildWebClient("https://kauth.kakao.com");
     }
 
     @Bean(name = "kakaoApiWebClient")
@@ -43,14 +49,12 @@ public class WebClientConfig {
     }
 
     @Bean(name = "naverAuthWebClient")
-    public WebClient oAuthNaverWebClient(WebClient.Builder builder) {
-        return builder.build();
+    public WebClient oAuthNaverWebClient() {
+        return buildWebClient(oAuthNaverProperties.authBaseUrl());
     }
 
     @Bean(name = "naverApiWebClient")
     public WebClient naverApiWebClient() {
-        return WebClient.builder()
-                .baseUrl("https://openapi.naver.com")
-                .build();
+        return buildWebClient(oAuthNaverProperties.apiBaseUrl());
     }
 }

@@ -32,20 +32,8 @@ public class OAuthNaverClient {
 
     /* ===== 1. code → access token ===== */
     public OAuthNaverTokenResponse getToken(String code, String state) {
-        if (!StringUtils.hasText(code) || !StringUtils.hasText(state)) {
-            throw new GeneralException(ErrorStatus.BAD_REQUEST);
-        }
 
-        String url = UriComponentsBuilder
-                .fromUriString("https://nid.naver.com/oauth2.0/token")
-                .queryParam("grant_type", "authorization_code")
-                .queryParam("client_id", naverProperties.clientId())
-                .queryParam("client_secret", naverProperties.clientSecret())
-                .queryParam("code", code)
-                .queryParam("state", state)
-                .build(true)
-                .toUriString();
-
+        String url = buildTokenRequestUrl(code, state);
         OAuthNaverTokenResponse response = naverAuthWebClient.get()
                 .uri(url)
                 .accept(MediaType.APPLICATION_JSON)
@@ -57,16 +45,7 @@ public class OAuthNaverClient {
                 })
                 .block();
 
-        if (response == null) {
-            throw new GeneralException(ErrorStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        if (response.error()!=null  || !StringUtils.hasText(response.accessToken())) {
-            log.error("[NAVER][TOKEN] token issue error. error={}, desc={}",
-                    response.error(), response.errorDescription());
-            throw new GeneralException(ErrorStatus.INTERNAL_SERVER_ERROR);
-        }
-
+        validateTokenResponse(response);
         return response;
     }
 
@@ -79,21 +58,9 @@ public class OAuthNaverClient {
                         .header("Authorization", "Bearer " + accessToken)
                         .retrieve()
                         .onStatus(
-                                HttpStatusCode::is4xxClientError,
+                                HttpStatusCode::isError,
                                 r -> r.bodyToMono(String.class)
-                                        .map(b -> {
-                                            log.error("naver user 4xx: {}", b);
-                                            return new GeneralException(ErrorStatus.UNAUTHORIZED);
-                                        })
-                        )
-                        .onStatus(
-                                HttpStatusCode::is5xxServerError,
-                                r -> r.bodyToMono(String.class)
-                                        .map(b -> {
-                                            log.error("naver user 5xx: {}", b);
-                                            return new GeneralException(
-                                                    ErrorStatus.INTERNAL_SERVER_ERROR);
-                                        })
+                                        .flatMap(body -> handleUserInfoError(r.statusCode(), body))
                         )
                         .bodyToMono(OAuthNaverUserInfoResponse.class)
                         .block();
@@ -113,6 +80,40 @@ public class OAuthNaverClient {
                         ? user.nickname()
                         : user.name()
         );
+    }
+
+    private String buildTokenRequestUrl(String code, String state) {
+        return UriComponentsBuilder
+                .fromUriString(naverProperties.authBaseUrl())
+                .queryParam("grant_type", "authorization_code")
+                .queryParam("client_id", naverProperties.clientId())
+                .queryParam("client_secret", naverProperties.clientSecret())
+                .queryParam("code", code)
+                .queryParam("state", state)
+                .build(true)
+                .toUriString();
+    }
+
+    private void validateTokenResponse(OAuthNaverTokenResponse response) {
+        if (response == null ||
+                response.error() != null ||
+                !StringUtils.hasText(response.accessToken())) {
+
+            log.error("[NAVER][TOKEN] invalid response: {}", response);
+            throw new GeneralException(ErrorStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private Mono<? extends Throwable> handleUserInfoError(
+            HttpStatusCode status,
+            String body
+    ) {
+        log.error("[NAVER][USER][{}] {}", status.value(), body);
+
+        if (status.is4xxClientError()) {
+            return Mono.error(new GeneralException(ErrorStatus.UNAUTHORIZED));
+        }
+        return Mono.error(new GeneralException(ErrorStatus.INTERNAL_SERVER_ERROR));
     }
 
 }
