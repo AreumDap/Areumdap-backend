@@ -25,6 +25,7 @@ public class UserOnboarding extends BaseEntity {
     private User user;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
+    @Enumerated(EnumType.STRING)
     @Column(name = "seasons", columnDefinition = "season_enum[]", nullable = false)
     private List<Season> seasons;
 
