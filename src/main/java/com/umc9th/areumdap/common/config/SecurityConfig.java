@@ -47,7 +47,8 @@ public class SecurityConfig {
     /** 소셜 인증(카카오, 네이버) 관련 경로 */
     private static final String[] OAUTH_URIS = {
             "/api/oauth/kakao/login-uri",
-            "/api/oauth/kako/login"
+            "/api/oauth/kakao/login",
+            "/api/oauth/kakao/test/login"
     };
 
     @Bean

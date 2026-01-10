@@ -26,7 +26,8 @@ public enum SuccessStatus implements BaseStatus {
     /**
      * OAuth
      */
-    GET_KAKAO_LOGIN_URL_SUCCESS(HttpStatus.OK, "OAUTH_200", "카카오 로그인 URL 조회 성공");
+    GET_KAKAO_LOGIN_URL_SUCCESS(HttpStatus.OK, "OAUTH_200", "카카오 로그인 URL 조회 성공"),
+    KAKAO_LOGIN_SUCCESS(HttpStatus.OK, "AUTH_200", "카카오 로그인 성공");
 
     private final HttpStatus httpStatus;
     private final String code;
