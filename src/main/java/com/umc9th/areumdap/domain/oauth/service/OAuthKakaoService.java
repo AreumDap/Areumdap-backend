@@ -2,6 +2,7 @@ package com.umc9th.areumdap.domain.oauth.service;
 
 import com.umc9th.areumdap.common.jwt.JwtService;
 import com.umc9th.areumdap.domain.auth.dto.response.LoginResponse;
+import com.umc9th.areumdap.domain.auth.token.RefreshTokenHasher;
 import com.umc9th.areumdap.domain.oauth.client.OAuthKakaoClient;
 import com.umc9th.areumdap.domain.oauth.dto.request.OAuthKakaoLoginRequest;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthKakaoLoginUrlResponse;
@@ -25,6 +26,7 @@ public class OAuthKakaoService {
 
     private final OAuthKakaoClient oAuthKakaoClient;
     private final OAuthKakaoProperties oAuthKakaoProperties;
+    private final RefreshTokenHasher refreshTokenHasher;
 
     private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
@@ -33,7 +35,7 @@ public class OAuthKakaoService {
     // 카카오 로그인 URL 생성
     public OAuthKakaoLoginUrlResponse getKakaoLoginUrl() {
         return new OAuthKakaoLoginUrlResponse(
-                UriComponentsBuilder.fromUriString(oAuthKakaoProperties.authBaseUrl()+ "/oauth/authorize")
+                UriComponentsBuilder.fromUriString(oAuthKakaoProperties.authBaseUrl() + "/oauth/authorize")
                         .queryParam("client_id", oAuthKakaoProperties.clientId())
                         .queryParam("redirect_uri", oAuthKakaoProperties.redirectUri())
                         .queryParam("response_type", "code")
@@ -59,6 +61,8 @@ public class OAuthKakaoService {
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
-        return  LoginResponse.from(user, accessToken,refreshToken);
+        user.updateRefreshToken(refreshTokenHasher.hash(refreshToken));
+        return LoginResponse.from(user, accessToken, refreshToken);
     }
+
 }

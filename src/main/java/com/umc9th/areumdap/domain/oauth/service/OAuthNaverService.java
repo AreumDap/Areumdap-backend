@@ -4,6 +4,7 @@ import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.jwt.JwtService;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.auth.dto.response.LoginResponse;
+import com.umc9th.areumdap.domain.auth.token.RefreshTokenHasher;
 import com.umc9th.areumdap.domain.oauth.client.OAuthNaverClient;
 import com.umc9th.areumdap.domain.oauth.dto.request.OAuthNaverLoginRequest;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthNaverLoginUrlResponse;
@@ -28,20 +29,18 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class OAuthNaverService {
+
     private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
     private final JwtService jwtService;
     private final StringRedisTemplate stringRedisTemplate;
 
-
     private final OAuthNaverClient oAuthNaverClient;
     private final OAuthNaverProperties oAuthNaverProperties;
-
+    private final RefreshTokenHasher refreshTokenHasher;
 
     private static final Duration STATE_TTL = Duration.ofMinutes(5);
     private static final String NAVER_STATE_KEY = "oauth:naver:state:";
-
-
 
     // 네이버 로그인 URL 생성
     public OAuthNaverLoginUrlResponse getNaverLoginUrl() {
@@ -77,6 +76,7 @@ public class OAuthNaverService {
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
+        user.updateRefreshToken(refreshTokenHasher.hash(refreshToken));
         return LoginResponse.from(user, accessToken,refreshToken);
     }
 
@@ -107,4 +107,5 @@ public class OAuthNaverService {
 
         stringRedisTemplate.delete(key);
     }
+
 }

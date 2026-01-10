@@ -116,6 +116,7 @@ public class OAuthKakaoClient {
         }
     }
 
+    // 에러 처리
     private Mono<? extends Throwable> handleKakaoError(
             HttpStatusCode status,
             String body
@@ -127,5 +128,6 @@ public class OAuthKakaoClient {
         }
         return Mono.error(new GeneralException(ErrorStatus.INTERNAL_SERVER_ERROR));
     }
+
 }
 

@@ -82,6 +82,7 @@ public class OAuthNaverClient {
         );
     }
 
+    // Access Token 발급 URL 생성
     private String buildTokenRequestUrl(String code, String state) {
         return UriComponentsBuilder
                 .fromUriString(naverProperties.authBaseUrl())
@@ -94,6 +95,7 @@ public class OAuthNaverClient {
                 .toUriString();
     }
 
+    // 응답 값 검증
     private void validateTokenResponse(OAuthNaverTokenResponse response) {
         if (response == null ||
                 response.error() != null ||
@@ -104,6 +106,7 @@ public class OAuthNaverClient {
         }
     }
 
+    // 에러처리
     private Mono<? extends Throwable> handleUserInfoError(
             HttpStatusCode status,
             String body

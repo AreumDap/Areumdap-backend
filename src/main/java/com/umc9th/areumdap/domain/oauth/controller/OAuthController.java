@@ -36,23 +36,23 @@ public class OAuthController {
     @GetMapping("/kakao/login-uri")
     @Operation(summary = "카카오 로그인 URL 조회", description = "카카오 로그인 창을 띄우기 위한 URL 조회")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",description = "카카오 로그인 URL 조회 성공", content = @Content(schema = @Schema(implementation = OAuthKakaoLoginUrlResponse.class)))
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "카카오 로그인 URL 조회 성공", content = @Content(schema = @Schema(implementation = OAuthKakaoLoginUrlResponse.class)))
     })
-    public ResponseEntity<ApiResponse<OAuthKakaoLoginUrlResponse>> getOAuthKakaoLoginUrl(){
+    public ResponseEntity<ApiResponse<OAuthKakaoLoginUrlResponse>> getOAuthKakaoLoginUrl() {
         OAuthKakaoLoginUrlResponse response = oAuthKakaoService.getKakaoLoginUrl();
-        return ApiResponse.success(SuccessStatus.GET_KAKAO_LOGIN_URL_SUCCESS,response);
+        return ApiResponse.success(SuccessStatus.GET_KAKAO_LOGIN_URL_SUCCESS, response);
     }
 
     @PostMapping("/kakao/login")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인 처리 후 JWT 토큰 발급")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",description = "카카오 로그인 성공", content = @Content(schema = @Schema(implementation = LoginResponse.class)))
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "카카오 로그인 성공", content = @Content(schema = @Schema(implementation = LoginResponse.class)))
     })
     public ResponseEntity<ApiResponse<LoginResponse>> oAuthKakaoLogin(
             @Valid @RequestBody OAuthKakaoLoginRequest oauthKakaoLoginRequest
-            ) {
+    ) {
         LoginResponse response = oAuthKakaoService.kakaoLogin(oauthKakaoLoginRequest);
-        return ApiResponse.success(SuccessStatus.KAKAO_LOGIN_SUCCESS,response);
+        return ApiResponse.success(SuccessStatus.KAKAO_LOGIN_SUCCESS, response);
     }
 
     @GetMapping("/kakao/test/login")
@@ -77,11 +77,11 @@ public class OAuthController {
     @GetMapping("/naver/login-uri")
     @Operation(summary = "네이버 로그인 URL 조회", description = "네이버 로그인 창을 띄우기 위한 URL 조회")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",description = "네이버 로그인 URL 조회 성공", content = @Content(schema = @Schema(implementation = OAuthNaverLoginUrlResponse.class)))
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "네이버 로그인 URL 조회 성공", content = @Content(schema = @Schema(implementation = OAuthNaverLoginUrlResponse.class)))
     })
-    public ResponseEntity<ApiResponse<OAuthNaverLoginUrlResponse>> getOAuthNaverLoginUrl(){
+    public ResponseEntity<ApiResponse<OAuthNaverLoginUrlResponse>> getOAuthNaverLoginUrl() {
         OAuthNaverLoginUrlResponse response = oauthNaverService.getNaverLoginUrl();
-        return ApiResponse.success(SuccessStatus.GET_NAVER_LOGIN_URL_SUCCESS,response);
+        return ApiResponse.success(SuccessStatus.GET_NAVER_LOGIN_URL_SUCCESS, response);
     }
 
     @GetMapping("/naver/login")
