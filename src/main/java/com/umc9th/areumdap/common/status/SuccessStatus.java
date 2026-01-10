@@ -19,11 +19,16 @@ public enum SuccessStatus implements BaseStatus {
     CONFIRM_EMAIL_VERIFICATION_CODE_SUCCESS(HttpStatus.OK, "AUTH_200", "이메일 인증 성공"),
     LOGIN_SUCCESS(HttpStatus.OK, "AUTH_200", "로그인 성공"),
     LOGOUT_SUCCESS(HttpStatus.OK, "AUTH_200", "로그아웃 성공"),
-    REISSUE_TOKEN_SUCCESS( HttpStatus.OK, "AUTH_200","토큰 재발급 성공"),
+    REISSUE_TOKEN_SUCCESS(HttpStatus.OK, "AUTH_200", "토큰 재발급 성공"),
     WITHDRAW_SUCCESS(HttpStatus.OK, "AUTH_200", "회원탈퇴 성공"),
-    SIGNUP_SUCCESS(HttpStatus.CREATED, "AUTH_201", "회원가입 성공");
+    SIGNUP_SUCCESS(HttpStatus.CREATED, "AUTH_201", "회원가입 성공"),
+
+    /**
+     * OAuth
+     */
+    GET_KAKAO_LOGIN_URL_SUCCESS(HttpStatus.OK, "OAUTH_200", "카카오 로그인 URL 조회 성공");
 
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
-}
+    }

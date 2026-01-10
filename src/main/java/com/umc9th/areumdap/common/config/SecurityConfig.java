@@ -44,6 +44,12 @@ public class SecurityConfig {
             "/api/auth/token/reissue"
     };
 
+    /** 소셜 인증(카카오, 네이버) 관련 경로 */
+    private static final String[] OAUTH_URIS = {
+            "/api/oauth/kakao/login-uri",
+            "/api/oauth/kako/login"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -52,6 +58,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth-> auth
                         .requestMatchers(SWAGGER_URIS).permitAll()
                         .requestMatchers(AUTH_URIS).permitAll()
+                        .requestMatchers(OAUTH_URIS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
