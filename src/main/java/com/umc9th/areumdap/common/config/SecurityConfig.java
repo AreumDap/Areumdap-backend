@@ -48,7 +48,10 @@ public class SecurityConfig {
     private static final String[] OAUTH_URIS = {
             "/api/oauth/kakao/login-uri",
             "/api/oauth/kakao/login",
-            "/api/oauth/kakao/test/login"
+            "/api/oauth/kakao/test/login",
+            "/api/oauth/naver/login-uri",
+            "/api/oauth/naver/login",
+            "/api/oauth/naver/test/login"
     };
 
     @Bean

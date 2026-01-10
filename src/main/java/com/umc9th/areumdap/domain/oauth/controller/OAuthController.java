@@ -5,6 +5,7 @@ import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.auth.dto.response.LoginResponse;
 import com.umc9th.areumdap.domain.oauth.dto.request.OAuthKakaoLoginRequest;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthKakaoLoginUrlResponse;
+import com.umc9th.areumdap.domain.oauth.dto.response.OAuthNaverLoginUrlResponse;
 import com.umc9th.areumdap.domain.oauth.service.OAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +31,7 @@ public class OAuthController {
     private final OAuthService oauthService;
 
     @GetMapping("/kakao/login-uri")
-    @Operation(summary = "카카오 로그인 URL 조회", description = "카카오 로그인 URL 창을 띄우기 위한 URL 조회")
+    @Operation(summary = "카카오 로그인 URL 조회", description = "카카오 로그인 창을 띄우기 위한 URL 조회")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",description = "카카오 로그인 URL 조회 성공", content = @Content(schema = @Schema(implementation = OAuthKakaoLoginUrlResponse.class)))
     })
@@ -68,6 +69,16 @@ public class OAuthController {
                         ? "OAuth ERROR = " + error
                         : "OAuth CODE = " + code
         );
+    }
+
+    @GetMapping("/naver/login-uri")
+    @Operation(summary = "네이버 로그인 URL 조회", description = "네이버 로그인 창을 띄우기 위한 URL 조회")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",description = "네이버 로그인 URL 조회 성공", content = @Content(schema = @Schema(implementation = OAuthNaverLoginUrlResponse.class)))
+    })
+    public ResponseEntity<ApiResponse<OAuthNaverLoginUrlResponse>> getOAuthNaverLoginUrl(){
+        OAuthNaverLoginUrlResponse response = oauthService.getNaverLoginUrl();
+        return ApiResponse.success(SuccessStatus.GET_NAVER_LOGIN_URL_SUCCESS,response);
     }
 
 }
