@@ -23,7 +23,7 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "oauth_id", length = 30)
+    @Column(name = "oauth_id")
     private String oauthId;
 
     @Enumerated(EnumType.STRING)

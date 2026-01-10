@@ -4,6 +4,7 @@ import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.auth.dto.response.LoginResponse;
 import com.umc9th.areumdap.domain.oauth.dto.request.OAuthKakaoLoginRequest;
+import com.umc9th.areumdap.domain.oauth.dto.request.OAuthNaverLoginRequest;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthKakaoLoginUrlResponse;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthNaverLoginUrlResponse;
 import com.umc9th.areumdap.domain.oauth.service.OAuthService;
@@ -79,6 +80,25 @@ public class OAuthController {
     public ResponseEntity<ApiResponse<OAuthNaverLoginUrlResponse>> getOAuthNaverLoginUrl(){
         OAuthNaverLoginUrlResponse response = oauthService.getNaverLoginUrl();
         return ApiResponse.success(SuccessStatus.GET_NAVER_LOGIN_URL_SUCCESS,response);
+    }
+
+
+    @GetMapping("/naver/login")
+    @Operation(summary = "네이버 로그인 콜백", description = "네이버 로그인 콜백 후 JWT 발급")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "네이버 로그인 성공",
+                    content = @Content(schema = @Schema(implementation = LoginResponse.class))
+            )
+    })
+    public ResponseEntity<ApiResponse<LoginResponse>> oAuthNaverLogin(
+            @RequestParam String code,
+            @RequestParam String state
+    ) {
+
+        LoginResponse response = oauthService.naverLogin(new OAuthNaverLoginRequest(code, state));
+        return ApiResponse.success(SuccessStatus.NAVER_LOGIN_SUCCESS, response);
     }
 
 }

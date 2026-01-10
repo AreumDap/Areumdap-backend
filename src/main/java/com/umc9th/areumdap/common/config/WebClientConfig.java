@@ -41,4 +41,16 @@ public class WebClientConfig {
                 .baseUrl("https://kapi.kakao.com")
                 .build();
     }
+
+    @Bean(name = "naverAuthWebClient")
+    public WebClient oAuthNaverWebClient(WebClient.Builder builder) {
+        return builder.build();
+    }
+
+    @Bean(name = "naverApiWebClient")
+    public WebClient naverApiWebClient() {
+        return WebClient.builder()
+                .baseUrl("https://openapi.naver.com")
+                .build();
+    }
 }

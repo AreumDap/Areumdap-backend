@@ -5,10 +5,14 @@ import com.umc9th.areumdap.common.jwt.JwtService;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.auth.dto.response.LoginResponse;
 import com.umc9th.areumdap.domain.oauth.client.OAuthKakaoClient;
+import com.umc9th.areumdap.domain.oauth.client.OAuthNaverClient;
 import com.umc9th.areumdap.domain.oauth.dto.request.OAuthKakaoLoginRequest;
+import com.umc9th.areumdap.domain.oauth.dto.request.OAuthNaverLoginRequest;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthKakaoLoginUrlResponse;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthNaverLoginUrlResponse;
+import com.umc9th.areumdap.domain.oauth.properties.OAuthNaverProperties;
 import com.umc9th.areumdap.domain.oauth.provider.dto.OAuthKakaoTokenResponse;
+import com.umc9th.areumdap.domain.oauth.provider.dto.OAuthNaverTokenResponse;
 import com.umc9th.areumdap.domain.oauth.provider.dto.OAuthUserInfo;
 import com.umc9th.areumdap.domain.oauth.properties.OAuthKakaoProperties;
 import com.umc9th.areumdap.domain.user.entity.User;
@@ -37,6 +41,8 @@ public class OAuthService {
 
     private final OAuthKakaoClient oAuthKakaoClient;
     private final OAuthKakaoProperties oAuthKakaoProperties;
+    private final OAuthNaverClient oAuthNaverClient;
+    private final OAuthNaverProperties oAuthNaverProperties;
 
 
     private static final Duration STATE_TTL = Duration.ofMinutes(5);
@@ -60,9 +66,8 @@ public class OAuthService {
         OAuthKakaoTokenResponse kakaoToken = oAuthKakaoClient.getToken(request.code());
         OAuthUserInfo kakaoUserInfo = oAuthKakaoClient.getUserInfo(kakaoToken.accessToken());
 
-        User user = null;
-        Optional<User> userOptional = userQueryService.getUserByKakaoInfo(kakaoUserInfo);
-        user = userOptional.orElseGet(() -> userCommandService.registerKakaoUser(
+        Optional<User> userOptional = userQueryService.getUserByOauthInfo(kakaoUserInfo);
+        User user = userOptional.orElseGet(() -> userCommandService.registerKakaoUser(
                 kakaoUserInfo.oauthId(),
                 kakaoUserInfo.oauthProvider(),
                 kakaoUserInfo.nickname(),
@@ -82,13 +87,34 @@ public class OAuthService {
 
         return new OAuthNaverLoginUrlResponse(
                 UriComponentsBuilder.fromUriString("https://nid.naver.com/oauth2.0/authorize")
-                        .queryParam("client_id", oAuthKakaoProperties.clientId())
-                        .queryParam("redirect_uri", oAuthKakaoProperties.redirectUri())
+                        .queryParam("client_id", oAuthNaverProperties.clientId())
+                        .queryParam("redirect_uri", oAuthNaverProperties.redirectUri())
                         .queryParam("response_type", "code")
                         .queryParam("state", naverState)
                         .build()
                         .toUriString()
         );
+    }
+
+    // 네이버 로그인 처리 후 JWT 토큰 생성
+    public LoginResponse naverLogin(OAuthNaverLoginRequest request) {
+        validateAndDeleteNaverState(request.state());
+
+        OAuthNaverTokenResponse naverToken = oAuthNaverClient.getToken(request.code(), request.state());
+        OAuthUserInfo naverUserInfo = oAuthNaverClient.getUserInfo(naverToken.accessToken());
+
+        Optional<User> userOptional = userQueryService.getUserByOauthInfo(naverUserInfo);
+        User user = userOptional.orElseGet(() -> userCommandService.registerKakaoUser(
+                naverUserInfo.oauthId(),
+                naverUserInfo.oauthProvider(),
+                naverUserInfo.nickname(),
+                naverUserInfo.email()
+        ));
+
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        return LoginResponse.from(user, accessToken,refreshToken);
     }
 
     // Naver 로그인 창을 불러오기 위한 state값 생성

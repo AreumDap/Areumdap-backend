@@ -51,7 +51,6 @@ public class SecurityConfig {
             "/api/oauth/kakao/test/login",
             "/api/oauth/naver/login-uri",
             "/api/oauth/naver/login",
-            "/api/oauth/naver/test/login"
     };
 
     @Bean

@@ -43,10 +43,11 @@ public class UserQueryService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 
-    // 카카오 유저 정보로 조회
-    public Optional<User> getUserByKakaoInfo(OAuthUserInfo kakaoUserInfo) {
+    // 소셜 유저 정보로 조회
+    public Optional<User> getUserByOauthInfo(OAuthUserInfo oAuthUserInfo) {
         return userRepository.findByOauthIdAndOauthProviderAndNameAndEmailAndDeletedFalse(
-                kakaoUserInfo.oauthId(),kakaoUserInfo.oauthProvider(), kakaoUserInfo.nickname(), kakaoUserInfo.email());
+                oAuthUserInfo.oauthId(),oAuthUserInfo.oauthProvider(), oAuthUserInfo.nickname(), oAuthUserInfo.email());
     }
+
 
 }
