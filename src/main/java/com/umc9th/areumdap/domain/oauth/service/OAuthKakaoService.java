@@ -33,7 +33,7 @@ public class OAuthKakaoService {
     // 카카오 로그인 URL 생성
     public OAuthKakaoLoginUrlResponse getKakaoLoginUrl() {
         return new OAuthKakaoLoginUrlResponse(
-                UriComponentsBuilder.fromUriString("https://kauth.kakao.com/oauth/authorize")
+                UriComponentsBuilder.fromUriString(oAuthKakaoProperties.authBaseUrl()+ "/oauth/authorize")
                         .queryParam("client_id", oAuthKakaoProperties.clientId())
                         .queryParam("redirect_uri", oAuthKakaoProperties.redirectUri())
                         .queryParam("response_type", "code")

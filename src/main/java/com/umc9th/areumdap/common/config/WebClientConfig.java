@@ -38,14 +38,12 @@ public class WebClientConfig {
 
     @Bean(name = "kakaoAuthWebClient")
     public WebClient oAuthKakaoWebClient() {
-        return buildWebClient("https://kauth.kakao.com");
+        return buildWebClient(oAuthKakaoProperties.authBaseUrl());
     }
 
     @Bean(name = "kakaoApiWebClient")
     public WebClient kakaoApiWebClient() {
-        return WebClient.builder()
-                .baseUrl("https://kapi.kakao.com")
-                .build();
+        return buildWebClient(oAuthKakaoProperties.apiBaseUrl());
     }
 
     @Bean(name = "naverAuthWebClient")

@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
@@ -52,21 +53,9 @@ public class OAuthKakaoClient {
                             .body(BodyInserters.fromFormData(form))
                             .retrieve()
                             .onStatus(
-                                    HttpStatusCode::is4xxClientError,
+                                    HttpStatusCode::isError,
                                     r -> r.bodyToMono(String.class)
-                                            .map(b -> {
-                                                log.error("Kakao token 4xx: {}", b);
-                                                return new GeneralException(ErrorStatus.BAD_REQUEST);
-                                            })
-                            )
-                            .onStatus(
-                                    HttpStatusCode::is5xxServerError,
-                                    r -> r.bodyToMono(String.class)
-                                            .map(b -> {
-                                                log.error("Kakao token 5xx: {}", b);
-                                                return new GeneralException(
-                                                        ErrorStatus.INTERNAL_SERVER_ERROR);
-                                            })
+                                            .flatMap(body -> handleKakaoError(r.statusCode(), body))
                             )
                             .bodyToMono(OAuthKakaoTokenResponse.class)
                             .block();
@@ -93,21 +82,9 @@ public class OAuthKakaoClient {
                             .header("Authorization", "Bearer " + accessToken)
                             .retrieve()
                             .onStatus(
-                                    HttpStatusCode::is4xxClientError,
+                                    HttpStatusCode::isError,
                                     r -> r.bodyToMono(String.class)
-                                            .map(b -> {
-                                                log.error("Kakao user 4xx: {}", b);
-                                                return new GeneralException(ErrorStatus.UNAUTHORIZED);
-                                            })
-                            )
-                            .onStatus(
-                                    HttpStatusCode::is5xxServerError,
-                                    r -> r.bodyToMono(String.class)
-                                            .map(b -> {
-                                                log.error("Kakao user 5xx: {}", b);
-                                                return new GeneralException(
-                                                        ErrorStatus.INTERNAL_SERVER_ERROR);
-                                            })
+                                            .flatMap(body -> handleKakaoError(r.statusCode(), body))
                             )
                             .bodyToMono(OAuthKakaoUserInfoResponse.class)
                             .block();
@@ -139,5 +116,16 @@ public class OAuthKakaoClient {
         }
     }
 
+    private Mono<? extends Throwable> handleKakaoError(
+            HttpStatusCode status,
+            String body
+    ) {
+        log.error("[KAKAO][USER][{}] {}", status.value(), body);
+
+        if (status.is4xxClientError()) {
+            return Mono.error(new GeneralException(ErrorStatus.UNAUTHORIZED));
+        }
+        return Mono.error(new GeneralException(ErrorStatus.INTERNAL_SERVER_ERROR));
+    }
 }
 
