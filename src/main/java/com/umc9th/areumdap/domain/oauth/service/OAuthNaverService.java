@@ -13,7 +13,6 @@ import com.umc9th.areumdap.domain.oauth.provider.dto.OAuthNaverTokenResponse;
 import com.umc9th.areumdap.domain.oauth.provider.dto.OAuthUserInfo;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.service.UserCommandService;
-import com.umc9th.areumdap.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -23,14 +22,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Base64;
-import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class OAuthNaverService {
 
-    private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
     private final JwtService jwtService;
     private final StringRedisTemplate stringRedisTemplate;
@@ -48,7 +45,7 @@ public class OAuthNaverService {
         saveNaverState(naverState);
 
         return new OAuthNaverLoginUrlResponse(
-                UriComponentsBuilder.fromUriString("https://nid.naver.com/oauth2.0/authorize")
+                UriComponentsBuilder.fromUriString(oAuthNaverProperties.authBaseUrl()+"/oauth2.0/authorize")
                         .queryParam("client_id", oAuthNaverProperties.clientId())
                         .queryParam("redirect_uri", oAuthNaverProperties.redirectUri())
                         .queryParam("response_type", "code")
@@ -65,13 +62,12 @@ public class OAuthNaverService {
         OAuthNaverTokenResponse naverToken = oAuthNaverClient.getToken(request.code(), request.state());
         OAuthUserInfo naverUserInfo = oAuthNaverClient.getUserInfo(naverToken.accessToken());
 
-        Optional<User> userOptional = userQueryService.getUserByOauthInfo(naverUserInfo);
-        User user = userOptional.orElseGet(() -> userCommandService.registerOAuthUser(
+        User user = userCommandService.getOrRegisterUser(
                 naverUserInfo.oauthId(),
                 naverUserInfo.oauthProvider(),
                 naverUserInfo.nickname(),
                 naverUserInfo.email()
-        ));
+        );
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
@@ -101,11 +97,9 @@ public class OAuthNaverService {
     private void validateAndDeleteNaverState(String state) {
         String key = NAVER_STATE_KEY + state;
 
-        Boolean exists = stringRedisTemplate.hasKey(key);
-        if (exists == null || !exists)
+        Boolean deleted = stringRedisTemplate.delete(key);
+        if (deleted == null || !deleted)
             throw new GeneralException(ErrorStatus.BAD_REQUEST);
-
-        stringRedisTemplate.delete(key);
     }
 
 }

@@ -36,17 +36,24 @@ public class UserCommandService {
         );
     }
 
-    // 카카오 유저 등록
-    public User registerOAuthUser(String oauthId, OAuthProvider provider, String name, String email) {
-        return userRepository.save(
-                User.builder()
-                        .oauthId(oauthId)
-                        .oauthProvider(provider)
-                        .name(name)
-                        .email(email)
-                        .deleted(false)
-                        .build()
-        );
+    // 소셜 유저 등록 or 찾기
+    public User getOrRegisterUser(String oauthId, OAuthProvider provider, String name, String email) {
+        User user = userRepository.findByOauthIdAndOauthProvider(oauthId, provider)
+                .orElseGet(() -> {
+                    if (userRepository.existsByEmailAndDeletedFalse(email)) {
+                        throw new GeneralException(ErrorStatus.EMAIL_ALREADY_EXISTS);
+                    }
+                    return userRepository.save(User.builder()
+                            .oauthId(oauthId)
+                            .oauthProvider(provider)
+                            .name(name)
+                            .email(email)
+                            .deleted(false)
+                            .build());
+                });
+
+        user.updateProfile(name, email);
+        return user;
     }
 
     // 유저 온보딩 저장

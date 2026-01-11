@@ -11,13 +11,11 @@ import com.umc9th.areumdap.domain.oauth.provider.dto.OAuthKakaoTokenResponse;
 import com.umc9th.areumdap.domain.oauth.provider.dto.OAuthUserInfo;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.service.UserCommandService;
-import com.umc9th.areumdap.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,7 +26,6 @@ public class OAuthKakaoService {
     private final OAuthKakaoProperties oAuthKakaoProperties;
     private final RefreshTokenHasher refreshTokenHasher;
 
-    private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
     private final JwtService jwtService;
 
@@ -50,18 +47,17 @@ public class OAuthKakaoService {
         OAuthKakaoTokenResponse kakaoToken = oAuthKakaoClient.getToken(request.code());
         OAuthUserInfo kakaoUserInfo = oAuthKakaoClient.getUserInfo(kakaoToken.accessToken());
 
-        Optional<User> userOptional = userQueryService.getUserByOauthInfo(kakaoUserInfo);
-        User user = userOptional.orElseGet(() -> userCommandService.registerOAuthUser(
+        User user = userCommandService.getOrRegisterUser(
                 kakaoUserInfo.oauthId(),
                 kakaoUserInfo.oauthProvider(),
                 kakaoUserInfo.nickname(),
                 kakaoUserInfo.email()
-        ));
+        );
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
-        userCommandService.updateRefreshToken(user,refreshTokenHasher.hash(refreshToken));
+        userCommandService.updateRefreshToken(user, refreshTokenHasher.hash(refreshToken));
         return LoginResponse.from(user, accessToken, refreshToken);
     }
 

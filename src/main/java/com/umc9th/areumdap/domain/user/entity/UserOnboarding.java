@@ -21,7 +21,7 @@ public class UserOnboarding extends BaseEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
 
     @JdbcTypeCode(SqlTypes.ARRAY)

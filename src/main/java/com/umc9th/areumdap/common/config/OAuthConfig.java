@@ -6,6 +6,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties({OAuthKakaoProperties.class,OAuthNaverProperties.class})
-public class OauthConfig {
+@EnableConfigurationProperties({OAuthKakaoProperties.class, OAuthNaverProperties.class})
+public class OAuthConfig {
 }

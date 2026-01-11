@@ -9,5 +9,6 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByIdAndDeletedFalse(Long id);
-
+    Optional<User> findByOauthIdAndOauthProvider(String oauthId, OAuthProvider oauthProvider);
+    boolean existsByEmailAndDeletedFalse(String email);
 }

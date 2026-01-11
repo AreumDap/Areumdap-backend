@@ -85,4 +85,10 @@ public class User extends BaseEntity {
         this.age = null;
     }
 
+    // 프로필 업데이트
+    public void updateProfile(String name, String email){
+        this.name = name;
+        this.email = email;
+    }
+
 }

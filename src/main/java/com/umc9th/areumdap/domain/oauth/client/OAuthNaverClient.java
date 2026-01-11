@@ -85,7 +85,7 @@ public class OAuthNaverClient {
     // Access Token 발급 URL 생성
     private String buildTokenRequestUrl(String code, String state) {
         return UriComponentsBuilder
-                .fromUriString(naverProperties.authBaseUrl())
+                .fromUriString(naverProperties.authBaseUrl()+"/oauth2.0/token")
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("client_id", naverProperties.clientId())
                 .queryParam("client_secret", naverProperties.clientSecret())

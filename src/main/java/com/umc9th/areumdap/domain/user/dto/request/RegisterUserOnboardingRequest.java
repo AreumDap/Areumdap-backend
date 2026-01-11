@@ -10,10 +10,11 @@ import java.util.List;
 public record RegisterUserOnboardingRequest(
         @NotNull
         @Size(min = 1, max = 3)
-        List<Season> seasons,
+        List<@NotNull Season> seasons,
 
+        @NotNull
         @Size(max = 3)
-        List<String> keywords,
+        List<@NotBlank @Size(max = 100) String> keywords,
 
         @NotNull
         Long characterId,
