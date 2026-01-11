@@ -66,7 +66,7 @@ public class AuthService {
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
-        user.updateRefreshToken(refreshTokenHasher.hash(refreshToken));
+        userCommandService.updateRefreshToken(user, refreshTokenHasher.hash(refreshToken));
         return LoginResponse.from(user, accessToken, refreshToken);
     }
 
@@ -87,7 +87,7 @@ public class AuthService {
         String newAccessToken = jwtService.generateAccessToken(user);
         String newRefreshToken = jwtService.generateRefreshToken(user);
 
-        user.updateRefreshToken(refreshTokenHasher.hash(newRefreshToken));
+        userCommandService.updateRefreshToken(user, refreshTokenHasher.hash(newRefreshToken));
         return new ReissueAccessTokenResponse(newAccessToken, newRefreshToken);
     }
 
