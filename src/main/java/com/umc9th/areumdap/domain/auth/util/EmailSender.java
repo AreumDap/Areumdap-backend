@@ -37,8 +37,6 @@ public class EmailSender {
             helper.setText(buildHtmlContent(verificationCode), true);
 
             mailSender.send(message);
-
-            log.info("이메일 전송 완료 -> {}", requestEmail);
         }
         catch (Exception e) {
             log.error("이메일 전송 실패 → {}", requestEmail, e);

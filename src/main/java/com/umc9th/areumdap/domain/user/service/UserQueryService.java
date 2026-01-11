@@ -2,11 +2,14 @@ package com.umc9th.areumdap.domain.user.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.oauth.provider.dto.OAuthUserInfo;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -39,5 +42,11 @@ public class UserQueryService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
+
+    // 소셜 유저 정보로 조회
+    public Optional<User> getUserByOauthInfo(OAuthUserInfo oAuthUserInfo) {
+        return userRepository.findByOauthIdAndOauthProviderAndDeletedFalse(oAuthUserInfo.oauthId(),oAuthUserInfo.oauthProvider());
+    }
+
 
 }

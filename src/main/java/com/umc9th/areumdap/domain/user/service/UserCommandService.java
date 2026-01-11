@@ -32,6 +32,19 @@ public class UserCommandService {
         );
     }
 
+    // 카카오 유저 등록
+    public User registerOAuthUser(String oauthId, OAuthProvider provider,String name, String email) {
+        return userRepository.save(
+                User.builder()
+                        .oauthId(oauthId)
+                        .oauthProvider(provider)
+                        .name(name)
+                        .email(email)
+                        .deleted(false)
+                        .build()
+        );
+    }
+
     // 회원탈퇴 시 소프트 delete 방식 적용
     public void withdraw(User user){
         user.withdraw();
