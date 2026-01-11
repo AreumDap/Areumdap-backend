@@ -45,7 +45,7 @@ public class User extends BaseEntity {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Sex sex;
 
-    @Column(name = "email", length = 50, unique = true, nullable = false)
+    @Column(name = "email", length = 50, unique = true)
     private String email;
 
     @Column(name = "password")
