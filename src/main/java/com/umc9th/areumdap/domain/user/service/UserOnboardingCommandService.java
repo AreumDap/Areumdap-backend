@@ -1,5 +1,7 @@
 package com.umc9th.areumdap.domain.user.service;
 
+import com.umc9th.areumdap.common.exception.GeneralException;
+import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserOnboarding;
 import com.umc9th.areumdap.domain.user.enums.Season;
@@ -25,6 +27,9 @@ public class UserOnboardingCommandService {
             Long characterId,
             String nickname
     ){
+        if(userOnboardingRepository.existsByUser(user))
+            throw new GeneralException(ErrorStatus.USER_ONBOARDING_ALREADY_EXISTS);
+
         userOnboardingRepository.save(
                 UserOnboarding.builder()
                         .user(user)

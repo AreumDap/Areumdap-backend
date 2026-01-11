@@ -54,32 +54,32 @@ public class AuthService {
 
     // 회원탈퇴
     public void withdraw(Long userId) {
-        User user = userCommandService.getUserByIdAndDeletedFalse(userId);
+        User user = userQueryService.getUserByIdAndDeletedFalse(userId);
         userCommandService.withdraw(user);
     }
 
     // 로그인
     public LoginResponse login(LoginRequest request) {
-        User user = userCommandService.getUserByEmailAndDeletedFalse(request.email());
+        User user = userQueryService.getUserByEmailAndDeletedFalse(request.email());
         validatePasswordMatch(request.password(), user.getPassword());
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
-        user.updateRefreshToken(refreshTokenHasher.hash(refreshToken));
+        userCommandService.updateRefreshToken(user, refreshTokenHasher.hash(refreshToken));
         return LoginResponse.from(user, accessToken, refreshToken);
     }
 
     // 로그아웃
     public void logout(Long userId) {
-        User user = userCommandService.getUserByIdAndDeletedFalse(userId);
+        User user = userQueryService.getUserByIdAndDeletedFalse(userId);
         userCommandService.clearRefreshToken(user);
     }
 
     // 토큰 재발급
     public ReissueAccessTokenResponse reissueAccessToken(String refreshToken) {
         Claims claims = jwtService.validateRefreshToken(refreshToken);
-        User user = userCommandService.getUserByIdAndDeletedFalse(Long.parseLong(claims.getSubject()));
+        User user = userQueryService.getUserByIdAndDeletedFalse(Long.parseLong(claims.getSubject()));
 
         if(!refreshTokenHasher.matches(refreshToken, user.getRefreshToken()))
             throw new GeneralException(ErrorStatus.REFRESH_TOKEN_MISMATCH);

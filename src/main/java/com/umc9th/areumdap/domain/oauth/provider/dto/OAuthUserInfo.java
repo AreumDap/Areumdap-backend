@@ -8,4 +8,13 @@ public record OAuthUserInfo(
         String email,
         String nickname
 ) {
+    @Override
+    public String toString() {
+        return "OAuthUserInfo[" +
+                "oauthProvider=" + oauthProvider +
+                ", oauthId=***" +
+                ", email=***" +
+                ", nickname=" + nickname +
+                ']';
+    }
 }

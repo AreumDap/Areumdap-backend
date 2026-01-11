@@ -2,6 +2,8 @@ package com.umc9th.areumdap.domain.user.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.oauth.provider.dto.OAuthUserInfo;
+import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.repository.UserQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,9 +20,26 @@ public class UserQueryService {
 
     // 이메일 중복 검사
     public void checkEmailNotExists(String email) {
-        if (userQueryRepository.existsByEmail(email)) {
+        if (userQueryRepository.findByEmail(email).isPresent()) {
             throw new GeneralException(ErrorStatus.EMAIL_ALREADY_EXISTS);
         }
+    }
+
+    // 이메일로 유저 정보 가져오기
+    public User getUserByEmailAndDeletedFalse(String email) {
+        return userQueryRepository.findByEmailAndDeletedFalse(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.EMAIL_NOT_FOUND2));
+    }
+
+    // 유저 아이디 + 삭제 여부로 유저 정보 가져오기
+    public User getUserByIdAndDeletedFalse(Long userId) {
+        return userQueryRepository.findByIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    // 소셜 유저 정보로 조회
+    public Optional<User> getUserByOauthInfo(OAuthUserInfo oAuthUserInfo) {
+        return userQueryRepository.findByOauthIdAndOauthProviderAndDeletedFalse(oAuthUserInfo.oauthId(),oAuthUserInfo.oauthProvider());
     }
 
 }

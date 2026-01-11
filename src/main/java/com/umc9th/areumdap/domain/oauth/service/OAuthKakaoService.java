@@ -14,11 +14,13 @@ import com.umc9th.areumdap.domain.user.service.UserCommandService;
 import com.umc9th.areumdap.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class OAuthKakaoService {
 
@@ -48,7 +50,7 @@ public class OAuthKakaoService {
         OAuthKakaoTokenResponse kakaoToken = oAuthKakaoClient.getToken(request.code());
         OAuthUserInfo kakaoUserInfo = oAuthKakaoClient.getUserInfo(kakaoToken.accessToken());
 
-        Optional<User> userOptional = userCommandService.getUserByOauthInfo(kakaoUserInfo);
+        Optional<User> userOptional = userQueryService.getUserByOauthInfo(kakaoUserInfo);
         User user = userOptional.orElseGet(() -> userCommandService.registerOAuthUser(
                 kakaoUserInfo.oauthId(),
                 kakaoUserInfo.oauthProvider(),
@@ -59,7 +61,7 @@ public class OAuthKakaoService {
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
-        user.updateRefreshToken(refreshTokenHasher.hash(refreshToken));
+        userCommandService.updateRefreshToken(user,refreshTokenHasher.hash(refreshToken));
         return LoginResponse.from(user, accessToken, refreshToken);
     }
 

@@ -31,7 +31,8 @@ public class UserController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "유저 온보딩 저장 성공", content = @Content()),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값이 올바르지 않는 경우", content = @Content()),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content())
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "유저 온보딩이 이미 존재하는 경우", content = @Content())
     })
     public ResponseEntity<ApiResponse<Void>> registerUserOnboarding(
             @AuthenticationPrincipal Long userId,
@@ -40,4 +41,5 @@ public class UserController {
         userCommandService.registerUserOnboarding(userId, registerUserOnboardingRequest);
         return ApiResponse.success(SuccessStatus.REGISTER_USER_ONBOARDING_SUCCESS);
     }
+
 }

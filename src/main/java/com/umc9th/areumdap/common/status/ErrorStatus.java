@@ -38,6 +38,7 @@ public enum ErrorStatus implements BaseStatus {
      * User
      */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_404", "유저가 존재하지 않습니다."),
+    USER_ONBOARDING_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_409", "유저 온보딩이 이미 존재합니다."),
 
     /**
      * JWT

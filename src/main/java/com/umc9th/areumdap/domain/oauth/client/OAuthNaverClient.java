@@ -42,7 +42,7 @@ public class OAuthNaverClient {
                         .onStatus(
                                 HttpStatusCode::isError,
                                 r -> r.bodyToMono(String.class)
-                                        .flatMap(body -> handleUserInfoError(r.statusCode(), body))
+                                        .flatMap(body -> handleNaverApiError(r.statusCode(), body))
                         )
                         .bodyToMono(OAuthNaverTokenResponse.class)
                         .block();
@@ -62,7 +62,7 @@ public class OAuthNaverClient {
                         .onStatus(
                                 HttpStatusCode::isError,
                                 r -> r.bodyToMono(String.class)
-                                        .flatMap(body -> handleUserInfoError(r.statusCode(), body))
+                                        .flatMap(body -> handleNaverApiError(r.statusCode(), body))
                         )
                         .bodyToMono(OAuthNaverUserInfoResponse.class)
                         .block();
@@ -109,11 +109,11 @@ public class OAuthNaverClient {
     }
 
     // 에러처리
-    private Mono<? extends Throwable> handleUserInfoError(
+    private Mono<? extends Throwable> handleNaverApiError(
             HttpStatusCode status,
             String body
     ) {
-        log.error("[NAVER][USER][{}] {}", status.value(), body);
+        log.error("[NAVER][API][{}] {}", status.value(), body);
 
         if (status.is4xxClientError()) {
             return Mono.error(new GeneralException(ErrorStatus.UNAUTHORIZED));
