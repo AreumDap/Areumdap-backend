@@ -1,43 +1,38 @@
 package com.umc9th.areumdap.common.infra.sqs.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.umc9th.areumdap.common.base.BaseStatus;
 import com.umc9th.areumdap.common.exception.GeneralException;
-import com.umc9th.areumdap.common.infra.sqs.dto.request.EmailVerificationMessageRequest;
-import com.umc9th.areumdap.common.infra.sqs.properties.EmailVerificationQueueProperties;
-import com.umc9th.areumdap.domain.auth.util.EmailSender;
+import com.umc9th.areumdap.common.infra.sqs.properties.SqsPollProperties;
+import com.umc9th.areumdap.common.status.ErrorStatus;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
-public class SqsMessageConsumer {
+public abstract class SqsMessageConsumer<T> {
 
-    private final SqsAsyncClient sqsAsyncClient;
-    private final ObjectMapper objectMapper;
-    private final EmailSender emailSender;
-    private final SqsMessageDeduplicator sqsMessageDeduplicator;
-    private final EmailVerificationQueueProperties properties;
+    protected final SqsAsyncClient sqsAsyncClient;
+    protected final ObjectMapper objectMapper;
+    protected final SqsMessageDeduplicator deduplicator;
 
-    private String queueUrl;
+    protected String queueUrl;
 
     @PostConstruct
-    void init() {
+    protected void initQueueUrl() {
         this.queueUrl = sqsAsyncClient.getQueueUrl(req ->
-                req.queueName(properties.queueName())
+                req.queueName(queueName())
         ).join().queueUrl();
     }
 
     @Scheduled(fixedDelay = 3000)
     public void poll() {
-        var poll = properties.poll();
+        SqsPollProperties poll = pollProperties();
+
         var request = ReceiveMessageRequest.builder()
                 .queueUrl(queueUrl)
                 .maxNumberOfMessages(poll.maxMessages())
@@ -47,37 +42,40 @@ public class SqsMessageConsumer {
         sqsAsyncClient.receiveMessage(request)
                 .join()
                 .messages()
-                .forEach(this::handle);
+                .forEach(this::handleInternal);
     }
 
-    private void handle(Message message) {
-        String messageId = message.messageId();
-
-        if(sqsMessageDeduplicator.alreadyProcessed(messageId)){
+    // 큐에 맞게 로직 분리
+    private void handleInternal(Message message) {
+        if (deduplicator.alreadyProcessed(message.messageId())) {
             delete(message);
             return;
         }
 
         try {
-            EmailVerificationMessageRequest payload =
-                    objectMapper.readValue(
-                            message.body(),
-                            EmailVerificationMessageRequest.class
-                    );
-
-            emailSender.sendEmailVerificationCode(payload.email(), payload.verificationCode());
-            sqsMessageDeduplicator.markProcessed(messageId);
+            T payload = objectMapper.readValue(message.body(), payloadType());
+            handle(payload);
+            deduplicator.markProcessed(message.messageId());
             delete(message);
-        }catch (Exception e) {
-            log.error("SQS email verification failed", e);
-            throw new GeneralException((BaseStatus) e);
+        } catch (Exception e) {
+            log.error("SQS message handling failed", e);
+            throw new GeneralException(ErrorStatus.SEND_VERIFICATION_CODE_EMAIL_INTERNAL_SERVER_ERROR);
         }
     }
 
-    private void delete(Message message) {
+    // SQS에 쌓인 메시지 삭제
+    protected void delete(Message message) {
         sqsAsyncClient.deleteMessage(req -> req
                 .queueUrl(queueUrl)
                 .receiptHandle(message.receiptHandle())
         );
     }
+
+    // 상속받는 클래스가 구현
+    protected abstract String queueName();
+    protected abstract SqsPollProperties pollProperties();
+    protected abstract Class<T> payloadType();
+    protected abstract void handle(T payload);
+
 }
+

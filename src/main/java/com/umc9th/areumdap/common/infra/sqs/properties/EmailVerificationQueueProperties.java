@@ -21,7 +21,7 @@ public record EmailVerificationQueueProperties(
 
             @Min(0)
             int waitTimeSeconds
-    ) {}
+    ) implements SqsPollProperties {}
 
     @Override
     public String toString() {
