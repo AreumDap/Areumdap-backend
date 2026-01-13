@@ -69,6 +69,12 @@ dependencies {
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+    //Aws
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.2.1")
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs"
+
+    implementation "org.springframework.boot:spring-boot-starter-json"
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 }
