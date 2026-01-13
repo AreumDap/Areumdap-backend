@@ -51,4 +51,3 @@ jobs:
           tags: |
             jihoonkim501/areumdap-backend:latest
             jihoonkim501/areumdap-backend:${{ github.sha }}
-            jihoonkim501/areumdap-backend:${{ github.ref_name }}
