@@ -2,11 +2,11 @@ package com.umc9th.areumdap.domain.auth.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.infra.sqs.dto.request.EmailVerificationMessageRequest;
-import com.umc9th.areumdap.common.infra.sqs.service.SqsMessageSender;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.auth.entity.EmailVerification;
 import com.umc9th.areumdap.domain.auth.repository.EmailVerificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class EmailVerificationService {
 
-    private final SqsMessageSender sqsMessageSender;
+    private final ApplicationEventPublisher eventPublisher;
     private static final SecureRandom random = new SecureRandom();
     private final EmailVerificationRepository emailVerificationRepository;
 
@@ -33,7 +33,7 @@ public class EmailVerificationService {
                                 registerEmailVerification(email, verificationCode)
                 );
 
-        sqsMessageSender.publish( new EmailVerificationMessageRequest(email, verificationCode));
+        eventPublisher.publishEvent( new EmailVerificationMessageRequest(email, verificationCode));
     }
 
     // 이메일 인증 코드 확인

@@ -42,7 +42,14 @@ public abstract class SqsMessageConsumer<T> {
         sqsAsyncClient.receiveMessage(request)
                 .join()
                 .messages()
-                .forEach(this::handleInternal);
+                .forEach(
+                        message -> {
+                            try{handleInternal(message);}
+                            catch (Exception e) {
+                                log.error("Failed to handle message: {} ", message.messageId(),e);
+                            }
+                        }
+                );
     }
 
     // 큐에 맞게 로직 분리
@@ -68,7 +75,11 @@ public abstract class SqsMessageConsumer<T> {
         sqsAsyncClient.deleteMessage(req -> req
                 .queueUrl(queueUrl)
                 .receiptHandle(message.receiptHandle())
-        );
+        ).whenComplete((resp, ex) -> {
+            if (ex != null) {
+                log.warn("Failed to delete message: {}", message.messageId(), ex);
+            }
+        });
     }
 
     // 상속받는 클래스가 구현
