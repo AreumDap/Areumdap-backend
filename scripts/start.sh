@@ -1,16 +1,13 @@
 #!/bin/bash
 set -e
 
-CONTAINER_NAME=areumdap-backend
-IMAGE=jihoonkim501/areumdap-backend:latest
+cd /home/ubuntu/app
 
-echo "Starting new container..."
+echo "Stopping existing containers..."
+docker-compose down || true
 
-docker pull $IMAGE
+echo "Pulling latest images..."
+docker-compose pull
 
-docker run -d \
-  --name $CONTAINER_NAME \
-  -p 8080:8080 \
-  --restart always \
-  $IMAGE
-
+echo "Starting containers..."
+docker-compose up -d

@@ -1,10 +1,12 @@
 #!/bin/bash
+set -e
 
-CONTAINER_NAME=areumdap-backend
+APP_DIR=/home/ubuntu/app
 
-if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
-  docker stop $CONTAINER_NAME || true
-  docker rm $CONTAINER_NAME || true
-fi
+echo "Stopping containers with docker-compose..."
 
-exit 0
+cd $APP_DIR
+
+docker-compose down || true
+
+echo "Containers stopped."
