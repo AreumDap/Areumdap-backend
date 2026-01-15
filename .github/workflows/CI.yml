@@ -17,6 +17,86 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Create application-prod.yml
+        run: |
+          mkdir -p src/main/resources
+          cat << 'EOF' > src/main/resources/application-prod.yml
+          spring:
+            config:
+              activate:
+                on-profile: prod
+            datasource:
+              url: jdbc:postgresql://${DB_URL}:${DB_PORT}/${DB_NAME}
+              username: ${DB_USER}
+              password: ${DB_PASSWORD}
+              driver-class-name: org.postgresql.Driver
+            jpa:
+              properties:
+                hibernate:
+                  show_sql: true
+
+            mail:
+              host: smtp.gmail.com
+              port: 587
+              username: ${EMAIL_USERNAME}
+              password: ${EMAIL_PASSWORD}
+              sender-address: ${EMAIL_SENDER_ADDRESS}
+              properties:
+                mail:
+                  smtp:
+                    auth: true
+                    starttls:
+                      enable: true
+
+            data:
+              redis:
+                port: ${REDIS_PORT}
+                host: ${REDIS_HOST}
+
+            cloud:
+              aws:
+                region:
+                  static: ${AWS_REGION}
+                credentials:
+                  access-key: ${AWS_ACCESS_KEY}
+                  secret-key: ${AWS_SECRET_KEY}
+                sqs:
+                  listener:
+                    max-concurrent-messages: 10
+                    max-messages-per-poll: 10
+                    poll-timeout: 20
+                  endpoint: ${AWS_SQS_ENDPOINT}
+
+          jwt:
+            secret: ${JWT_SECRET}
+            access-token-expiration: ${JWT_TOKEN_EXPIRATION}
+            refresh-token-expiration: ${REFRESH_TOKEN_EXPIRATION}
+
+          oauth:
+            kakao:
+              client-id: ${KAKAO_CLIENT_ID}
+              client-secret: ${KAKAO_CLIENT_SECRET}
+              redirect-uri: ${KAKAO_REDIRECT_URI}
+              auth-base-url: ${KAKAO_AUTH_BASE_URL}
+              api-base-url: ${KAKAO_API_BASE_URL}
+
+            naver:
+              client-id: ${NAVER_CLIENT_ID}
+              client-secret: ${NAVER_CLIENT_SECRET}
+              redirect-uri: ${NAVER_REDIRECT_URI}
+              auth-base-url: ${NAVER_AUTH_BASE_URL}
+              api-base-url: ${NAVER_API_BASE_URL}
+
+          areumdap:
+            messaging:
+              email-verification:
+                queue-name: ${AWS_EMAIL_VERIFICATION_SQS_NAME}
+                poll:
+                  max-messages: 10
+                  wait-time-seconds: 10
+          EOF
+
+
       - name: Grant execute permission for Gradle Wrapper
         run: chmod +x gradlew
 
