@@ -36,6 +36,11 @@ public class WebClientConfig {
                 .build();
     }
 
+    @Bean(name = "discordWebClient")
+    public WebClient webclient(){
+        return WebClient.builder().build();
+    }
+
     @Bean(name = "kakaoAuthWebClient")
     public WebClient oAuthKakaoWebClient() {
         return buildWebClient(oAuthKakaoProperties.authBaseUrl());
