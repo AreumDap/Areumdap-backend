@@ -20,9 +20,9 @@ public class UserOnboardingCommandService {
     private final UserOnboardingRepository userOnboardingRepository;
 
     // 유저 온보딩 저장
-    public void registerUserOnboarding(
+    public Long registerUserOnboarding(
             User user,
-            List<Season> seasons,
+            Season season,
             List<String> keywords,
             Long characterId,
             String nickname
@@ -30,15 +30,16 @@ public class UserOnboardingCommandService {
         if(userOnboardingRepository.existsByUser(user))
             throw new GeneralException(ErrorStatus.USER_ONBOARDING_ALREADY_EXISTS);
 
-        userOnboardingRepository.save(
+        UserOnboarding savedOnboarding = userOnboardingRepository.save(
                 UserOnboarding.builder()
                         .user(user)
-                        .seasons(seasons)
+                        .season(season)
                         .keywords(keywords)
                         .characterId(characterId)
                         .nickname(nickname)
                         .build()
         );
+        return savedOnboarding.getId();
     }
 
 }

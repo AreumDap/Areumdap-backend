@@ -59,7 +59,12 @@ public enum ErrorStatus implements BaseStatus {
     /**
      * AWS
      * */
-    SQS_MESSAGE_PROCESSING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AWS_500", "SQS 처리 중 오류가 발생하였습니다.");
+    SQS_MESSAGE_PROCESSING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AWS_500", "SQS 처리 중 오류가 발생하였습니다."),
+    
+    /**
+     * Character
+     */
+    CHARACTER_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAR_404", "캐릭터 정보를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

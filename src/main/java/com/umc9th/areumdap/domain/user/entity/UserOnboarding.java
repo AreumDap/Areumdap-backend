@@ -5,6 +5,7 @@ import com.umc9th.areumdap.domain.user.enums.Season;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
 import java.util.List;
@@ -24,13 +25,12 @@ public class UserOnboarding extends BaseEntity {
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
 
-    @JdbcTypeCode(SqlTypes.ARRAY)
     @Enumerated(EnumType.STRING)
-    @Column(name = "seasons", columnDefinition = "season_enum[]", nullable = false)
-    private List<Season> seasons;
+    @Column(name = "season", nullable = false)
+    private Season season;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(name = "keywords", columnDefinition = "varchar(100)[]")
+    @Column(name = "keywords", columnDefinition = "text[]")
     private List<String> keywords;
 
     @Column(name = "character_id")
