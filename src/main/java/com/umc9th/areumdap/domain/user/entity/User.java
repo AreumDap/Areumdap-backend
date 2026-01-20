@@ -60,6 +60,10 @@ public class User extends BaseEntity {
     @Column(name = "refresh_token", length = 512)
     private String refreshToken;
 
+    @OneToOne
+    @JoinColumn(name = "device_id")
+    private DeviceToken deviceToken;
+
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }
