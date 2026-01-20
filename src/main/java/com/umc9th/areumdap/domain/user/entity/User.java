@@ -61,7 +61,7 @@ public class User extends BaseEntity {
     private String refreshToken;
 
     @OneToOne
-    @JoinColumn(name = "device_id")
+    @JoinColumn(name = "device_id", nullable = true)
     private DeviceToken deviceToken;
 
     public void updatePassword(String newPassword) {
@@ -71,6 +71,8 @@ public class User extends BaseEntity {
     public void updateRefreshToken(String newRefreshToken) {
         this.refreshToken = newRefreshToken;
     }
+
+    public void updateDeviceToken(DeviceToken deviceToken) { this.deviceToken = deviceToken; }
 
     // 로그아웃 시 RefreshToken 제거
     public void clearRefreshToken() {

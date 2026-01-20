@@ -19,4 +19,9 @@ public class DeviceToken {
 
     @Column(name = "os_type", length = 512)
     private String osType;
+
+    public void updateDeviceToken(String deviceToken, String osType) {
+        this.deviceToken = deviceToken;
+        this.osType = osType;
+    }
 }

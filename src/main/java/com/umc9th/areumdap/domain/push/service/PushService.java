@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class FcmService {
+public class PushService {
 
     public String sendMessage(
             String token,

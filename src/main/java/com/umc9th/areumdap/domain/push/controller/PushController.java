@@ -3,9 +3,13 @@ package com.umc9th.areumdap.domain.push.controller;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.push.dto.PushRequest;
-import com.umc9th.areumdap.domain.push.service.FcmService;
+import com.umc9th.areumdap.domain.push.service.PushService;
+import com.umc9th.areumdap.domain.user.dto.command.DeviceTokenCommand;
+import com.umc9th.areumdap.domain.user.service.DeviceTokenCommandService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -16,25 +20,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PushController {
 
-    private final com.umc9th.areumdap.domain.push.service.FcmService fcmService;
+    private final PushService pushService;
+    private final DeviceTokenCommandService  deviceTokenCommandService;
 
     @PostMapping("/tokens")
-    public ResponseEntity<ApiResponse<Void>> setToken() {
+    public ResponseEntity<ApiResponse<Void>> updateToken(
+            @AuthenticationPrincipal Long userId,
+            @Valid DeviceTokenCommand deviceTokenCommand) {
+        deviceTokenCommandService.updateDeviceToken(userId, deviceTokenCommand);
         return ApiResponse.success(SuccessStatus.UPDATE_TOKEN_SUCCESS);
-    }
-
-    @PostMapping("/send")
-    public String sendPush(@RequestBody PushRequest request) {
-        return fcmService.sendMessage(
-                request.getToken(),
-                request.getTitle(),
-                request.getBody(),
-                request.getData()
-        );
-    }
-
-    @PostMapping("/token")
-    public void saveToken(@RequestBody Map<String, String> body) {
-        System.out.println("받은 토큰 = " + body.get("token"));
     }
 }
