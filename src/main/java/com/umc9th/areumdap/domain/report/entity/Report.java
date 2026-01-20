@@ -24,8 +24,8 @@ public class Report extends BaseEntity {
     @Column(name = "title", nullable = false, length = 200)
     private String title;
 
-    @Column(name = "massage_count", nullable = false)
-    private Integer massageCount;
+    @Column(name = "message_count", nullable = false)
+    private Integer messageCount;
 
     @Column(name = "depth", nullable = false, length = 20)
     private String depth;
