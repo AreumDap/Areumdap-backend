@@ -7,7 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-@Table(name = "chatHistory")
+@Table(name = "chat_history")
 @Entity
 @Getter
 @Builder
