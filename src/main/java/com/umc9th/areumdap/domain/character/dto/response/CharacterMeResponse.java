@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record CharacterMainResponse(
+public record CharacterMeResponse(
         @Schema(description = "캐릭터 ID", example = "1")
         Long characterId,
 

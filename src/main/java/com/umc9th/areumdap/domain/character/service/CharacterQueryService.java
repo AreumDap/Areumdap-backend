@@ -4,7 +4,7 @@ import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryDto;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryResponse;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterMainResponse;
+import com.umc9th.areumdap.domain.character.dto.response.CharacterMeResponse;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterQuestDto;
 import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.entity.CharacterHistory;
@@ -13,17 +13,13 @@ import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
 import com.umc9th.areumdap.domain.character.repository.CharacterHistoryRepository;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
 import com.umc9th.areumdap.domain.character.repository.QuestRepository;
-import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserOnboarding;
 import com.umc9th.areumdap.domain.user.repository.UserOnboardingRepository;
 
-import com.umc9th.areumdap.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -38,7 +34,7 @@ public class CharacterQueryService {
     private final CharacterHistoryRepository characterHistoryRepository;
 
     // 캐릭터 조회
-    public CharacterMainResponse getCharacterMain(Long userId) {
+    public CharacterMeResponse getCharacterMain(Long userId) {
         
         Character character = characterRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
@@ -55,7 +51,7 @@ public class CharacterQueryService {
         boolean canLevelUp = character.getLevel() < CharacterLevel.LEVEL_4.getLevel()
                 && character.getCurrentXp() >= character.getGoalXp();
 
-        return CharacterMainResponse.builder()
+        return CharacterMeResponse.builder()
                 .characterId(character.getId())
                 .nickname(userOnboarding.getNickname())
                 .level(character.getLevel())
@@ -74,10 +70,10 @@ public class CharacterQueryService {
         List<CharacterHistory> historyList = characterHistoryRepository.findAllByCharacter(character);
         
         List<CharacterHistoryDto> responseList = new java.util.ArrayList<>();
-        responseList.add(CharacterHistoryDto.of(1, character.getCreatedAt().toLocalDate()));
+        responseList.add(new CharacterHistoryDto(1, character.getCreatedAt().toLocalDate()));
         
         responseList.addAll(historyList.stream()
-                .map(history -> CharacterHistoryDto.of(history.getLevel(), history.getCreatedAt().toLocalDate()))
+                .map(history -> new CharacterHistoryDto(history.getLevel(), history.getCreatedAt().toLocalDate()))
                 .toList());
 
         return CharacterHistoryResponse.builder()

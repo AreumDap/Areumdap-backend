@@ -1,6 +1,8 @@
 package com.umc9th.areumdap.domain.character.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
+import com.umc9th.areumdap.common.exception.GeneralException;
+import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.user.entity.User;
 import jakarta.persistence.*;
 import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
@@ -19,7 +21,7 @@ public class Character extends BaseEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
     @Column(name = "level", nullable = false)
@@ -40,12 +42,22 @@ public class Character extends BaseEntity {
     @Column(name = "present_description", columnDefinition = "TEXT")
     private String presentDescription;
 
-    public void levelUp(Integer nextGoalXp) {
-        if (this.currentXp < this.goalXp) {
-            throw new IllegalStateException("성장하기에 XP가 부족합니다.");
+    public void tryLevelUp() {
+        if (this.isMaxLevel()) {
+            throw new GeneralException(ErrorStatus.CHARACTER_ALREADY_MAX_LEVEL);
         }
+
+        if (this.currentXp < this.goalXp) {
+            throw new GeneralException(ErrorStatus.CHARACTER_GROWTH_NOT_ENOUGH_XP);
+        }
+
+        int nextGoalXp = CharacterLevel.getGoalXpByLevel(this.level + 1);
         this.currentXp -= this.goalXp;
         this.level++;
         this.goalXp = nextGoalXp;
+    }
+
+    public boolean isMaxLevel() {
+        return this.level >= CharacterLevel.LEVEL_4.getLevel();
     }
 }

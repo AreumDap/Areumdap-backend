@@ -4,7 +4,7 @@ import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterGrowthResponse;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryResponse;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterMainResponse;
+import com.umc9th.areumdap.domain.character.dto.response.CharacterMeResponse;
 import com.umc9th.areumdap.domain.character.service.CharacterCommandService;
 import com.umc9th.areumdap.domain.character.service.CharacterQueryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Character", description = "캐릭터 API")
@@ -30,16 +29,16 @@ public class CharacterController {
     private final CharacterQueryService characterQueryService;
     private final CharacterCommandService characterCommandService;
 
-    @GetMapping("/main")
-    @Operation(summary = "캐릭터 메인 조회")
+    @GetMapping("/me")
+    @Operation(summary = "내 캐릭터 조회")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "캐릭터 메인 조회 성공", content = @Content(schema = @Schema(implementation = CharacterMainResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "캐릭터 조회 성공", content = @Content(schema = @Schema(implementation = CharacterMeResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "캐릭터 정보 없음", content = @Content())
     })
-    public ResponseEntity<ApiResponse<CharacterMainResponse>> getCharacterMain(
+    public ResponseEntity<ApiResponse<CharacterMeResponse>> getCharacterMain(
             @AuthenticationPrincipal Long userId
     ) {
-        CharacterMainResponse response = characterQueryService.getCharacterMain(userId);
+        CharacterMeResponse response = characterQueryService.getCharacterMain(userId);
         return ApiResponse.success(SuccessStatus.GET_CHARACTER_MAIN_SUCCESS, response);
     }
 

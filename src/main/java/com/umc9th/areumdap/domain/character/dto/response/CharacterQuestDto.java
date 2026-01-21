@@ -4,6 +4,8 @@ import com.umc9th.areumdap.domain.character.entity.Quest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import com.umc9th.areumdap.domain.character.enums.QuestCategory;
 
+import java.util.Objects;
+
 public record CharacterQuestDto(
         @Schema(description = "퀘스트 ID", example = "1")
         Long questId,
@@ -21,6 +23,7 @@ public record CharacterQuestDto(
         Boolean isCompleted
 ) {
     public static CharacterQuestDto of(Quest quest) {
+        Objects.requireNonNull(quest, "quest must not be null");
         return new CharacterQuestDto(quest.getId(), quest.getCategory(), quest.getTitle(), quest.getRemainingDays(), quest.getIsCompleted());
     }
 }
