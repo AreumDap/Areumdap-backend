@@ -33,4 +33,10 @@ public class Character extends BaseEntity {
     @Column(name = "goal_xp", nullable = false)
     @Builder.Default
     private Integer goalXp = CharacterLevel.LEVEL_1.getGoalXp();
+
+    public void levelUp(Integer nextGoalXp) {
+        this.currentXp -= this.goalXp;
+        this.level++;
+        this.goalXp = nextGoalXp;
+    }
 }

@@ -39,7 +39,8 @@ public enum SuccessStatus implements BaseStatus {
     /**
      * Character
      */
-    GET_CHARACTER_MAIN_SUCCESS(HttpStatus.OK, "CHAR_200", "캐릭터 메인 조회 성공");
+    GET_CHARACTER_MAIN_SUCCESS(HttpStatus.OK, "CHAR_200", "캐릭터 메인 조회 성공"),
+    CHARACTER_GROWTH_SUCCESS(HttpStatus.CREATED, "CHAR_201", "캐릭터가 성공적으로 성장했습니다!");
 
     private final HttpStatus httpStatus;
     private final String code;
