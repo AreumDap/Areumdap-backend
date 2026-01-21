@@ -65,20 +65,14 @@ public class UserCommandService {
         User user = userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        Character newCharacter = Character.builder()
-                .level(1)
-                .currentXp(0)
-                .goalXp(CharacterLevel.LEVEL_1.getGoalXp())
-                .user(user)
-                .build();
-
-        characterRepository.save(newCharacter);
+        Character character = characterRepository.findByUser(user)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
 
         return userOnboardingCommandService.registerUserOnboarding(
                 user,
                 request.season(),
                 request.keywords(),
-                newCharacter.getId(),
+                character.getId(),
                 request.nickname()
         );
     }

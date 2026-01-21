@@ -42,6 +42,13 @@ public class Character extends BaseEntity {
     @Column(name = "present_description", columnDefinition = "TEXT")
     private String presentDescription;
 
+    public Character(User user) {
+        this.user = user;
+        this.level = 1;
+        this.currentXp = 0;
+        this.goalXp = CharacterLevel.LEVEL_1.getGoalXp();
+    }
+
     public void tryLevelUp() {
         if (this.isMaxLevel()) {
             throw new GeneralException(ErrorStatus.CHARACTER_ALREADY_MAX_LEVEL);

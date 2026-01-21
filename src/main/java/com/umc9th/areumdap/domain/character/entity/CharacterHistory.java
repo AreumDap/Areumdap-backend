@@ -22,4 +22,9 @@ public class CharacterHistory extends BaseEntity {
 
     @Column(name = "level", nullable = false)
     private Integer level;
+
+    public CharacterHistory(Character character, Integer level) {
+        this.character = character;
+        this.level = level;
+    }
 }
