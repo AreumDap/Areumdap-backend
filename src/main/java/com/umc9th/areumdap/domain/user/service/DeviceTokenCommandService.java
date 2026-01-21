@@ -21,7 +21,7 @@ public class DeviceTokenCommandService {
     private final UserRepository userRepository;
 
     public void updateDeviceToken(Long userId, DeviceTokenCommand dto) {
-        User user = userRepository.findById(userId).orElseThrow(
+        User user = userRepository.findByIdAndDeletedFalse(userId).orElseThrow(
                 () -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         DeviceToken deviceToken = user.getDeviceToken();
