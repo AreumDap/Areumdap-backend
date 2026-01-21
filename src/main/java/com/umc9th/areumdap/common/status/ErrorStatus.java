@@ -39,6 +39,7 @@ public enum ErrorStatus implements BaseStatus {
      */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_404", "유저가 존재하지 않습니다."),
     USER_ONBOARDING_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_409", "유저 온보딩이 이미 존재합니다."),
+    USER_ONBOARDING_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_404", "유저 온보딩 정보를 찾을 수 없습니다."),
 
     /**
      * JWT
@@ -66,7 +67,8 @@ public enum ErrorStatus implements BaseStatus {
      */
     CHARACTER_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAR_404", "캐릭터 정보를 찾을 수 없습니다."),
     CHARACTER_GROWTH_NOT_ENOUGH_XP(HttpStatus.BAD_REQUEST, "CHAR_400", "아직 성장할 준비가 되지 않았어요. XP를 더 모아주세요!"),
-    CHARACTER_ALREADY_MAX_LEVEL(HttpStatus.CONFLICT, "CHAR_409", "이미 최고 단계로 성장했습니다.");
+    CHARACTER_ALREADY_MAX_LEVEL(HttpStatus.CONFLICT, "CHAR_409", "이미 최고 단계로 성장했습니다."),
+    CHARACTER_LEVEL_NOT_FOUND(HttpStatus.BAD_REQUEST, "CHAR_400", "존재하지 않는 단계입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

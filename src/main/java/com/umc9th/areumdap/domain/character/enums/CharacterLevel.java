@@ -3,6 +3,8 @@ package com.umc9th.areumdap.domain.character.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import com.umc9th.areumdap.common.exception.GeneralException;
+import com.umc9th.areumdap.common.status.ErrorStatus;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -26,6 +28,6 @@ public enum CharacterLevel {
     public static int getGoalXpByLevel(int level) {
         return findByLevel(level)
                 .map(CharacterLevel::getGoalXp)
-                .orElse(LEVEL_4.getGoalXp());
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_LEVEL_NOT_FOUND));
     }
 }

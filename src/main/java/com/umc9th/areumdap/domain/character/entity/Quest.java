@@ -36,5 +36,9 @@ public class Quest extends BaseEntity {
 
     @Column(name = "is_completed", nullable = false)
     @Builder.Default
-    private boolean isCompleted = false;
+    private Boolean isCompleted = false;
+
+    public int getRemainingDays() {
+        return (int) java.time.temporal.ChronoUnit.DAYS.between(java.time.LocalDate.now(), this.deadline);
+    }
 }

@@ -34,6 +34,12 @@ public class Character extends BaseEntity {
     @Builder.Default
     private Integer goalXp = CharacterLevel.LEVEL_1.getGoalXp();
 
+    @Column(name = "past_description", columnDefinition = "TEXT")
+    private String pastDescription;
+
+    @Column(name = "present_description", columnDefinition = "TEXT")
+    private String presentDescription;
+
     public void levelUp(Integer nextGoalXp) {
         this.currentXp -= this.goalXp;
         this.level++;

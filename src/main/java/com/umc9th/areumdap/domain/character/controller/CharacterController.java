@@ -3,6 +3,7 @@ package com.umc9th.areumdap.domain.character.controller;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterGrowthResponse;
+import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryResponse;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterMainResponse;
 import com.umc9th.areumdap.domain.character.service.CharacterCommandService;
 import com.umc9th.areumdap.domain.character.service.CharacterQueryService;
@@ -32,7 +33,8 @@ public class CharacterController {
     @GetMapping("/main")
     @Operation(summary = "캐릭터 메인 조회")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "캐릭터 메인 조회 성공", content = @Content(schema = @Schema(implementation = CharacterMainResponse.class)))
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "캐릭터 메인 조회 성공", content = @Content(schema = @Schema(implementation = CharacterMainResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "캐릭터 정보 없음", content = @Content())
     })
     public ResponseEntity<ApiResponse<CharacterMainResponse>> getCharacterMain(
             @AuthenticationPrincipal Long userId
@@ -53,5 +55,19 @@ public class CharacterController {
     ) {
         CharacterGrowthResponse response = characterCommandService.levelUp(userId);
         return ApiResponse.success(SuccessStatus.CHARACTER_GROWTH_SUCCESS, response);
+    }
+
+
+    @GetMapping("/history")
+    @Operation(summary = "캐릭터 성장 히스토리 조회")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성장 히스토리 조회 성공", content = @Content(schema = @Schema(implementation = CharacterHistoryResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "캐릭터 정보 없음", content = @Content())
+    })
+    public ResponseEntity<ApiResponse<CharacterHistoryResponse>> getCharacterHistory(
+            @AuthenticationPrincipal Long userId
+    ) {
+        CharacterHistoryResponse response = characterQueryService.getCharacterHistory(userId);
+        return ApiResponse.success(SuccessStatus.GET_CHARACTER_HISTORY_SUCCESS, response);
     }
 }

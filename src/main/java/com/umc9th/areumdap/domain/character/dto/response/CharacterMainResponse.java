@@ -10,7 +10,7 @@ public record CharacterMainResponse(
         Long characterId,
 
         @Schema(description = "유저 닉네임", example = "웰시")
-        String name,
+        String nickname,
 
         @Schema(description = "캐릭터 레벨", example = "1")
         Integer level,
