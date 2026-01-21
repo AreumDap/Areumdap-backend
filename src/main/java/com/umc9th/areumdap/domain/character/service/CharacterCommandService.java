@@ -2,7 +2,7 @@ package com.umc9th.areumdap.domain.character.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
-import com.umc9th.areumdap.domain.character.dto.request.CharacterCreateRequest;
+import com.umc9th.areumdap.domain.character.dto.request.CreateCharacterRequest;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterCreateResponse;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterGrowthResponse;
 import com.umc9th.areumdap.domain.character.entity.Character;
@@ -43,16 +43,18 @@ public class CharacterCommandService {
     }
 
     // 캐릭터 생성
-    public CharacterCreateResponse createCharacter(Long userId, CharacterCreateRequest request) {
+    public CharacterCreateResponse createCharacter(Long userId, CreateCharacterRequest request) {
         User user = userQueryService.getUserByIdAndDeletedFalse(userId);
 
         Character character = characterRepository.findByUser(user)
                 .orElseGet(() -> characterRepository.save(new Character(user)));
 
-        return new CharacterCreateResponse(
-                character.getId(),
-                userId,
-                request.season()
-        );
+        UserOnboarding userOnboarding = userOnboardingRepository.findByUser(user)
+                .orElse(new UserOnboarding(user, request.season()));
+
+        userOnboarding.updateOnboarding(request.season(), request.keywords(), character.getId());
+        userOnboardingRepository.save(userOnboarding);
+
+        return new CharacterCreateResponse(character.getId());
     }
 }

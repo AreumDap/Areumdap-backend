@@ -67,8 +67,8 @@ public class CharacterQueryService {
         Character character = characterRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
 
-        List<CharacterHistory> historyList = characterHistoryRepository.findAllByCharacter(character);
-        
+        List<CharacterHistory> historyList = characterHistoryRepository.findAllByCharacterOrderByCreatedAt(character);
+
         List<CharacterHistoryDto> responseList = new java.util.ArrayList<>();
         responseList.add(new CharacterHistoryDto(1, character.getCreatedAt().toLocalDate()));
         

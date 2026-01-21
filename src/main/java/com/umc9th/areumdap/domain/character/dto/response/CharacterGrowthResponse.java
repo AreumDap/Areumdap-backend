@@ -27,7 +27,7 @@ public record CharacterGrowthResponse(
                 if (character.isMaxLevel()) {
                         nextLevelGuide = "최고 레벨입니다.";
                 } else {
-                        int remainingXp = character.getGoalXp() - character.getCurrentXp();
+                        int remainingXp = Math.max(0, character.getGoalXp() - character.getCurrentXp());
                         nextLevelGuide = String.format("다음 성장을 위해선 %d XP가 필요해요.", remainingXp);
                 }
 

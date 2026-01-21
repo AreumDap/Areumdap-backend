@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 
-public record CharacterCreateRequest(
+public record CreateCharacterRequest(
         @Schema(description = "선택한 계절", example = "SPRING")
         @NotNull(message = "계절은 필수 입력 값입니다.")
         Season season,

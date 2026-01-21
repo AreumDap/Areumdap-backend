@@ -2,7 +2,7 @@ package com.umc9th.areumdap.domain.character.controller;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
-import com.umc9th.areumdap.domain.character.dto.request.CharacterCreateRequest;
+import com.umc9th.areumdap.domain.character.dto.request.CreateCharacterRequest;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterCreateResponse;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterGrowthResponse;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryResponse;
@@ -65,7 +65,7 @@ public class CharacterController {
     })
     public ResponseEntity<ApiResponse<CharacterCreateResponse>> createCharacter(
             @AuthenticationPrincipal Long userId,
-            @Valid @RequestBody CharacterCreateRequest request
+            @Valid @RequestBody CreateCharacterRequest request
     ) {
         CharacterCreateResponse response = characterCommandService.createCharacter(userId, request);
         return ApiResponse.success(SuccessStatus.CREATE_CHARACTER_SUCCESS, response);

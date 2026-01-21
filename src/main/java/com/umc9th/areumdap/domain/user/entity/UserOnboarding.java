@@ -39,14 +39,22 @@ public class UserOnboarding extends BaseEntity {
     @Column(name = "nickname", length = 10)
     private String nickname;
 
-    public UserOnboarding(User user) {
+    public UserOnboarding(User user, Season season) {
         this.user = user;
+        this.season = season;
     }
 
     public void updateOnboarding(Season season, List<String> keywords, Long characterId) {
         this.season = season;
         this.keywords = keywords;
         this.characterId = characterId;
+    }
+
+    public void completeOnboarding(Season season, List<String> keywords, Long characterId, String nickname) {
+        this.season = season;
+        this.keywords = keywords;
+        this.characterId = characterId;
+        this.nickname = nickname;
     }
 
 }

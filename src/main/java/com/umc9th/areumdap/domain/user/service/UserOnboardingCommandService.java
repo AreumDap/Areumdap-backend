@@ -27,19 +27,17 @@ public class UserOnboardingCommandService {
             Long characterId,
             String nickname
     ){
-        if(userOnboardingRepository.existsByUser(user))
-            throw new GeneralException(ErrorStatus.USER_ONBOARDING_ALREADY_EXISTS);
-
-        UserOnboarding savedOnboarding = userOnboardingRepository.save(
-                UserOnboarding.builder()
+        UserOnboarding userOnboarding = userOnboardingRepository.findByUser(user)
+                .orElseGet(() -> UserOnboarding.builder()
                         .user(user)
                         .season(season)
-                        .keywords(keywords)
-                        .characterId(characterId)
-                        .nickname(nickname)
-                        .build()
-        );
-        return savedOnboarding.getId();
-    }
+                        .build());
 
+        if (userOnboarding.getNickname() != null) {
+            throw new GeneralException(ErrorStatus.USER_ONBOARDING_ALREADY_EXISTS);
+        }
+
+        userOnboarding.completeOnboarding(season, keywords, characterId, nickname);
+
+        return userOnboardingRepository.save(userOnboarding).getId();    }
 }
