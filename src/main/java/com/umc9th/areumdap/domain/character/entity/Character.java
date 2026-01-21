@@ -41,6 +41,9 @@ public class Character extends BaseEntity {
     private String presentDescription;
 
     public void levelUp(Integer nextGoalXp) {
+        if (this.currentXp < this.goalXp) {
+            throw new IllegalStateException("성장하기에 XP가 부족합니다.");
+        }
         this.currentXp -= this.goalXp;
         this.level++;
         this.goalXp = nextGoalXp;

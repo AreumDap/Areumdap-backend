@@ -27,7 +27,7 @@ public class CharacterCommandService {
     public CharacterGrowthResponse levelUp(Long userId) {
         User user = userQueryService.getUserByIdAndDeletedFalse(userId);
 
-        Character character = characterRepository.findByUser(user)
+        Character character = characterRepository.findByUserWithLock(user)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
 
 
@@ -59,12 +59,12 @@ public class CharacterCommandService {
              nextLevelGuide = "최고 레벨입니다.";
         }
 
-        return CharacterGrowthResponse.builder()
-                .characterId(character.getId())
-                .previousLevel(previousLevel)
-                .currentLevel(character.getLevel())
-                .growthMessage(growthMessage)
-                .nextLevelGuide(nextLevelGuide)
-                .build();
+        return new CharacterGrowthResponse(
+                character.getId(),
+                previousLevel,
+                character.getLevel(),
+                growthMessage,
+                nextLevelGuide
+        );
     }
 }

@@ -1,10 +1,9 @@
 package com.umc9th.areumdap.domain.character.dto.response;
 
+import com.umc9th.areumdap.domain.character.entity.Quest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import com.umc9th.areumdap.domain.character.enums.QuestCategory;
-import lombok.Builder;
 
-@Builder
 public record CharacterQuestDto(
         @Schema(description = "퀘스트 ID", example = "1")
         Long questId,
@@ -21,7 +20,7 @@ public record CharacterQuestDto(
         @Schema(description = "완료 여부", example = "false")
         Boolean isCompleted
 ) {
-    public static CharacterQuestDto of(Long questId, QuestCategory category, String title, Integer dDay, Boolean isCompleted) {
-        return new CharacterQuestDto(questId, category, title, dDay, isCompleted);
+    public static CharacterQuestDto of(Quest quest) {
+        return new CharacterQuestDto(quest.getId(), quest.getCategory(), quest.getTitle(), quest.getRemainingDays(), quest.getIsCompleted());
     }
 }

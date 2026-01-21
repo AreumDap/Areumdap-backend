@@ -31,7 +31,7 @@ public class Quest extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "deadline")
+    @Column(name = "deadline", nullable = false)
     private LocalDate deadline;
 
     @Column(name = "is_completed", nullable = false)

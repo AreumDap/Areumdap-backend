@@ -49,14 +49,11 @@ public class CharacterQueryService {
         List<Quest> questList = questRepository.findAllByCharacter(character);
 
         List<CharacterQuestDto> quests = questList.stream()
-                .map(quest -> CharacterQuestDto.of(
-                        quest.getId(),
-                        quest.getCategory(),
-                        quest.getTitle(),
-                        quest.getRemainingDays(),
-                        quest.getIsCompleted()
-                ))
+                .map(CharacterQuestDto::of)
                 .toList();
+
+        boolean canLevelUp = character.getLevel() < CharacterLevel.LEVEL_4.getLevel()
+                && character.getCurrentXp() >= character.getGoalXp();
 
         return CharacterMainResponse.builder()
                 .characterId(character.getId())
@@ -64,7 +61,7 @@ public class CharacterQueryService {
                 .level(character.getLevel())
                 .currentXp(character.getCurrentXp())
                 .goalXp(character.getGoalXp())
-                .hasLevelUpParams(false)
+                .hasLevelUpParams(canLevelUp)
                 .quests(quests)
                 .build();
     }
