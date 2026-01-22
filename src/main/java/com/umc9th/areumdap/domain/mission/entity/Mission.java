@@ -24,7 +24,7 @@ public class Mission extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "session_id", nullable = false)
+    @JoinColumn(name = "user_chat_thread_id", nullable = false)
     private UserChatThread userChatThread;
 
     @Enumerated(EnumType.STRING)
