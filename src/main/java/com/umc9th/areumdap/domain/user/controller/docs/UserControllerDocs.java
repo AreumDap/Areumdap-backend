@@ -1,0 +1,30 @@
+package com.umc9th.areumdap.domain.user.controller.docs;
+
+import com.umc9th.areumdap.common.response.ApiResponse;
+import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@Tag(name = "User", description = "유저 API")
+public interface UserControllerDocs {
+
+    @PostMapping("/onboarding")
+    @Operation(summary = "유저 온보딩 저장")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "유저 온보딩 저장 성공", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값이 올바르지 않는 경우", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "유저 온보딩이 이미 존재하는 경우", content = @Content())
+    })
+    ResponseEntity<ApiResponse<Void>> registerUserOnboarding(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody RegisterUserOnboardingRequest registerUserOnboardingRequest
+    );
+}
