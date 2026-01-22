@@ -1,7 +1,7 @@
 package com.umc9th.areumdap.domain.device.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
-import com.umc9th.areumdap.domain.device.dto.reqeust.RegisterDeviceRequest;
+import com.umc9th.areumdap.domain.device.dto.request.RegisterDeviceRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

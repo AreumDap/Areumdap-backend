@@ -1,4 +1,4 @@
-package com.umc9th.areumdap.domain.device.dto.reqeust;
+package com.umc9th.areumdap.domain.device.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 

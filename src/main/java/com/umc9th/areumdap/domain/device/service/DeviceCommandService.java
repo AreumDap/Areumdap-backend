@@ -2,7 +2,7 @@ package com.umc9th.areumdap.domain.device.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
-import com.umc9th.areumdap.domain.device.dto.reqeust.RegisterDeviceRequest;
+import com.umc9th.areumdap.domain.device.dto.request.RegisterDeviceRequest;
 import com.umc9th.areumdap.domain.device.entity.Device;
 import com.umc9th.areumdap.domain.device.repository.DeviceRepository;
 import com.umc9th.areumdap.domain.user.entity.User;
