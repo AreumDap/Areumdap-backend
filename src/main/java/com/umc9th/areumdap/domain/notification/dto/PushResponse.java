@@ -1,4 +1,4 @@
-package com.umc9th.areumdap.domain.push.dto;
+package com.umc9th.areumdap.domain.notification.dto;
 
 class Notification {
     private String title;

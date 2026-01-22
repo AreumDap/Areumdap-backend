@@ -60,9 +60,9 @@ public class User extends BaseEntity {
     @Column(name = "refresh_token", length = 512)
     private String refreshToken;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id", nullable = true)
-    private DeviceToken deviceToken;
+    private Device device;
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
@@ -72,7 +72,7 @@ public class User extends BaseEntity {
         this.refreshToken = newRefreshToken;
     }
 
-    public void updateDeviceToken(DeviceToken deviceToken) { this.deviceToken = deviceToken; }
+    public void updateDeviceToken(Device device) { this.device = device; }
 
     // 로그아웃 시 RefreshToken 제거
     public void clearRefreshToken() {

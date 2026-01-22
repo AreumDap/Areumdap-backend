@@ -41,6 +41,11 @@ public enum ErrorStatus implements BaseStatus {
     USER_ONBOARDING_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_409", "유저 온보딩이 이미 존재합니다."),
 
     /**
+     * Notification
+     * */
+    NOTIFICATION_SENDING_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "NOTI_500", "FCM 푸시 알림을 보내는 과정에서 오류가 발생하였습니다."),
+
+    /**
      * JWT
      */
     JWT_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "JWT_401", "토큰이 존재하지 않습니다."),

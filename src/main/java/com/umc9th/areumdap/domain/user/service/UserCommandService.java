@@ -31,7 +31,7 @@ public class UserCommandService {
                         .age(age)
                         .email(email)
                         .password(password)
-                        .deviceToken(null)
+                        .device(null)
                         .deleted(false)
                         .build()
         );

@@ -1,14 +1,18 @@
-package com.umc9th.areumdap.domain.push.service;
+package com.umc9th.areumdap.domain.notification.service;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.umc9th.areumdap.common.exception.GeneralException;
+import com.umc9th.areumdap.common.status.ErrorStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
 @Service
-public class PushService {
+@Transactional
+public class NotificationService {
 
     public String sendMessage(
             String token,
@@ -30,7 +34,7 @@ public class PushService {
         try {
             return FirebaseMessaging.getInstance().send(message);
         } catch (Exception e) {
-            throw new RuntimeException("FCM 메시지 전송 실패", e);
+            throw new GeneralException(ErrorStatus.NOTIFICATION_SENDING_INTERNAL_SERVER_ERROR);
         }
     }
 }
