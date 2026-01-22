@@ -7,6 +7,11 @@ hooks:
       timeout: 300
       runas: root
 
+  AfterInstall:
+    - location: scripts/docker_cleanup.sh
+      timeout: 300
+      runas: root
+
   ApplicationStart:
     - location: scripts/start.sh
       timeout: 300

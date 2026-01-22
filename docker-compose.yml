@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   backend:
     image: jihoonkim501/areumdap-backend:latest
@@ -7,15 +5,16 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - .env
+      - .env.prod
     restart: always
+    depends_on:
+      - redis
 
   redis:
     image: redis:7
-    container_name: areumdap
-    command: redis-server --requirepass ${REDIS_PASSWORD}
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    container_name: areumdap-redis
     ports:
       - "6379:6379"
+    volumes:
+      - ./redis-data:/data
     restart: always
