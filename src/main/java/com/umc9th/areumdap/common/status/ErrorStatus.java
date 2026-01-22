@@ -25,8 +25,8 @@ public enum ErrorStatus implements BaseStatus {
     /**
      * Auth
      */
-    VERIFICATION_CODE_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH_401", "인증 코드가 만료되었습니다."),
     INVALID_VERIFICATION_CODE(HttpStatus.UNAUTHORIZED, "AUTH_401", "인증 코드가 일치하지 않습니다."),
+    VERIFICATION_CODE_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH_401", "인증 코드가 만료되었습니다."),
     EMAIL_NOT_VERIFIED(HttpStatus.UNAUTHORIZED, "AUTH_401", "이메일 인증이 완료되지 않았습니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH_401", "비밀번호가 올바르지 않습니다."),
     EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_404", "인증 요청한 이메일이 아닙니다."),
@@ -38,8 +38,9 @@ public enum ErrorStatus implements BaseStatus {
      * User
      */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_404", "유저가 존재하지 않습니다."),
-    USER_ONBOARDING_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_409", "유저 온보딩이 이미 존재합니다."),
     USER_ONBOARDING_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_404", "유저 온보딩 정보를 찾을 수 없습니다."),
+    INVALID_USER_NOTIFICATION_SETTING(HttpStatus.BAD_REQUEST,"USER_404", "알림이 켜져 있을 경우 알림 시간은 필수입니다."),
+    USER_ONBOARDING_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_409", "유저 온보딩이 이미 존재합니다."),
 
     /**
      * Notification
@@ -72,11 +73,11 @@ public enum ErrorStatus implements BaseStatus {
      */
     CHARACTER_GROWTH_NOT_ENOUGH_XP(HttpStatus.BAD_REQUEST, "CHAR_400", "아직 성장할 준비가 되지 않았어요. XP를 더 모아주세요!"),
     CHARACTER_LEVEL_NOT_FOUND(HttpStatus.BAD_REQUEST, "CHAR_400", "존재하지 않는 단계입니다."),
-    CHARACTER_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAR_404", "캐릭터 정보를 찾을 수 없습니다."),
-    CHARACTER_ALREADY_MAX_LEVEL(HttpStatus.CONFLICT, "CHAR_409", "이미 최고 단계로 성장했습니다."),
     CHARACTER_SEASON_MUST_BE_NOT_NULL(HttpStatus.BAD_REQUEST, "CHAR_400", "계절은 필수 입력 값입니다."),
     CHARACTER_KEYWORDS_MUST_BE_NOT_NULL(HttpStatus.BAD_REQUEST, "CHAR_400", "키워드는 필수 입력 값입니다."),
-    CHARACTER_KEYWORDS_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "CHAR_400", "키워드는 최대 3개까지 선택 가능합니다.");
+    CHARACTER_KEYWORDS_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "CHAR_400", "키워드는 최대 3개까지 선택 가능합니다."),
+    CHARACTER_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAR_404", "캐릭터 정보를 찾을 수 없습니다."),
+    CHARACTER_ALREADY_MAX_LEVEL(HttpStatus.CONFLICT, "CHAR_409", "이미 최고 단계로 성장했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

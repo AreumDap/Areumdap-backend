@@ -84,7 +84,10 @@ public class UserCommandService {
         User user = userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        user.updateNotificationSetting(request.notificationEnabled(),request.notificationTime());
+
+        if (request.notificationEnabled() && request.notificationTime() == null)
+            throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        user.updateNotificationSetting(request.notificationEnabled(), request.notificationTime());
     }
 
     // 유저 프로필 수정
