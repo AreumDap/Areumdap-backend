@@ -6,6 +6,7 @@ import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.enums.OAuthProvider;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
@@ -76,6 +77,14 @@ public class UserCommandService {
                 character.getId(),
                 request.nickname()
         );
+    }
+
+    // 유저 알림 값 세팅
+    public void updateUserNotificationSetting(Long userId, UpdateUserNotificationSettingRequest request) {
+        User user = userRepository.findByIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        user.updateNotificationSetting(request.notificationEnabled(),request.notificationTime());
     }
 
     // 회원탈퇴 시 소프트 delete 방식 적용

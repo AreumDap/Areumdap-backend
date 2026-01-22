@@ -36,6 +36,7 @@ public enum SuccessStatus implements BaseStatus {
      */
     REGISTER_USER_ONBOARDING_SUCCESS(HttpStatus.OK, "USER_200", "유저 온보딩 등록 성공"),
     GET_USER_PROFILE_SUCCESS(HttpStatus.OK,"USER_200","유저 프로필 조회 성공"),
+    UPDATE_USER_NOTIFICATION_SETTING_SUCCESS(HttpStatus.OK,"USER_200","유저 알림 세팅값 수정 성공"),
 
     /**
      * Device

@@ -112,4 +112,10 @@ public class User extends BaseEntity {
         this.email = email;
     }
 
+    // 알림 값 업데이트
+    public void updateNotificationSetting(boolean enabled, LocalTime time) {
+        this.notificationEnabled = enabled;
+        this.notificationTime = enabled ? time : null;
+    }
+
 }

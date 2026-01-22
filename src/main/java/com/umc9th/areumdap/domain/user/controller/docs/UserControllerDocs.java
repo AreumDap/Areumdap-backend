@@ -2,6 +2,7 @@ package com.umc9th.areumdap.domain.user.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
 import com.umc9th.areumdap.domain.user.dto.response.GetUserProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -39,6 +41,18 @@ public interface UserControllerDocs {
     })
     ResponseEntity<ApiResponse<GetUserProfileResponse>> getUserProfile(
             @AuthenticationPrincipal Long userId
+    );
+
+    @PatchMapping("/notification")
+    @Operation(summary = "유저 알림 관련 값 수정")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "유저 알림 관련 값 수정 성공", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "요청 값이 잘못된 경우", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content())
+    })
+    ResponseEntity<ApiResponse<Void>> updateUserNotificationSetting(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody UpdateUserNotificationSettingRequest updateUserNotificationSettingRequest
     );
 
 }

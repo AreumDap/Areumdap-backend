@@ -4,6 +4,7 @@ import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.user.controller.docs.UserControllerDocs;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
 import com.umc9th.areumdap.domain.user.dto.response.GetUserProfileResponse;
 import com.umc9th.areumdap.domain.user.service.UserCommandService;
 import com.umc9th.areumdap.domain.user.service.UserQueryService;
@@ -38,6 +39,16 @@ public class UserController implements UserControllerDocs {
     ) {
         GetUserProfileResponse response = userQueryService.getUserProfile(userId);
         return ApiResponse.success(SuccessStatus.GET_USER_PROFILE_SUCCESS, response);
+    }
+
+    @Override
+    @PatchMapping("/notification")
+    public ResponseEntity<ApiResponse<Void>> updateUserNotificationSetting(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody UpdateUserNotificationSettingRequest updateUserNotificationSettingRequest
+    ) {
+        userCommandService.updateUserNotificationSetting(userId, updateUserNotificationSettingRequest);
+        return ApiResponse.success(SuccessStatus.UPDATE_USER_NOTIFICATION_SETTING_SUCCESS);
     }
 
 }
