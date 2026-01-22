@@ -37,9 +37,9 @@ public enum SuccessStatus implements BaseStatus {
     REGISTER_USER_ONBOARDING_SUCCESS(HttpStatus.OK, "USER_200", "유저 온보딩 등록 성공"),
 
     /**
-     * Push
+     * Device
      */
-    UPDATE_TOKEN_SUCCESS(HttpStatus.OK, "PUSH_200", "토큰 등록 성공"),
+    REGISTER_DEVICE_SUCCESS(HttpStatus.OK, "DEVICE_200", "기기 정보 등록 성공"),
 
     /**
      * Character

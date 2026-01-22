@@ -23,7 +23,7 @@ public class ChatHistory extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "session_id", nullable = false)
+    @JoinColumn(name = "user_chat_thread_id", nullable = false)
     private UserChatThread userChatThread;
 
     @Enumerated(EnumType.STRING)

@@ -2,6 +2,7 @@ package com.umc9th.areumdap.domain.user.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
+import com.umc9th.areumdap.domain.device.entity.Device;
 import com.umc9th.areumdap.domain.user.enums.OAuthProvider;
 import com.umc9th.areumdap.domain.user.enums.Sex;
 import jakarta.persistence.*;
@@ -80,7 +81,7 @@ public class User extends BaseEntity {
         this.refreshToken = newRefreshToken;
     }
 
-    public void updateDeviceToken(Device device) { this.device = device; }
+    public void updateDevice(Device device) { this.device = device; }
 
     // 로그아웃 시 RefreshToken 제거
     public void clearRefreshToken() {

@@ -42,3 +42,7 @@ application-prod.yml
 
 ### .env ###
 .env
+
+### .json ###
+firebase-service-account.json
+google-services.json
