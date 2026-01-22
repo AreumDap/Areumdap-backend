@@ -1,6 +1,7 @@
 package com.umc9th.areumdap.domain.user.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
+import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.user.enums.OAuthProvider;
 import com.umc9th.areumdap.domain.user.enums.Sex;
 import jakarta.persistence.*;
@@ -10,6 +11,8 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "`user`")
 @Entity
@@ -60,10 +63,15 @@ public class User extends BaseEntity {
     @Column(name = "refresh_token", length = 512)
     private String refreshToken;
 
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id", nullable = true)
     private Device device;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserChatThread> userChatThreads = new ArrayList<>();
+  
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }

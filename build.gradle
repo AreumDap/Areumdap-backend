@@ -72,6 +72,9 @@ dependencies {
     implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.2.1")
     implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs"
 
+    // AOP
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
     implementation "org.springframework.boot:spring-boot-starter-json"
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

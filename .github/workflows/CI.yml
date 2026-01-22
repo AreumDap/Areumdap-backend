@@ -94,6 +94,9 @@ jobs:
                 poll:
                   max-messages: 10
                   wait-time-seconds: 10
+          logging:
+            discord:
+              webhook-url: ${DISCORD_WEBHOOK_URL}
           EOF
 
 
