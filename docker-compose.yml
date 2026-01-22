@@ -6,6 +6,8 @@ services:
       - "8080:8080"
     env_file:
       - .env.prod
+    volumes:
+      - /home/ubuntu/app/firebase-service-account.json:/home/ubuntu/app/firebase-service-account.json:ro
     restart: always
     depends_on:
       - redis
