@@ -71,8 +71,12 @@ public enum ErrorStatus implements BaseStatus {
     CHARACTER_ALREADY_MAX_LEVEL(HttpStatus.CONFLICT, "CHAR_409", "이미 최고 단계로 성장했습니다."),
     CHARACTER_SEASON_MUST_BE_NOT_NULL(HttpStatus.BAD_REQUEST, "CHAR_400", "계절은 필수 입력 값입니다."),
     CHARACTER_KEYWORDS_MUST_BE_NOT_NULL(HttpStatus.BAD_REQUEST, "CHAR_400", "키워드는 필수 입력 값입니다."),
-    CHARACTER_KEYWORDS_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "CHAR_400", "키워드는 최대 3개까지 선택 가능합니다.");
+    CHARACTER_KEYWORDS_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "CHAR_400", "키워드는 최대 3개까지 선택 가능합니다."),
 
+    /**
+     * Cursor
+     */
+    CURSOR_BAD_REQUEST(HttpStatus.BAD_REQUEST,"MISS_400","cursorTime과 cursorId는 함께 전달되어야 합니다.");
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
