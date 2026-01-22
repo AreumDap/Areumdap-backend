@@ -24,7 +24,7 @@ public interface CharacterControllerDocs {
     @PostMapping
     @Operation(summary = "캐릭터 생성")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "캐릭터 생성 성공", content = @Content(schema = @Schema(implementation = CharacterCreateResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "캐릭터 생성 성공", content = @Content(schema = @Schema(implementation = CharacterCreateResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(
                     mediaType = "application/json",
                     examples = {
