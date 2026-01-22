@@ -77,7 +77,13 @@ public enum ErrorStatus implements BaseStatus {
     CHARACTER_KEYWORDS_MUST_BE_NOT_NULL(HttpStatus.BAD_REQUEST, "CHAR_400", "키워드는 필수 입력 값입니다."),
     CHARACTER_KEYWORDS_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "CHAR_400", "키워드는 최대 3개까지 선택 가능합니다."),
     CHARACTER_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAR_404", "캐릭터 정보를 찾을 수 없습니다."),
-    CHARACTER_ALREADY_MAX_LEVEL(HttpStatus.CONFLICT, "CHAR_409", "이미 최고 단계로 성장했습니다.");
+    CHARACTER_ALREADY_MAX_LEVEL(HttpStatus.CONFLICT, "CHAR_409", "이미 최고 단계로 성장했습니다."),
+
+    /**
+     * Mission
+     */
+    MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "MISSION_404", "존재하지 않는 과제입니다."),
+    MISSION_FORBIDDEN(HttpStatus.FORBIDDEN, "MISSION_403", "해당 과제에 접근할 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
