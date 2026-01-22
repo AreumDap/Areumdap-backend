@@ -1,8 +1,8 @@
-package com.umc9th.areumdap.domain.user.dto.request;
+package com.umc9th.areumdap.domain.device.dto.reqeust;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record UpdateDeviceRequest(
+public record RegisterDeviceRequest(
             @NotBlank(message = "디바이스 토큰은 필수 입니다.")
             String deviceToken,
 

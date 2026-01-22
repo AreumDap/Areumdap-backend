@@ -33,4 +33,5 @@ public class FirebaseConfig {
             throw new RuntimeException("Firebase 초기화 실패", e);
         }
     }
+
 }
