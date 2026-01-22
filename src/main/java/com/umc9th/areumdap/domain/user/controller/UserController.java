@@ -4,15 +4,16 @@ import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.user.controller.docs.UserControllerDocs;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserProfileRequest;
+import com.umc9th.areumdap.domain.user.dto.response.GetUserProfileResponse;
 import com.umc9th.areumdap.domain.user.service.UserCommandService;
+import com.umc9th.areumdap.domain.user.service.UserQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/users")
 @RestController
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController implements UserControllerDocs {
 
     private final UserCommandService userCommandService;
+    private final UserQueryService userQueryService;
 
     @Override
     @PostMapping("/onboarding")
@@ -29,6 +31,35 @@ public class UserController implements UserControllerDocs {
     ) {
         userCommandService.registerUserOnboarding(userId, registerUserOnboardingRequest);
         return ApiResponse.success(SuccessStatus.REGISTER_USER_ONBOARDING_SUCCESS);
+    }
+
+    @Override
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<GetUserProfileResponse>> getUserProfile(
+            @AuthenticationPrincipal Long userId
+    ) {
+        GetUserProfileResponse response = userQueryService.getUserProfile(userId);
+        return ApiResponse.success(SuccessStatus.GET_USER_PROFILE_SUCCESS, response);
+    }
+
+    @Override
+    @PatchMapping("/profile")
+    public ResponseEntity<ApiResponse<Void>> updateUserProfile(
+            @AuthenticationPrincipal  Long userId,
+            @Valid @RequestBody UpdateUserProfileRequest updateUserProfileRequest
+    ) {
+        userCommandService.updateUserProfile(userId, updateUserProfileRequest);
+        return ApiResponse.success(SuccessStatus.UPDATE_USER_PROFILE_SUCCESS);
+    }
+
+    @Override
+    @PatchMapping("/notification")
+    public ResponseEntity<ApiResponse<Void>> updateUserNotificationSetting(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody UpdateUserNotificationSettingRequest updateUserNotificationSettingRequest
+    ) {
+        userCommandService.updateUserNotificationSetting(userId, updateUserNotificationSettingRequest);
+        return ApiResponse.success(SuccessStatus.UPDATE_USER_NOTIFICATION_SETTING_SUCCESS);
     }
 
 }

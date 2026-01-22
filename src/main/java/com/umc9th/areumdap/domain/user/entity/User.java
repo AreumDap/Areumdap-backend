@@ -12,6 +12,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +32,11 @@ public class User extends BaseEntity {
     private String oauthId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "oauth_provider", columnDefinition = "oauth_provider_enum",nullable = false)
+    @Column(name = "oauth_provider", columnDefinition = "oauth_provider_enum", nullable = false)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private OAuthProvider oauthProvider;
 
-    @Column(name="name",length = 30)
+    @Column(name = "name", length = 30)
     private String name;
 
     @Column(name = "birth")
@@ -64,15 +65,20 @@ public class User extends BaseEntity {
     @Column(name = "refresh_token", length = 512)
     private String refreshToken;
 
-
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "device_id", nullable = true)
+    @JoinColumn(name = "device_id")
     private Device device;
+
+    @Column(name = "notification_enabled", nullable = false)
+    private boolean notificationEnabled;
+
+    @Column(name = "notification_time")
+    private LocalTime notificationTime;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<UserChatThread> userChatThreads = new ArrayList<>();
-  
+
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }
@@ -81,7 +87,9 @@ public class User extends BaseEntity {
         this.refreshToken = newRefreshToken;
     }
 
-    public void updateDevice(Device device) { this.device = device; }
+    public void updateDevice(Device device) {
+        this.device = device;
+    }
 
     // 로그아웃 시 RefreshToken 제거
     public void clearRefreshToken() {
@@ -101,9 +109,27 @@ public class User extends BaseEntity {
     }
 
     // 프로필 업데이트
-    public void updateProfile(String name, String email){
+    public void updateProfile(String name, String email) {
         this.name = name;
         this.email = email;
+    }
+
+    // 알림 값 업데이트
+    public void updateNotificationSetting(boolean enabled, LocalTime time) {
+        this.notificationEnabled = enabled;
+        this.notificationTime = enabled ? time : null;
+    }
+
+    // 생일 업데이트
+    public void updateBirth(LocalDate birth) {
+        this.birth = birth;
+        this.age = calculateAge(birth);
+    }
+
+    // 나이 계산
+    private Long calculateAge(LocalDate birth) {
+        int currentYear = LocalDate.now().getYear();
+        return (long) (currentYear - birth.getYear() + 1); // 한국 나이
     }
 
 }

@@ -3,6 +3,7 @@ package com.umc9th.areumdap.domain.user.service;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.oauth.provider.dto.OAuthUserInfo;
+import com.umc9th.areumdap.domain.user.dto.response.GetUserProfileResponse;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.repository.UserQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,12 @@ import java.util.Optional;
 public class UserQueryService {
 
     private final UserQueryRepository userQueryRepository;
+
+    // 유저 프로필 조회
+    public GetUserProfileResponse getUserProfile(Long userId) {
+        User user = getUserByIdAndDeletedFalse(userId);
+        return GetUserProfileResponse.from(user);
+    }
 
     // 이메일 중복 검사
     public void checkEmailNotExists(String email) {
