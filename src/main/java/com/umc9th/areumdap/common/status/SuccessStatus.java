@@ -39,7 +39,7 @@ public enum SuccessStatus implements BaseStatus {
     /**
      * Push
      */
-    UPDATE_TOKEN_SUCCESS(HttpStatus.OK, "PUSH_200", "토큰 등록 성공")
+    UPDATE_TOKEN_SUCCESS(HttpStatus.OK, "PUSH_200", "토큰 등록 성공"),
 
     /**
      * Character
