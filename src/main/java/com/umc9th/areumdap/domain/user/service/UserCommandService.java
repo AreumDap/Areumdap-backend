@@ -2,6 +2,9 @@ package com.umc9th.areumdap.domain.user.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.character.entity.Character;
+import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
+import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.enums.OAuthProvider;
@@ -19,6 +22,7 @@ public class UserCommandService {
 
     private final UserRepository userRepository;
     private final UserOnboardingCommandService userOnboardingCommandService;
+    private final CharacterRepository characterRepository;
 
     // 유저 등록
     public void registerUser(String name, LocalDate birth, String email, String password) {
@@ -57,10 +61,20 @@ public class UserCommandService {
     }
 
     // 유저 온보딩 저장
-    public void registerUserOnboarding(Long userId, RegisterUserOnboardingRequest request) {
-        User user = userRepository.findByIdAndDeletedFalse(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-        // TODO 나나가 캐릭터 관련 작업하고 캐릭터 아이디가 실제로 존재하는지 검증하는 로직 필요
-        userOnboardingCommandService.registerUserOnboarding(user, request.seasons(), request.keywords(), request.characterId(), request.nickname());
+    public Long registerUserOnboarding(Long userId, RegisterUserOnboardingRequest request) {
+        User user = userRepository.findByIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        Character character = characterRepository.findByUser(user)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
+
+        return userOnboardingCommandService.registerUserOnboarding(
+                user,
+                request.season(),
+                request.keywords(),
+                character.getId(),
+                request.nickname()
+        );
     }
 
     // 회원탈퇴 시 소프트 delete 방식 적용
