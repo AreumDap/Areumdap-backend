@@ -12,6 +12,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,10 +65,15 @@ public class User extends BaseEntity {
     @Column(name = "refresh_token", length = 512)
     private String refreshToken;
 
-
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "device_id", nullable = true)
+    @JoinColumn(name = "device_id")
     private Device device;
+
+    @Column(name = "notification_enabled", nullable = false)
+    private boolean notificationEnabled;
+
+    @Column(name = "notification_time")
+    private LocalTime notificationTime;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
