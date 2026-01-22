@@ -86,7 +86,7 @@ public class UserCommandService {
 
 
         if (request.notificationEnabled() && request.notificationTime() == null)
-            throw new GeneralException(ErrorStatus.BAD_REQUEST);
+            throw new GeneralException(ErrorStatus.INVALID_USER_NOTIFICATION_SETTING);
         user.updateNotificationSetting(request.notificationEnabled(), request.notificationTime());
     }
 
