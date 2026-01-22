@@ -34,7 +34,6 @@ jobs:
               properties:
                 hibernate:
                   show_sql: true
-
             mail:
               host: smtp.gmail.com
               port: 587
@@ -47,12 +46,10 @@ jobs:
                     auth: true
                     starttls:
                       enable: true
-
             data:
               redis:
                 port: ${REDIS_PORT}
                 host: ${REDIS_HOST}
-
             cloud:
               aws:
                 region:
@@ -79,14 +76,13 @@ jobs:
               redirect-uri: ${KAKAO_REDIRECT_URI}
               auth-base-url: ${KAKAO_AUTH_BASE_URL}
               api-base-url: ${KAKAO_API_BASE_URL}
-
             naver:
               client-id: ${NAVER_CLIENT_ID}
               client-secret: ${NAVER_CLIENT_SECRET}
               redirect-uri: ${NAVER_REDIRECT_URI}
               auth-base-url: ${NAVER_AUTH_BASE_URL}
               api-base-url: ${NAVER_API_BASE_URL}
-
+          
           areumdap:
             messaging:
               email-verification:
@@ -94,9 +90,14 @@ jobs:
                 poll:
                   max-messages: 10
                   wait-time-seconds: 10
+          
           logging:
             discord:
               webhook-url: ${DISCORD_WEBHOOK_URL}
+          
+          firebase:
+            credentials:
+              path: ${FIREBASE_CREDENTIALS_PATH}
           EOF
 
 
