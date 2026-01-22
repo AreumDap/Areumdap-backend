@@ -59,7 +59,8 @@ public class OAuthController implements OAuthControllerDocs {
                             : "OAuth CODE = " + code
             );
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.warn("Kakao test callback response write failed", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
