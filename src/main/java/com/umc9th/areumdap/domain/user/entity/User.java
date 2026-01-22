@@ -63,10 +63,15 @@ public class User extends BaseEntity {
     @Column(name = "refresh_token", length = 512)
     private String refreshToken;
 
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "device_id", nullable = true)
+    private Device device;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<UserChatThread> userChatThreads = new ArrayList<>();
-
+  
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }
@@ -74,6 +79,8 @@ public class User extends BaseEntity {
     public void updateRefreshToken(String newRefreshToken) {
         this.refreshToken = newRefreshToken;
     }
+
+    public void updateDeviceToken(Device device) { this.device = device; }
 
     // 로그아웃 시 RefreshToken 제거
     public void clearRefreshToken() {

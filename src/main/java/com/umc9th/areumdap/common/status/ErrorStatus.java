@@ -42,6 +42,11 @@ public enum ErrorStatus implements BaseStatus {
     USER_ONBOARDING_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_404", "유저 온보딩 정보를 찾을 수 없습니다."),
 
     /**
+     * Notification
+     * */
+    NOTIFICATION_SENDING_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "NOTI_500", "FCM 푸시 알림을 보내는 과정에서 오류가 발생하였습니다."),
+
+    /**
      * JWT
      */
     JWT_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "JWT_401", "토큰이 존재하지 않습니다."),
