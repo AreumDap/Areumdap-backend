@@ -3,10 +3,10 @@ package com.umc9th.areumdap.domain.user.service;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.character.entity.Character;
-import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserProfileRequest;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.enums.OAuthProvider;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
@@ -79,12 +79,20 @@ public class UserCommandService {
         );
     }
 
-    // 유저 알림 값 세팅
+    // 유저 알림 값 수정
     public void updateUserNotificationSetting(Long userId, UpdateUserNotificationSettingRequest request) {
         User user = userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         user.updateNotificationSetting(request.notificationEnabled(),request.notificationTime());
+    }
+
+    // 유저 프로필 수정
+    public void updateUserProfile(Long userId, UpdateUserProfileRequest request) {
+        User user = userRepository.findByIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        user.updateBirth(request.birth());
     }
 
     // 회원탈퇴 시 소프트 delete 방식 적용

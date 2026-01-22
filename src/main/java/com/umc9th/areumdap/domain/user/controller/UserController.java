@@ -5,6 +5,7 @@ import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.user.controller.docs.UserControllerDocs;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserProfileRequest;
 import com.umc9th.areumdap.domain.user.dto.response.GetUserProfileResponse;
 import com.umc9th.areumdap.domain.user.service.UserCommandService;
 import com.umc9th.areumdap.domain.user.service.UserQueryService;
@@ -39,6 +40,16 @@ public class UserController implements UserControllerDocs {
     ) {
         GetUserProfileResponse response = userQueryService.getUserProfile(userId);
         return ApiResponse.success(SuccessStatus.GET_USER_PROFILE_SUCCESS, response);
+    }
+
+    @Override
+    @PatchMapping("/profile")
+    public ResponseEntity<ApiResponse<Void>> updateUserProfile(
+            @AuthenticationPrincipal  Long userId,
+            @Valid @RequestBody UpdateUserProfileRequest updateUserProfileRequest
+    ) {
+        userCommandService.updateUserProfile(userId, updateUserProfileRequest);
+        return ApiResponse.success(SuccessStatus.UPDATE_USER_PROFILE_SUCCESS);
     }
 
     @Override
