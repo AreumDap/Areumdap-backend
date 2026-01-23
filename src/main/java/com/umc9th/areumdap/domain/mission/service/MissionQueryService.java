@@ -3,7 +3,7 @@ package com.umc9th.areumdap.domain.mission.service;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.mission.dto.request.CursorRequest;
-import com.umc9th.areumdap.domain.mission.dto.response.CursorResponse;
+import com.umc9th.areumdap.domain.mission.dto.response.MissionCursorResponse;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionResponse;
 import com.umc9th.areumdap.domain.mission.entity.Mission;
 import com.umc9th.areumdap.domain.mission.enums.MissionStatus;
@@ -27,28 +27,35 @@ public class MissionQueryService {
 
     private final MissionQueryRepository missionQueryRepository;
 
-    public CursorResponse getCompletedMissionsWithCursor(
+    // 완료된 미션 목록 커서 기반 조회
+    public MissionCursorResponse getCompletedMissionsWithCursor(
             Long userId,
             CursorRequest request
     ) {
-        int size = request.size(); // 로컬 변수로 추출
+        int size = request.size();
 
+        // cursorTime / cursorId 짝 검증
         if ((request.cursorTime() == null) != (request.cursorId() == null)) {
             throw new GeneralException(ErrorStatus.CURSOR_BAD_REQUEST);
         }
+
+        // OffsetDateTime → LocalDateTime 변환
+        LocalDateTime cursorTime = request.cursorTime() == null
+                ? null
+                : request.cursorTime().toLocalDateTime();
 
         Pageable pageable = PageRequest.of(0, size + 1);
 
         List<Mission> missions = fetchMissions(
                 userId,
                 request.tag(),
-                request.cursorTime(),
+                cursorTime,
                 request.cursorId(),
                 pageable
         );
 
         if (missions.isEmpty()) {
-            return CursorResponse.empty();
+            return MissionCursorResponse.empty();
         }
 
         boolean hasNext = missions.size() > size;
@@ -59,7 +66,7 @@ public class MissionQueryService {
 
         Mission last = sliced.get(sliced.size() - 1);
 
-        return new CursorResponse(
+        return new MissionCursorResponse(
                 MissionResponse.from(sliced),
                 last.getUpdatedAt(),
                 last.getId(),
@@ -67,6 +74,8 @@ public class MissionQueryService {
         );
     }
 
+
+    //커서 존재 여부 / tag 여부에 따라 Repository 분기
     private List<Mission> fetchMissions(
             Long userId,
             Tag tag,
