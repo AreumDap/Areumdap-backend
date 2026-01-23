@@ -24,7 +24,7 @@ public record CharacterMeResponse(
         @Schema(description = "레벨업 가능 여부", example = "false")
         Boolean hasLevelUpParams,
 
-        @Schema(description = "퀘스트 목록")
-        List<CharacterQuestDto> quests
+        @Schema(description = "미션 목록")
+        List<CharacterMissionDto> missions
 ) {
 }
