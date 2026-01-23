@@ -26,6 +26,7 @@ public class UserQuestionController implements UserQuestionControllerDocs {
             @AuthenticationPrincipal Long userId,
             @PathVariable Long chatHistoryId
     ) {
+        userQuestionCommandService.saveInstantQuestion(userId, chatHistoryId);
         return ApiResponse.success(SuccessStatus.CREATE_QUESTION_SUCCESS,null);
     }
 
