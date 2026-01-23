@@ -71,6 +71,7 @@ public enum ErrorStatus implements BaseStatus {
     /**
      * Character
      */
+    CHARACTER_LEVEL_UP_REQUIRED(HttpStatus.BAD_REQUEST, "CHAR_400", "단계 업그레이드가 필요합니다."),
     CHARACTER_GROWTH_NOT_ENOUGH_XP(HttpStatus.BAD_REQUEST, "CHAR_400", "아직 성장할 준비가 되지 않았어요. XP를 더 모아주세요!"),
     CHARACTER_LEVEL_NOT_FOUND(HttpStatus.BAD_REQUEST, "CHAR_400", "존재하지 않는 단계입니다."),
     CHARACTER_SEASON_MUST_BE_NOT_NULL(HttpStatus.BAD_REQUEST, "CHAR_400", "계절은 필수 입력 값입니다."),
@@ -82,8 +83,9 @@ public enum ErrorStatus implements BaseStatus {
     /**
      * Mission
      */
+    MISSION_FORBIDDEN(HttpStatus.FORBIDDEN, "MISSION_403", "해당 성찰과제에 접근할 권한이 없습니다."),
     MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "MISSION_404", "존재하지 않는 과제입니다."),
-    MISSION_FORBIDDEN(HttpStatus.FORBIDDEN, "MISSION_403", "해당 과제에 접근할 권한이 없습니다.");
+    MISSION_ALREADY_COMPLETED(HttpStatus.CONFLICT, "MISSION_409", "이미 완료한 과제입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

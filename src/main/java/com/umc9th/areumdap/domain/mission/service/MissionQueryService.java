@@ -16,11 +16,12 @@ public class MissionQueryService {
 
     private final MissionRepository missionRepository;
 
+    // 성찰과제 상세 조회
     public MissionResponse getMissionDetail(Long missionId, Long userId) {
-        Mission mission = missionRepository.findById(missionId)
+        Mission mission = missionRepository.findByIdWithUser(missionId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MISSION_NOT_FOUND));
 
-        if (!mission.getUserChatThread().getUser().getId().equals(userId)) {
+        if (!mission.isOwnedBy(userId)) {
             throw new GeneralException(ErrorStatus.MISSION_FORBIDDEN);
         }
 

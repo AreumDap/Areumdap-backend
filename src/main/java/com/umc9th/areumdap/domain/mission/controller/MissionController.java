@@ -3,31 +3,40 @@ package com.umc9th.areumdap.domain.mission.controller;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.mission.controller.docs.MissionControllerDocs;
+import com.umc9th.areumdap.domain.mission.dto.response.CompleteMissionResponse;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionResponse;
+import com.umc9th.areumdap.domain.mission.service.MissionCommandService;
 import com.umc9th.areumdap.domain.mission.service.MissionQueryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/missions")
 public class MissionController implements MissionControllerDocs {
 
+    private final MissionCommandService missionCommandService;
     private final MissionQueryService missionQueryService;
 
     @Override
     @GetMapping("/{missionId}")
     public ResponseEntity<ApiResponse<MissionResponse>> getMissionDetail(
             @AuthenticationPrincipal Long userId,
-            @PathVariable Long missionId
+            @PathVariable(name = "missionId") Long missionId
     ) {
-        MissionResponse missionResponse = missionQueryService.getMissionDetail(missionId, userId);
-        
-        return ApiResponse.success(SuccessStatus.GET_MISSION_DETAIL_SUCCESS, missionResponse);
+        MissionResponse response = missionQueryService.getMissionDetail(missionId, userId);
+        return ApiResponse.success(SuccessStatus.GET_MISSION_DETAIL_SUCCESS, response);
+    }
+
+    @Override
+    @PostMapping("/{missionId}/complete")
+    public ResponseEntity<ApiResponse<CompleteMissionResponse>> completeMission(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable(name = "missionId") Long missionId
+    ) {
+        Long completedMissionId = missionCommandService.completeMission(userId, missionId);
+        return ApiResponse.success(SuccessStatus.COMPLETE_MISSION_SUCCESS, CompleteMissionResponse.from(completedMissionId));
     }
 }

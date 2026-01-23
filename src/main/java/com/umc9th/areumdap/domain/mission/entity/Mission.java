@@ -55,4 +55,13 @@ public class Mission extends BaseEntity {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
+    public void complete() {
+        this.missionStatus = MissionStatus.COMPLETED;
+        this.completedAt = LocalDateTime.now();
+    }
+
+    public boolean isOwnedBy(Long userId) {
+        return this.userChatThread.getUser().getId().equals(userId);
+    }
+
 }

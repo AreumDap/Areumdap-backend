@@ -3,7 +3,7 @@ package com.umc9th.areumdap.domain.chat.entity;
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.domain.mission.entity.Mission;
 import com.umc9th.areumdap.domain.question.entity.Question;
-import com.umc9th.areumdap.domain.report.entity.Report;
+import com.umc9th.areumdap.domain.report.entity.ChatReport;
 import com.umc9th.areumdap.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,7 +32,7 @@ public class UserChatThread extends BaseEntity {
     private List<ChatHistory> chatHistories = new ArrayList<>();
 
     @OneToOne(mappedBy = "userChatThread", cascade = CascadeType.ALL)
-    private Report report;
+    private ChatReport chatReport;
 
     @OneToMany(mappedBy = "userChatThread", cascade = CascadeType.ALL)
     @Builder.Default

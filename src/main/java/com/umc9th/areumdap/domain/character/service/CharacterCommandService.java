@@ -57,4 +57,16 @@ public class CharacterCommandService {
 
         return new CharacterCreateResponse(character.getId());
     }
+
+    // 캐릭터 XP 추가 (성장 가능 시 XP 추가 불가)
+    public void addXpIfPossible(User user, int amount) {
+        Character character = characterRepository.findByUser(user)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
+
+        if (character.getCurrentXp() >= character.getGoalXp()) {
+            throw new GeneralException(ErrorStatus.CHARACTER_LEVEL_UP_REQUIRED);
+        }
+
+        character.addXp(amount);
+    }
 }
