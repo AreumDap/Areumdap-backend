@@ -3,14 +3,14 @@ package com.umc9th.areumdap.domain.mission.dto.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record CursorResponse(
+public record MissionCursorResponse(
         List<MissionResponse> missions,
         LocalDateTime nextCursorTime,
         Long nextCursorId,
         boolean hasNext
 ) {
-    public static CursorResponse empty() {
-        return new CursorResponse(
+    public static MissionCursorResponse empty() {
+        return new MissionCursorResponse(
                 List.of(),
                 null,
                 null,
