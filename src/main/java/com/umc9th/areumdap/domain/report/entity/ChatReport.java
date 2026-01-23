@@ -5,13 +5,13 @@ import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Table(name = "report")
+@Table(name = "chat_report")
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Report extends BaseEntity {
+public class ChatReport extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
