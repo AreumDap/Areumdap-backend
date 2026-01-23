@@ -100,7 +100,6 @@ jobs:
               path: ${FIREBASE_CREDENTIALS_PATH}
           EOF
 
-
       - name: Grant execute permission for Gradle Wrapper
         run: chmod +x gradlew
 
