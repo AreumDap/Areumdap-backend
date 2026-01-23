@@ -50,8 +50,12 @@ public enum SuccessStatus implements BaseStatus {
     GET_CHARACTER_MAIN_SUCCESS(HttpStatus.OK, "CHAR_200", "캐릭터 메인 조회 성공"),
     GET_CHARACTER_HISTORY_SUCCESS(HttpStatus.OK, "CHAR_200", "성장 히스토리 조회 성공"),
     CREATE_CHARACTER_SUCCESS(HttpStatus.CREATED, "CHAR_201", "캐릭터 생성에 성공했습니다."),
-    CHARACTER_GROWTH_SUCCESS(HttpStatus.CREATED, "CHAR_201", "캐릭터 성장 성공");
+    CHARACTER_GROWTH_SUCCESS(HttpStatus.CREATED, "CHAR_201", "캐릭터 성장 성공"),
 
+    /**
+     * ChatBot
+     */
+    GET_CHATBOT_RECOMMAND_SUCCESS(HttpStatus.OK, "CHATBOT_200", "AI 대화 질문 추천 조회 성공");
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
