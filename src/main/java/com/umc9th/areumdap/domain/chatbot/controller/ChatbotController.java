@@ -41,7 +41,7 @@ public class ChatbotController implements ChatbotControllerDocs {
                 ))
                 .toList();
         return ApiResponse.success(
-                SuccessStatus.GET_CHATBOT_RECOMMAND_SUCCESS,
+                SuccessStatus.GET_CHATBOT_RECOMMEND_SUCCESS,
                 new GetChatbotRecommendsResponse(responses)
         );
     }
