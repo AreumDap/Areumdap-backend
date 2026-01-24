@@ -1,4 +1,4 @@
-package com.umc9th.areumdap.domain.question.dto.response;
+package com.umc9th.areumdap.domain.user.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,9 +1,9 @@
-package com.umc9th.areumdap.domain.question.entity;
+package com.umc9th.areumdap.domain.user.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.domain.chat.entity.ChatHistory;
 import com.umc9th.areumdap.domain.mission.enums.Tag;
-import com.umc9th.areumdap.domain.user.entity.User;
+import com.umc9th.areumdap.domain.question.entity.QuestionBank;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;

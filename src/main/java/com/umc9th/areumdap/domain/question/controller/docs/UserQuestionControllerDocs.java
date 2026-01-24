@@ -2,7 +2,7 @@ package com.umc9th.areumdap.domain.question.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.domain.mission.dto.request.CursorRequest;
-import com.umc9th.areumdap.domain.question.dto.response.UserQuestionCursorResponse;
+import com.umc9th.areumdap.domain.user.dto.response.UserQuestionCursorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;

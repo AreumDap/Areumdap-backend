@@ -1,4 +1,4 @@
-package com.umc9th.areumdap.domain.question.service;
+package com.umc9th.areumdap.domain.user.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
@@ -7,8 +7,8 @@ import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.chat.repository.ChatHistoryRepository;
 import com.umc9th.areumdap.domain.mission.enums.Tag;
 import com.umc9th.areumdap.domain.question.entity.QuestionBank;
-import com.umc9th.areumdap.domain.question.entity.UserQuestion;
-import com.umc9th.areumdap.domain.question.repository.UserQuestionRepository;
+import com.umc9th.areumdap.domain.user.entity.UserQuestion;
+import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
