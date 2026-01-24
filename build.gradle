@@ -84,7 +84,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-admin:9.2.0'
 
     //OpenAI
-    implementation 'com.openai:openai-java:4.0.0'
+    implementation 'com.openai:openai-java:4.16.1'
 }
 
 tasks.named('test') {
