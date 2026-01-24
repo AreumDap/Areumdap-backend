@@ -100,7 +100,7 @@ public enum ErrorStatus implements BaseStatus {
     /**
      * ChatBot
      */
-    QUESTION_BANK_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "CHATBOT_401", "배정 가능한 질문이 부족합니다.")
+    QUESTION_BANK_NOT_ENOUGH(HttpStatus.NOT_FOUND, "CHATBOT_404", "배정 가능한 질문이 부족합니다.")
     ;
 
     private final HttpStatus httpStatus;
