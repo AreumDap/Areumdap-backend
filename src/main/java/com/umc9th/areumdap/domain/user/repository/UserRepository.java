@@ -17,6 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmailAndDeletedFalse(String email);
     @Query("""
         SELECT u FROM User u
+        join fetch u.device
         WHERE u.notificationEnabled = true
           AND u.notificationTime = :time
     """)
