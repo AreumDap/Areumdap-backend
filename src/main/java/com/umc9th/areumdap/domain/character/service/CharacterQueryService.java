@@ -10,7 +10,7 @@ import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.entity.CharacterHistory;
 import com.umc9th.areumdap.domain.mission.entity.Mission;
 import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
-import com.umc9th.areumdap.domain.mission.repository.MissionRepository;
+import com.umc9th.areumdap.domain.mission.repository.MissionQueryRepository;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
 import com.umc9th.areumdap.domain.character.repository.CharacterHistoryRepository;
 import com.umc9th.areumdap.domain.user.entity.UserOnboarding;
@@ -27,7 +27,7 @@ public class CharacterQueryService {
 
 
     private final CharacterRepository characterRepository;
-    private final MissionRepository missionRepository;
+    private final MissionQueryRepository missionQueryRepository;
     private final UserOnboardingRepository userOnboardingRepository;
     private final CharacterHistoryRepository characterHistoryRepository;
 
@@ -40,11 +40,12 @@ public class CharacterQueryService {
         UserOnboarding userOnboarding = userOnboardingRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_ONBOARDING_NOT_FOUND));
         
-        List<Mission> missionList = missionRepository.findAllByUserChatThread_User_Id(userId);
+        List<Mission> missionList = missionQueryRepository.findAllByUserChatThread_User_Id(userId);
 
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
         List<CharacterMissionDto> missions = missionList.stream()
-                .filter(mission -> java.time.temporal.ChronoUnit.DAYS.between(java.time.LocalDateTime.now(), mission.getDueDate()) >= 0)
-                .map(CharacterMissionDto::of)
+                .filter(mission -> !mission.getDueDate().isBefore(now))
+                .map(CharacterMissionDto::from)
                 .toList();
 
         boolean canLevelUp = character.getLevel() < CharacterLevel.LEVEL_4.getLevel()

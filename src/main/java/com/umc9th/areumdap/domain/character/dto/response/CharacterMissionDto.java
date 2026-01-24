@@ -24,13 +24,13 @@ public record CharacterMissionDto(
         @Schema(description = "완료 여부", example = "false")
         Boolean isCompleted
 ) {
-    public static CharacterMissionDto of(Mission mission) {
+    public static CharacterMissionDto from(Mission mission) {
         Objects.requireNonNull(mission, "mission must not be null");
         return new CharacterMissionDto(
                 mission.getId(),
                 mission.getTag(),
                 mission.getTitle(),
-                (int) ChronoUnit.DAYS.between(java.time.LocalDateTime.now(), mission.getDueDate()),
+                (int) ChronoUnit.DAYS.between(java.time.LocalDate.now(), mission.getDueDate().toLocalDate()),
                 mission.getMissionStatus() == MissionStatus.COMPLETED
         );
     }

@@ -25,7 +25,7 @@ public record MissionResponse(
                 mission.getContent(),
                 mission.getTip(),
                 mission.getReward(),
-                (int) ChronoUnit.DAYS.between(java.time.LocalDateTime.now(), mission.getDueDate()),
+                (int) ChronoUnit.DAYS.between(java.time.LocalDate.now(), mission.getDueDate().toLocalDate()),
                 mission.getMissionStatus()
         );
     }

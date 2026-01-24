@@ -3,7 +3,7 @@ package com.umc9th.areumdap.domain.mission.controller;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.mission.controller.docs.MissionControllerDocs;
-import com.umc9th.areumdap.domain.mission.dto.response.CompleteMissionResponse;
+import com.umc9th.areumdap.domain.mission.dto.request.CompleteMissionRequest;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionResponse;
 import com.umc9th.areumdap.domain.mission.service.MissionCommandService;
 import com.umc9th.areumdap.domain.mission.service.MissionQueryService;
@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,12 +32,12 @@ public class MissionController implements MissionControllerDocs {
     }
 
     @Override
-    @PostMapping("/{missionId}/complete")
-    public ResponseEntity<ApiResponse<CompleteMissionResponse>> completeMission(
+    @PostMapping("/complete")
+    public ResponseEntity<ApiResponse<Void>> completeMission(
             @AuthenticationPrincipal Long userId,
-            @PathVariable(name = "missionId") Long missionId
+            @Valid @RequestBody CompleteMissionRequest request
     ) {
-        Long completedMissionId = missionCommandService.completeMission(userId, missionId);
-        return ApiResponse.success(SuccessStatus.COMPLETE_MISSION_SUCCESS, CompleteMissionResponse.from(completedMissionId));
+        missionCommandService.completeMission(userId, request.missionId());
+        return ApiResponse.success(SuccessStatus.COMPLETE_MISSION_SUCCESS);
     }
 }

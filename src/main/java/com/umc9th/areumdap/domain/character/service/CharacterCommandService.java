@@ -60,7 +60,7 @@ public class CharacterCommandService {
 
     // 캐릭터 XP 추가 (성장 가능 시 XP 추가 불가)
     public void addXpIfPossible(User user, int amount) {
-        Character character = characterRepository.findByUser(user)
+        Character character = characterRepository.findByUserWithLock(user)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
 
         if (character.getCurrentXp() >= character.getGoalXp()) {

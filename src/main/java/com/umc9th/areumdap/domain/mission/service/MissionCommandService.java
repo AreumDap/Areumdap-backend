@@ -22,11 +22,11 @@ public class MissionCommandService {
     private final UserRepository userRepository;
 
     // 과제 수행 완료(XP 지급)
-    public Long completeMission(Long userId, Long missionId) {
+    public void completeMission(Long userId, Long missionId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        Mission mission = missionRepository.findByIdWithUser(missionId)
+        Mission mission = missionRepository.findByIdWithUserForUpdate(missionId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MISSION_NOT_FOUND));
 
         if (!mission.isOwnedBy(user.getId())) {
@@ -39,7 +39,5 @@ public class MissionCommandService {
 
         mission.complete();
         characterCommandService.addXpIfPossible(user, mission.getReward().intValue());
-
-        return mission.getId();
     }
 }
