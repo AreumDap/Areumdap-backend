@@ -1,7 +1,7 @@
-package com.umc9th.areumdap.domain.question.repository;
+package com.umc9th.areumdap.domain.user.repository;
 
 import com.umc9th.areumdap.domain.mission.enums.Tag;
-import com.umc9th.areumdap.domain.question.entity.UserQuestion;
+import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

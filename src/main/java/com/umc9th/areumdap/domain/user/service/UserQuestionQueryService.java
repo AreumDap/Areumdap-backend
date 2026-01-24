@@ -1,13 +1,13 @@
-package com.umc9th.areumdap.domain.question.service;
+package com.umc9th.areumdap.domain.user.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.mission.dto.request.CursorRequest;
 import com.umc9th.areumdap.domain.mission.enums.Tag;
-import com.umc9th.areumdap.domain.question.dto.response.UserQuestionCursorResponse;
-import com.umc9th.areumdap.domain.question.dto.response.UserQuestionResponse;
-import com.umc9th.areumdap.domain.question.entity.UserQuestion;
-import com.umc9th.areumdap.domain.question.repository.UserQuestionQueryRepository;
+import com.umc9th.areumdap.domain.user.dto.response.UserQuestionCursorResponse;
+import com.umc9th.areumdap.domain.user.dto.response.UserQuestionResponse;
+import com.umc9th.areumdap.domain.user.entity.UserQuestion;
+import com.umc9th.areumdap.domain.user.repository.UserQuestionQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

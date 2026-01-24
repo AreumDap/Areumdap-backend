@@ -20,8 +20,10 @@ public interface MissionControllerDocs {
     @GetMapping("/completed")
     @Operation(summary = "태그별 완료된 과제 조회",
             description = """
-                    태그별로 완료된 과제를 조회합니다.
+                    커서 기반 무한 스크롤 방식으로 태그별 과제 목록을 조회합니다.
                     아무 태그 입력하지 않을 시 완료된 모든 과제를 불러옵니다.
+                    - 첫 요청: cursorTime, cursorId 없이 호출
+                    - 다음 요청: 이전 응답의 nextCursorTime, nextCursorId를 그대로 전달
                     """)
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "완료된 과제 조회 성공", content = @Content(schema = @Schema(implementation = MissionCursorResponse.class))),
