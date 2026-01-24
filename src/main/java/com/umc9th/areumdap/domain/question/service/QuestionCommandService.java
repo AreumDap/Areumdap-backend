@@ -39,7 +39,7 @@ public class QuestionCommandService {
                         .questionBank(q)
                         .content(q.getContent())
                         .tag(q.getTag())
-                        .isUsed(false)
+                        .used(false)
                         .build())
                 .toList();
         return userQuestionRepository.saveAll(userQuestions);
