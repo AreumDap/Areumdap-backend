@@ -7,6 +7,7 @@ import com.umc9th.areumdap.domain.question.controller.docs.UserQuestionControlle
 import com.umc9th.areumdap.domain.user.dto.response.UserQuestionCursorResponse;
 import com.umc9th.areumdap.domain.user.service.UserQuestionCommandService;
 import com.umc9th.areumdap.domain.user.service.UserQuestionQueryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,7 +35,7 @@ public class UserQuestionController implements UserQuestionControllerDocs {
     @GetMapping
     public ResponseEntity<ApiResponse<UserQuestionCursorResponse>> getAllSavedQuestion(
             @AuthenticationPrincipal Long userId,
-            @ModelAttribute CursorRequest request
+            @Valid @ModelAttribute CursorRequest request
     ) {
         return ApiResponse.success(
                 SuccessStatus.GET_ALL_SAVED_QUESTION_SUCCESS,

@@ -5,6 +5,7 @@ import com.umc9th.areumdap.domain.mission.dto.request.CursorRequest;
 import com.umc9th.areumdap.domain.user.dto.response.UserQuestionCursorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,6 @@ public interface UserQuestionControllerDocs {
     )
     ResponseEntity<ApiResponse<UserQuestionCursorResponse>> getAllSavedQuestion(
             @AuthenticationPrincipal Long userId,
-            @ModelAttribute CursorRequest request
+            @Valid @ModelAttribute CursorRequest request
     );
 }
