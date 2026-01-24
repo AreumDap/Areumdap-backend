@@ -30,12 +30,16 @@ public class NotificationScheduler {
 
         for (User user : users) {
             // TODO: 질문 추천으로 받아오기(getDailyRecommendQuestion)
-            notificationService.sendPushAlarm(
-                    user.getDevice().getToken(),
-                    "오늘의 철학",
-                    "내게 가장 힘들었던 경험은?",
-                    data
-                    );
+            if (user.getDevice() == null || user.getDevice().getToken() == null)
+                continue;
+            try {
+                notificationService.sendPushAlarm(
+                        user.getDevice().getToken(),
+                        "오늘의 철학",
+                        "내게 가장 힘들었던 경험은?",
+                        data
+                );
+            } catch (Exception e) { }
         }
     }
 }
