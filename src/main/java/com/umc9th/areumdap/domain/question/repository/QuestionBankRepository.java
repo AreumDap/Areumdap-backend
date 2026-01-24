@@ -12,7 +12,7 @@ public interface QuestionBankRepository extends JpaRepository<QuestionBank, Long
     @Query(value = "SELECT * FROM question_bank WHERE id NOT IN(" +
             "SELECT question_bank_id FROM user_question WHERE user_id = :userId" +
             ") ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
-    Optional<List<QuestionBank>> findRandomQuestions(@Param("userId") Long userId,
+    List<QuestionBank> findRandomQuestions(@Param("userId") Long userId,
                                                      @Param("count") int count
     );
 }
