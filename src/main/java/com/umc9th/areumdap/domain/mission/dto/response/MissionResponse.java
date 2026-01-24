@@ -22,7 +22,7 @@ public record MissionResponse(
                 mission.getMissionStatus(),
                 mission.getTag(),
                 mission.getReward(),
-                mission.getUpdatedAt()
+                mission.getCompletedAt()
         );
     }
 
