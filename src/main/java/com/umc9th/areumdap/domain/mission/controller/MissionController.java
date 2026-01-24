@@ -27,7 +27,7 @@ public class MissionController implements MissionControllerDocs {
             @Valid @ModelAttribute CursorRequest request
     ) {
         return ApiResponse.success(
-                SuccessStatus.GET_All_COMPLETED_MISSION_SUCCESS,
+                SuccessStatus.GET_ALL_COMPLETED_MISSION_SUCCESS,
                 missionQueryService.getCompletedMissionsWithCursor(
                         userId, request
                 )
