@@ -8,7 +8,7 @@ public record CharacterQuestDto(
         @Schema(description = "퀘스트 ID", example = "1")
         Long questId,
 
-        @Schema(description = "퀘스트 카테고리", example = "CAREER")
+        @Schema(description = "태그", example = "CAREER")
         Tag tag,
 
         @Schema(description = "퀘스트 제목", example = "자소서 1회 작성하기")
