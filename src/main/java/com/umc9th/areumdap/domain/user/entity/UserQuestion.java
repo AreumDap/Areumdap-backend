@@ -9,7 +9,9 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-@Table(name = "user_question")
+@Table(name = "user_question", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "chat_history_id"})
+})
 @Entity
 @Getter
 @Builder
@@ -41,7 +43,7 @@ public class UserQuestion extends BaseEntity {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tag", columnDefinition = "tag_enum",nullable = false)
+    @Column(name = "tag", columnDefinition = "tag_enum", nullable = false)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Tag tag;
 
