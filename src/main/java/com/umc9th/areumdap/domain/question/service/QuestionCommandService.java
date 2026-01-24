@@ -3,7 +3,7 @@ package com.umc9th.areumdap.domain.question.service;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.question.entity.QuestionBank;
-import com.umc9th.areumdap.domain.question.entity.UserQuestion;
+import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.question.repository.QuestionBankRepository;
 import com.umc9th.areumdap.domain.question.repository.UserQuestionRepository;
 import com.umc9th.areumdap.domain.user.entity.User;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

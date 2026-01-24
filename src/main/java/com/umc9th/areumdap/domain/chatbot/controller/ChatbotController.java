@@ -5,7 +5,7 @@ import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.chatbot.controller.docs.ChatbotControllerDocs;
 import com.umc9th.areumdap.domain.chatbot.dto.response.GetChatbotRecommendResponse;
 import com.umc9th.areumdap.domain.chatbot.dto.response.GetChatbotRecommendsResponse;
-import com.umc9th.areumdap.domain.question.entity.UserQuestion;
+import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.question.service.QuestionCommandService;
 import com.umc9th.areumdap.domain.question.service.QuestionQueryService;
 import lombok.RequiredArgsConstructor;
