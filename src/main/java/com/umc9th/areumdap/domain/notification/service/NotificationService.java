@@ -14,7 +14,7 @@ import java.util.Map;
 @Transactional
 public class NotificationService {
 
-    public String sendMessage(
+    public String sendPushAlarm(
             String token,
             String title,
             String body,
