@@ -25,7 +25,7 @@ public class QuestionCommandService {
     private final UserRepository userRepository;
 
     public List<UserQuestion> assignRandomQuestions(Long userId){
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         List<QuestionBank> randomQuestions = questionBankRepository.findRandomQuestions(userId, 5);
