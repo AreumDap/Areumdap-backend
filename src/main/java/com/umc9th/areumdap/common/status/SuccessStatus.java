@@ -61,7 +61,7 @@ public enum SuccessStatus implements BaseStatus {
     /**
      *  Mission
      */
-    GET_All_COMPLETED_MISSION_SUCCESS(HttpStatus.OK,"MISS_200","완료한 과제 조회 완료");
+    GET_ALL_COMPLETED_MISSION_SUCCESS(HttpStatus.OK,"MISS_200","완료한 과제 조회 완료");
 
     private final HttpStatus httpStatus;
     private final String code;
