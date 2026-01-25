@@ -71,4 +71,16 @@ public interface UserQuestionQueryRepository extends JpaRepository<UserQuestion,
             @Param("cursorId") Long cursorId,
             Pageable pageable
     );
+
+    @Query("SELECT uq FROM UserQuestion uq " +
+            "LEFT JOIN FETCH uq.questionBank " +
+            "WHERE uq.user.id = :userId " +
+            "AND uq.createdAt BETWEEN :start AND :end " +
+            "ORDER BY uq.createdAt DESC")
+    List<UserQuestion> findByUserIdAndCreatedAtBetween(
+            @Param("userId") Long userId,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end,
+            Pageable pageable // service에서 개수 설정
+    );
 }

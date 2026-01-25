@@ -1,7 +1,7 @@
 package com.umc9th.areumdap.domain.question.service;
 
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
-import com.umc9th.areumdap.domain.question.repository.UserQuestionQueryRepository;
+import com.umc9th.areumdap.domain.user.repository.UserQuestionQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;

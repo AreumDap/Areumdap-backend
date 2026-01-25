@@ -3,7 +3,6 @@ package com.umc9th.areumdap.domain.chat.entity;
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.domain.mission.entity.Mission;
 import com.umc9th.areumdap.domain.question.entity.QuestionBank;
-import com.umc9th.areumdap.domain.report.entity.Report;
 import com.umc9th.areumdap.domain.report.entity.ChatReport;
 import com.umc9th.areumdap.domain.user.entity.User;
 import jakarta.persistence.*;
