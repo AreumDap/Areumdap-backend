@@ -2,13 +2,16 @@ spring:
   application:
     name: areumdap-be
 
+  config:
+    import: optional:file:.env[.properties]
+
   profiles:
-    default: prod
+    active: dev   # ⭐ dev로 명시 (중요)
 
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
