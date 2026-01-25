@@ -81,6 +81,11 @@ public enum ErrorStatus implements BaseStatus {
     CHARACTER_ALREADY_MAX_LEVEL(HttpStatus.CONFLICT, "CHAR_409", "이미 최고 단계로 성장했습니다."),
 
     /**
+
+     Cursor*/
+    CURSOR_BAD_REQUEST(HttpStatus.BAD_REQUEST,"MISS_400","cursorTime과 cursorId는 함께 전달되어야 합니다."),
+
+    /**
      * Mission
      */
     MISSION_FORBIDDEN(HttpStatus.FORBIDDEN, "MISSION_403", "해당 성찰과제에 접근할 권한이 없습니다."),
