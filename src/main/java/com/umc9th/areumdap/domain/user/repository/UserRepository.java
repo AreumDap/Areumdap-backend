@@ -22,4 +22,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
           AND u.notificationTime = :time
     """)
     List<User> findUsersToNotify(@Param("time") LocalTime time);
+
 }

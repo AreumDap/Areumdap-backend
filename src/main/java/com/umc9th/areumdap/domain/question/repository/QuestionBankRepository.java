@@ -17,4 +17,5 @@ public interface QuestionBankRepository extends JpaRepository<QuestionBank, Long
             @Param("userId") Long userId,
             Pageable pageable
     );
+
 }

@@ -3,12 +3,13 @@ package com.umc9th.areumdap.domain.mission.service;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.mission.dto.request.CursorRequest;
+import com.umc9th.areumdap.domain.mission.dto.response.GetMissionResponse;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionCursorResponse;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionResponse;
 import com.umc9th.areumdap.domain.mission.entity.Mission;
-import com.umc9th.areumdap.domain.mission.enums.MissionStatus;
 import com.umc9th.areumdap.domain.mission.enums.Tag;
 import com.umc9th.areumdap.domain.mission.repository.MissionQueryRepository;
+import com.umc9th.areumdap.domain.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,14 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.umc9th.areumdap.domain.mission.enums.MissionStatus.COMPLETED;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MissionQueryService {
 
-    private static final MissionStatus COMPLETED = MissionStatus.COMPLETED;
-
     private final MissionQueryRepository missionQueryRepository;
+    private final MissionRepository missionRepository;
 
     // 완료된 미션 목록 커서 기반 조회
     public MissionCursorResponse getCompletedMissionsWithCursor(
@@ -67,7 +69,7 @@ public class MissionQueryService {
         Mission last = sliced.get(sliced.size() - 1);
 
         return new MissionCursorResponse(
-                MissionResponse.from(sliced),
+                GetMissionResponse.from(sliced),
                 last.getUpdatedAt(),
                 last.getId(),
                 hasNext
@@ -106,4 +108,16 @@ public class MissionQueryService {
                 userId, COMPLETED, tag, cursorTime, cursorId, pageable
         );
     }
+
+    public MissionResponse getMissionDetail(Long missionId, Long userId) {
+        Mission mission = missionRepository.findById(missionId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MISSION_NOT_FOUND));
+
+        if (!mission.getUserChatThread().getUser().getId().equals(userId)) {
+            throw new GeneralException(ErrorStatus.MISSION_FORBIDDEN);
+        }
+
+        return MissionResponse.from(mission);
+    }
+
 }

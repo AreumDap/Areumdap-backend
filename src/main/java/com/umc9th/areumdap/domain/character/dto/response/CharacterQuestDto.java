@@ -3,7 +3,6 @@ package com.umc9th.areumdap.domain.character.dto.response;
 import com.umc9th.areumdap.domain.mission.enums.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-
 public record CharacterQuestDto(
         @Schema(description = "퀘스트 ID", example = "1")
         Long questId,
