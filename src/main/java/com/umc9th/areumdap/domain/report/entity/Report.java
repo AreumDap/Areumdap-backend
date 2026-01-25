@@ -18,7 +18,7 @@ public class Report extends BaseEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "session_id", nullable = false)
+    @JoinColumn(name = "user_chat_thread_id", nullable = false)
     private UserChatThread userChatThread;
 
     @Column(name = "title", nullable = false, length = 200)
