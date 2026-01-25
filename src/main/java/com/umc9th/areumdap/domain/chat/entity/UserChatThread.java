@@ -27,6 +27,10 @@ public class UserChatThread extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_bank_id")
+    private QuestionBank questionBank;
+
     @OneToMany(mappedBy = "userChatThread", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ChatHistory> chatHistories = new ArrayList<>();
@@ -38,7 +42,4 @@ public class UserChatThread extends BaseEntity {
     @Builder.Default
     private List<Mission> missions = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_bank_id")
-    private QuestionBank questionBank;
 }
