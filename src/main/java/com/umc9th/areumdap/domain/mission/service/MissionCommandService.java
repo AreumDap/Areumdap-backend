@@ -23,7 +23,7 @@ public class MissionCommandService {
 
     // 과제 수행 완료(XP 지급)
     public void completeMission(Long userId, Long missionId) {
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         Mission mission = missionRepository.findByIdWithUserForUpdate(missionId)

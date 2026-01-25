@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 
 public record MissionResponse(
         Long missionId,
-        Tag category,
+        Tag tag,
         String title,
         String description,
         String guide,

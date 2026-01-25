@@ -27,7 +27,7 @@ public interface MissionControllerDocs {
                     examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
                             name = "성공",
                             summary = "성공 시 응답",
-                            value = "{\"isSuccess\": true, \"code\": \"MISSION_200\", \"message\": \"성찰과제 상세 조회 성공\", \"data\": {\"missionId\": 1, \"category\": \"RELATIONSHIP\", \"title\": \"친구에게 연락하기\", \"description\": \"오랫동안 연락하지 않은 친구에게 연락해보세요.\", \"guide\": \"가벼운 안부 인사로 시작해보세요.\", \"rewardXp\": 30, \"dDay\": 5, \"status\": \"ASSIGNED\"}}"
+                            value = "{\"isSuccess\": true, \"code\": \"MISSION_200\", \"message\": \"성찰과제 상세 조회 성공\", \"data\": {\"missionId\": 1, \"tag\": \"RELATIONSHIP\", \"title\": \"친구에게 연락하기\", \"description\": \"오랫동안 연락하지 않은 친구에게 연락해보세요.\", \"guide\": \"가벼운 안부 인사로 시작해보세요.\", \"rewardXp\": 30, \"dDay\": 5, \"status\": \"ASSIGNED\"}}"
                     )
             )),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "존재하지 않는 과제", content = @Content()),
