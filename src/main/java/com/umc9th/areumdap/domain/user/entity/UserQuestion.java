@@ -37,13 +37,13 @@ public class UserQuestion extends BaseEntity {
 
     @Column(name = "is_used", nullable = false)
     @Builder.Default
-    private Boolean isUsed = false;
+    private Boolean used = false;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tag", columnDefinition = "tag_enum", nullable = false)
+    @Column(name = "tag", columnDefinition = "tag_enum",nullable = false)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Tag tag;
 

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-@Configuration
+//@Configuration
 public class FirebaseConfig {
 
     @Value("${firebase.credentials.path}")
