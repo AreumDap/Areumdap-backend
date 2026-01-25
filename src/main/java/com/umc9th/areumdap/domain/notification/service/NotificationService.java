@@ -5,11 +5,13 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional
 public class NotificationService {
@@ -30,11 +32,11 @@ public class NotificationService {
                 )
                 .putAllData(data)
                 .build();
-
         try {
             return FirebaseMessaging.getInstance().send(message);
         } catch (Exception e) {
-            throw new GeneralException(ErrorStatus.NOTIFICATION_SENDING_INTERNAL_SERVER_ERROR);
+            log.error("알림 전송 중 오류 발생: {}", e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }

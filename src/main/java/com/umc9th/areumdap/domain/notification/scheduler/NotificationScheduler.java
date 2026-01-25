@@ -20,6 +20,7 @@ public class NotificationScheduler {
 
     @Scheduled(cron = "0 * * * * *") // 매 분 0초마다 실행
     public void sendScheduledNotifications() {
+        // TODO: 시간 설정 KR
         LocalTime now = LocalTime.now().withSecond(0).withNano(0);
 
         List<User> users = userRepository.findUsersToNotify(now);
@@ -28,18 +29,18 @@ public class NotificationScheduler {
         data.put("type", "daily");
         data.put("message", "아름답고 미운새~");
 
+        // TODO: 비동기 처리 -> SQS
         for (User user : users) {
             // TODO: 질문 추천으로 받아오기(getDailyRecommendQuestion)
             if (user.getDevice() == null || user.getDevice().getToken() == null)
                 continue;
-            try {
-                notificationService.sendPushAlarm(
-                        user.getDevice().getToken(),
-                        "오늘의 철학",
-                        "내게 가장 힘들었던 경험은?",
-                        data
-                );
-            } catch (Exception e) { }
+
+            notificationService.sendPushAlarm(
+                    user.getDevice().getToken(),
+                    "오늘의 철학",
+                    "내게 가장 힘들었던 경험은?",
+                    data
+            );
         }
     }
 }
