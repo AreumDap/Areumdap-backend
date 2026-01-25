@@ -31,6 +31,12 @@ public class UserChatThread extends BaseEntity {
     @JoinColumn(name = "question_bank_id")
     private QuestionBank questionBank;
 
+    @Column(name = "summary")
+    private String summary;
+
+    @Column(name = "favorite", nullable = false)
+    private boolean favorite;
+
     @OneToMany(mappedBy = "userChatThread", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ChatHistory> chatHistories = new ArrayList<>();
