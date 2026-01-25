@@ -2,9 +2,9 @@ package com.umc9th.areumdap.domain.user.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.character.enums.Season;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserOnboarding;
-import com.umc9th.areumdap.domain.user.enums.Season;
 import com.umc9th.areumdap.domain.user.repository.UserOnboardingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

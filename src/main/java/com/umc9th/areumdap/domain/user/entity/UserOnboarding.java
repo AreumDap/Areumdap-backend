@@ -1,11 +1,10 @@
 package com.umc9th.areumdap.domain.user.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
-import com.umc9th.areumdap.domain.user.enums.Season;
+import com.umc9th.areumdap.domain.character.enums.Season;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
 import java.util.List;

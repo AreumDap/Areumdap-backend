@@ -3,7 +3,7 @@ spring:
     name: areumdap-be
 
   profiles:
-    default: prod
+    default: dev
 
   jpa:
     open-in-view: false

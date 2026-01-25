@@ -1,4 +1,4 @@
-package com.umc9th.areumdap.domain.user.enums;
+package com.umc9th.areumdap.domain.character.enums;
 
 public enum Season {
     SPRING,
@@ -6,3 +6,4 @@ public enum Season {
     FALL,
     WINTER
 }
+

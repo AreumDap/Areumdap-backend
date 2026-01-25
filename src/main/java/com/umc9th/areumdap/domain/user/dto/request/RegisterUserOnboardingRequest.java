@@ -1,6 +1,6 @@
 package com.umc9th.areumdap.domain.user.dto.request;
 
-import com.umc9th.areumdap.domain.user.enums.Season;
+import com.umc9th.areumdap.domain.character.enums.Season;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

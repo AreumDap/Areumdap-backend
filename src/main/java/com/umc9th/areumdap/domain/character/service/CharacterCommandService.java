@@ -2,33 +2,37 @@ package com.umc9th.areumdap.domain.character.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
-import com.umc9th.areumdap.domain.character.dto.request.CreateCharacterRequest;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterCreateResponse;
+import com.umc9th.areumdap.domain.character.dto.request.RegisterCharacterRequest;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterGrowthResponse;
+import com.umc9th.areumdap.domain.character.dto.response.RegisterCharacterResponse;
 import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.entity.CharacterHistory;
+import com.umc9th.areumdap.domain.character.enums.CharacterKeyword;
+import com.umc9th.areumdap.domain.character.enums.KeywordType;
 import com.umc9th.areumdap.domain.character.repository.CharacterHistoryRepository;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
+import com.umc9th.areumdap.domain.character.resolver.CharacterImageResolver;
 import com.umc9th.areumdap.domain.user.entity.User;
-import com.umc9th.areumdap.domain.user.entity.UserOnboarding;
-import com.umc9th.areumdap.domain.user.service.UserQueryService;
+import com.umc9th.areumdap.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class CharacterCommandService {
 
-    private final UserQueryService userQueryService;
+    private final CharacterImageResolver characterImageResolver;
+    private final UserRepository userRepository;
     private final CharacterRepository characterRepository;
     private final CharacterHistoryRepository characterHistoryRepository;
-    private final com.umc9th.areumdap.domain.user.repository.UserOnboardingRepository userOnboardingRepository;
 
     // 캐릭터 성장
     public CharacterGrowthResponse levelUp(Long userId) {
-        User user = userQueryService.getUserByIdAndDeletedFalse(userId);
+        User user = getUser(userId);
 
         Character character = characterRepository.findByUserWithLock(user)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
@@ -43,19 +47,18 @@ public class CharacterCommandService {
     }
 
     // 캐릭터 생성
-    public CharacterCreateResponse createCharacter(Long userId, CreateCharacterRequest request) {
-        User user = userQueryService.getUserByIdAndDeletedFalse(userId);
+    public RegisterCharacterResponse registerCharacter(Long userId, RegisterCharacterRequest request) {
+        User user = getUser(userId);
+        if (characterRepository.existsByUser(user))
+            throw new GeneralException(ErrorStatus.CHARACTER_ALREADY_EXISTS);
 
-        Character character = characterRepository.findByUser(user)
-                .orElseGet(() -> characterRepository.save(new Character(user)));
+        List<String> keywords = normalizeKeywords(request);
+        Character character = characterRepository.save(
+                Character.create(user, request.season(), keywords)
+        );
 
-        UserOnboarding userOnboarding = userOnboardingRepository.findByUser(user)
-                .orElse(new UserOnboarding(user, request.season()));
-
-        userOnboarding.updateOnboarding(request.season(), request.keywords(), character.getId());
-        userOnboardingRepository.save(userOnboarding);
-
-        return new CharacterCreateResponse(character.getId());
+        String imageUrl = characterImageResolver.resolve(character.getSeason(), character.getLevel());
+        return new RegisterCharacterResponse(character.getId(),imageUrl);
     }
 
     // 캐릭터 XP 추가 (성장 가능 시 XP 추가 불가)
@@ -69,4 +72,33 @@ public class CharacterCommandService {
 
         character.addXp(amount);
     }
+
+
+    // 캐릭터 키워드 가져오기
+    private List<String> normalizeKeywords(RegisterCharacterRequest request) {
+
+        if (request.keywordType() == KeywordType.CUSTOM) {
+            return request.keywords();
+        }
+
+        return request.keywords().stream()
+                .map(this::validatePresetKeyword)
+                .toList();
+    }
+
+    // 키워드 값이 미리 정해진 형식일 경우 값이 맞는지를 검사
+    private String validatePresetKeyword(String keyword) {
+        try {
+            return CharacterKeyword.valueOf(keyword.toUpperCase()).name();
+        } catch (IllegalArgumentException e) {
+            throw new GeneralException(ErrorStatus.INVALID_CHARACTER_KEYWORD);
+        }
+    }
+
+    // 유저 정보 가져오기
+    private User getUser(Long userId) {
+        return userRepository.findByIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
 }
