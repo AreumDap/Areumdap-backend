@@ -81,8 +81,8 @@ public enum ErrorStatus implements BaseStatus {
     CHARACTER_ALREADY_MAX_LEVEL(HttpStatus.CONFLICT, "CHAR_409", "이미 최고 단계로 성장했습니다."),
 
     /**
-
-     Cursor*/
+     * Cursor
+     */
     CURSOR_BAD_REQUEST(HttpStatus.BAD_REQUEST,"MISS_400","cursorTime과 cursorId는 함께 전달되어야 합니다."),
 
     /**
@@ -90,9 +90,27 @@ public enum ErrorStatus implements BaseStatus {
      */
     MISSION_FORBIDDEN(HttpStatus.FORBIDDEN, "MISSION_403", "해당 성찰과제에 접근할 권한이 없습니다."),
     MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "MISSION_404", "존재하지 않는 과제입니다."),
-    MISSION_ALREADY_COMPLETED(HttpStatus.CONFLICT, "MISSION_409", "이미 완료한 과제입니다.");
+    MISSION_ALREADY_COMPLETED(HttpStatus.CONFLICT, "MISSION_409", "이미 완료한 과제입니다."),
+
+    /**
+     * Chat
+     */
+    CHAT_HISTORY_NOT_FOUND(HttpStatus.NOT_FOUND,"HISTORY_404","chatHistory를 찾을 수 없습니다."),
+    CHAT_THREAD_NOT_FOUND(HttpStatus.NOT_FOUND,"THREAD_404","채팅창을 찾을 수 없습니다."),
+
+    /**
+     * QUESTION
+     */
+    ALREADY_SAVED_QUESTION(HttpStatus.BAD_REQUEST,"QUESTION_400","이미 저장한 질문입니다."),
+    QUESTION_BANK_NOT_FOUND(HttpStatus.NOT_FOUND,"QUESTION_404","존재하지 않는 질문은행 입니다."),
+
+    /**
+     * ChatBot
+     */
+    QUESTION_BANK_NOT_ENOUGH(HttpStatus.UNPROCESSABLE_ENTITY, "CHATBOT_422", "배정 가능한 질문이 부족합니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
+
 }

@@ -2,7 +2,7 @@ package com.umc9th.areumdap.domain.chat.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.domain.mission.entity.Mission;
-import com.umc9th.areumdap.domain.question.entity.Question;
+import com.umc9th.areumdap.domain.question.entity.QuestionBank;
 import com.umc9th.areumdap.domain.report.entity.ChatReport;
 import com.umc9th.areumdap.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -24,8 +24,12 @@ public class UserChatThread extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_bank_id")
+    private QuestionBank questionBank;
 
     @OneToMany(mappedBy = "userChatThread", cascade = CascadeType.ALL)
     @Builder.Default
@@ -38,7 +42,4 @@ public class UserChatThread extends BaseEntity {
     @Builder.Default
     private List<Mission> missions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "userChatThread", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<Question> questions = new ArrayList<>();
 }

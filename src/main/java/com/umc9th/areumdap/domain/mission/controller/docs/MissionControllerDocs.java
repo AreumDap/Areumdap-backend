@@ -3,6 +3,8 @@ package com.umc9th.areumdap.domain.mission.controller.docs;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.domain.mission.dto.request.CompleteMissionRequest;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionResponse;
+import com.umc9th.areumdap.domain.mission.dto.request.CursorRequest;
+import com.umc9th.areumdap.domain.mission.dto.response.MissionCursorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -14,12 +16,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "Mission", description = "성찰과제 관련 API")
+@Tag(name = "Mission", description = "성찰과제 API")
 public interface MissionControllerDocs {
 
+    @PostMapping("/complete")
     @Operation(summary = "과제 수행 완료")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "과제 수행 완료 성공", content = @Content(
@@ -33,7 +37,7 @@ public interface MissionControllerDocs {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "단계 업그레이드 필요", content = @Content()),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이미 완료한 과제", content = @Content())
     })
-    @PostMapping("/complete")
+
     ResponseEntity<ApiResponse<Void>> completeMission(
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody CompleteMissionRequest request
@@ -59,6 +63,23 @@ public interface MissionControllerDocs {
     ResponseEntity<ApiResponse<MissionResponse>> getMissionDetail(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long missionId
+    );
+
+    @GetMapping("/completed")
+    @Operation(summary = "태그별 완료된 과제 조회",
+            description = """
+                    커서 기반 무한 스크롤 방식으로 태그별 과제 목록을 조회합니다.
+                    아무 태그 입력하지 않을 시 완료된 모든 과제를 불러옵니다.
+                    - 첫 요청: cursorTime, cursorId 없이 호출
+                    - 다음 요청: 이전 응답의 nextCursorTime, nextCursorId를 그대로 전달
+                    """)
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "완료된 과제 조회 성공", content = @Content(schema = @Schema(implementation = MissionCursorResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 과제 요청", content = @Content())
+    })
+    ResponseEntity<ApiResponse<MissionCursorResponse>> getCompletedMissions(
+            @AuthenticationPrincipal Long userId,
+            @Valid @ModelAttribute CursorRequest request
     );
 
 }

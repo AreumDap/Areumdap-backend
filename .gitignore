@@ -42,6 +42,7 @@ application-prod.yml
 
 ### .env ###
 .env
+.env.prod
 
 ### .json ###
 firebase-service-account.json

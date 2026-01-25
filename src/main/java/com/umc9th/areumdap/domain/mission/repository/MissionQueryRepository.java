@@ -91,10 +91,7 @@ public interface MissionQueryRepository extends JpaRepository<Mission, Long> {
             @Param("cursorId") Long cursorId,
             Pageable pageable
     );
+
 }
-
-
-
-
 
 

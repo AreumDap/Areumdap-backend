@@ -1,0 +1,9 @@
+package com.umc9th.areumdap.domain.user.repository;
+
+import com.umc9th.areumdap.domain.user.entity.UserQuestion;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserQuestionRepository extends JpaRepository<UserQuestion,Long> {
+
+    boolean existsByUser_IdAndChatHistory_Id(Long userId, Long chatHistoryId);
+}
