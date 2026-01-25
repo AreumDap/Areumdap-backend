@@ -4,31 +4,29 @@ import com.umc9th.areumdap.domain.mission.entity.Mission;
 import com.umc9th.areumdap.domain.mission.enums.MissionStatus;
 import com.umc9th.areumdap.domain.mission.enums.Tag;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
 
 public record MissionResponse(
         Long missionId,
-        String title,
-        MissionStatus status,
         Tag tag,
-        Long reward,
-        LocalDateTime completedAt // 완료일자
+        String title,
+        String description,
+        String guide,
+        Long rewardXp,
+        Integer dDay,
+
+        MissionStatus status
 ) {
     public static MissionResponse from(Mission mission) {
         return new MissionResponse(
                 mission.getId(),
-                mission.getTitle(),
-                mission.getMissionStatus(),
                 mission.getTag(),
+                mission.getTitle(),
+                mission.getContent(),
+                mission.getTip(),
                 mission.getReward(),
-                mission.getCompletedAt()
+                (int) ChronoUnit.DAYS.between(java.time.LocalDate.now(), mission.getDueDate().toLocalDate()),
+                mission.getMissionStatus()
         );
-    }
-
-    public static List<MissionResponse> from(List<Mission> missions) {
-        return missions.stream()
-                .map(MissionResponse::from)
-                .toList();
     }
 }

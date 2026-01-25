@@ -37,4 +37,5 @@ public interface UserQuestionControllerDocs {
             @AuthenticationPrincipal Long userId,
             @Valid @ModelAttribute CursorRequest request
     );
+
 }
