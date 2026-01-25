@@ -96,6 +96,7 @@ public enum ErrorStatus implements BaseStatus {
      */
     ALREADY_SAVED_QUESTION(HttpStatus.BAD_REQUEST,"QUESTION_400","이미 저장한 질문입니다."),
     QUESTION_BANK_NOT_FOUND(HttpStatus.NOT_FOUND,"QUESTION_404","존재하지 않는 질문은행 입니다."),
+    USER_QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND,"QUESTION_404","존재하지 않는 유저 질문입니다."),
     /**
      * ChatBot
      */

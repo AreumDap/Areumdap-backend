@@ -5,6 +5,7 @@ import com.umc9th.areumdap.domain.mission.entity.Mission;
 import com.umc9th.areumdap.domain.question.entity.QuestionBank;
 import com.umc9th.areumdap.domain.report.entity.ChatReport;
 import com.umc9th.areumdap.domain.user.entity.User;
+import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,6 +32,13 @@ public class UserChatThread extends BaseEntity {
     @JoinColumn(name = "question_bank_id")
     private QuestionBank questionBank;
 
+    @Column(name = "summary")
+    private String summary;
+
+    @Column(name = "favorite", nullable = false)
+    @Builder.Default
+    private Boolean favorite = false;
+
     @OneToMany(mappedBy = "userChatThread", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ChatHistory> chatHistories = new ArrayList<>();
@@ -42,4 +50,7 @@ public class UserChatThread extends BaseEntity {
     @Builder.Default
     private List<Mission> missions = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_question_id", nullable = true)
+    private UserQuestion userQuestionId;
 }
