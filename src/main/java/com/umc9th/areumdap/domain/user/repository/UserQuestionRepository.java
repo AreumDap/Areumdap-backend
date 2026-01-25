@@ -13,5 +13,4 @@ public interface UserQuestionRepository extends JpaRepository<UserQuestion,Long>
 
     boolean existsByUser_IdAndChatHistory_Id(Long userId, Long chatHistoryId);
 
-
 }

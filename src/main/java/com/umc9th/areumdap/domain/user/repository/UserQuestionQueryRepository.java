@@ -84,3 +84,4 @@ public interface UserQuestionQueryRepository extends JpaRepository<UserQuestion,
             Pageable pageable // service에서 개수 설정
     );
 }
+

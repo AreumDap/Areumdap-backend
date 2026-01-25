@@ -43,7 +43,7 @@ public class UserQuestion extends BaseEntity {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tag", columnDefinition = "tag_enum", nullable = false)
+    @Column(name = "tag", columnDefinition = "tag_enum",nullable = false)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Tag tag;
 

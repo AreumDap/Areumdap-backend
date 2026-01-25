@@ -101,6 +101,7 @@ public enum ErrorStatus implements BaseStatus {
      */
     QUESTION_BANK_NOT_ENOUGH(HttpStatus.UNPROCESSABLE_ENTITY, "CHATBOT_422", "배정 가능한 질문이 부족합니다.");
 
+
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
