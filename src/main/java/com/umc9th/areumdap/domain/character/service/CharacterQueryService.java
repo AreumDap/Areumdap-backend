@@ -5,14 +5,11 @@ import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryDto;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryResponse;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterMeResponse;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterQuestDto;
 import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.entity.CharacterHistory;
-import com.umc9th.areumdap.domain.character.entity.Quest;
 import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
 import com.umc9th.areumdap.domain.character.repository.CharacterHistoryRepository;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
-import com.umc9th.areumdap.domain.character.repository.QuestRepository;
 import com.umc9th.areumdap.domain.user.entity.UserOnboarding;
 import com.umc9th.areumdap.domain.user.repository.UserOnboardingRepository;
 
@@ -29,7 +26,6 @@ public class CharacterQueryService {
 
 
     private final CharacterRepository characterRepository;
-    private final QuestRepository questRepository;
     private final UserOnboardingRepository userOnboardingRepository;
     private final CharacterHistoryRepository characterHistoryRepository;
 
@@ -41,12 +37,8 @@ public class CharacterQueryService {
 
         UserOnboarding userOnboarding = userOnboardingRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_ONBOARDING_NOT_FOUND));
-        
-        List<Quest> questList = questRepository.findAllByCharacter(character);
 
-        List<CharacterQuestDto> quests = questList.stream()
-                .map(CharacterQuestDto::of)
-                .toList();
+
 
         boolean canLevelUp = character.getLevel() < CharacterLevel.LEVEL_4.getLevel()
                 && character.getCurrentXp() >= character.getGoalXp();
@@ -58,7 +50,6 @@ public class CharacterQueryService {
                 .currentXp(character.getCurrentXp())
                 .goalXp(character.getGoalXp())
                 .hasLevelUpParams(canLevelUp)
-                .quests(quests)
                 .build();
     }
 

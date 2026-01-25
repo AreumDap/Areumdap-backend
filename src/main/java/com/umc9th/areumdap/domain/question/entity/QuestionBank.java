@@ -1,34 +1,29 @@
 package com.umc9th.areumdap.domain.question.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
-import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.mission.enums.Tag;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-@Table(name = "question")
+@Table(name = "question_bank")
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Question extends BaseEntity {
-
+public class QuestionBank extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_chat_thread_id", nullable = false)
-    private UserChatThread userChatThread;
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String content;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tag", columnDefinition = "tag_enum",nullable = false)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Tag tag;
 
-    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
-    private String content;
 }

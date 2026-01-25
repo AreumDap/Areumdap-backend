@@ -50,7 +50,18 @@ public enum SuccessStatus implements BaseStatus {
     GET_CHARACTER_MAIN_SUCCESS(HttpStatus.OK, "CHAR_200", "캐릭터 메인 조회 성공"),
     GET_CHARACTER_HISTORY_SUCCESS(HttpStatus.OK, "CHAR_200", "성장 히스토리 조회 성공"),
     CREATE_CHARACTER_SUCCESS(HttpStatus.CREATED, "CHAR_201", "캐릭터 생성에 성공했습니다."),
-    CHARACTER_GROWTH_SUCCESS(HttpStatus.CREATED, "CHAR_201", "캐릭터 성장 성공");
+    CHARACTER_GROWTH_SUCCESS(HttpStatus.CREATED, "CHAR_201", "캐릭터 성장 성공"),
+
+    /**
+     *  Question
+     */
+    CREATE_QUESTION_SUCCESS(HttpStatus.CREATED,"QUES_201","질문 저장 성공"),
+    GET_ALL_SAVED_QUESTION_SUCCESS(HttpStatus.OK,"QUES_200","저장된 질문 조회 성공"),
+
+    /**
+     *  Mission
+     */
+    GET_ALL_COMPLETED_MISSION_SUCCESS(HttpStatus.OK,"MISS_200","완료한 과제 조회 완료");
 
     private final HttpStatus httpStatus;
     private final String code;
