@@ -34,11 +34,7 @@ public class ChatbotController implements ChatbotControllerDocs {
         }
 
         List<GetChatbotRecommendResponse> responses = todayQuestions.stream()
-                .map(uq -> new GetChatbotRecommendResponse(
-                        uq.getQuestionBank().getId(),
-                        uq.getQuestionBank().getContent(),
-                        uq.getQuestionBank().getTag().name()
-                ))
+                .map(GetChatbotRecommendResponse::from)
                 .toList();
         return ApiResponse.success(
                 SuccessStatus.GET_CHATBOT_RECOMMEND_SUCCESS,

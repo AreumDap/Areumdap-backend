@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface UserQuestionQueryRepository extends JpaRepository<UserQuestion, Long> { //당일에 랜덤 배정된 질문인지 확인하는 쿼리
     @Query("SELECT uq FROM UserQuestion uq " +
+           "LEFT JOIN FETCH uq.questionBank " +
            "WHERE uq.user.id = :userId " +
            "AND uq.createdAt BETWEEN :start AND :end " +
            "ORDER BY uq.createdAt DESC")
