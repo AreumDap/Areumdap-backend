@@ -3,6 +3,7 @@ package com.umc9th.areumdap.domain.question.service;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.question.repository.UserQuestionQueryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +24,7 @@ public class QuestionQueryService {
         LocalDateTime start = LocalDate.now(ZoneId.of("Asia/Seoul")).atStartOfDay();
         LocalDateTime end = LocalDate.now(ZoneId.of("Asia/Seoul")).atTime(LocalTime.MAX);
 
-        return userQuestionQueryRepository.findByUserIdAndCreatedAtBetween(userId, start, end);
+        return userQuestionQueryRepository.findByUserIdAndCreatedAtBetween(userId, start, end, PageRequest.of(0, 5));
     }
 
 }
