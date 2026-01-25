@@ -9,6 +9,7 @@ import com.umc9th.areumdap.domain.question.repository.UserQuestionRepository;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,7 @@ public class QuestionCommandService {
         User user = userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        List<QuestionBank> randomQuestions = questionBankRepository.findRandomQuestions(userId, 5);
+        List<QuestionBank> randomQuestions = questionBankRepository.findRandomQuestions(userId, PageRequest.of(0, 5));
 
         if (randomQuestions.size() < 5) {
             throw new GeneralException(ErrorStatus.QUESTION_BANK_NOT_ENOUGH);
