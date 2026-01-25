@@ -3,9 +3,7 @@ package com.umc9th.areumdap.domain.character.enums;
 import lombok.Getter;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Getter
 public enum CharacterKeyword {
@@ -62,31 +60,10 @@ public enum CharacterKeyword {
         this.korean = korean;
     }
 
-    public static String normalize(String input) {
-        if (input == null) return null;
-
-        // 영어 key로 들어온 경우
-        Optional<CharacterKeyword> byName = Arrays.stream(values())
-                .filter(k -> k.name().equalsIgnoreCase(input))
+    public static Optional<CharacterKeyword> fromKorean(String korean) {
+        return Arrays.stream(values())
+                .filter(k -> k.getKorean().equals(korean))
                 .findFirst();
-
-        if (byName.isPresent()) {
-            return byName.get().name();  // 영어 key로 통일
-        }
-
-        // 한글로 들어온 경우
-        Optional<CharacterKeyword> byKorean = Arrays.stream(values())
-                .filter(k -> k.korean.equals(input))
-                .findFirst();
-
-        if (byKorean.isPresent()) {
-            return byKorean.get().name(); // 영어 key로 통일
-        }
-
-        // enum에 없는 자유 입력
-        return input;
     }
-
-
 
 }

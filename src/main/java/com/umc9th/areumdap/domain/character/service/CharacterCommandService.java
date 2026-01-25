@@ -33,16 +33,13 @@ public class CharacterCommandService {
     // 캐릭터 성장
     public CharacterGrowthResponse levelUp(Long userId) {
         User user = getUser(userId);
-
         Character character = characterRepository.findByUserWithLock(user)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
 
         int previousLevel = character.getLevel();
-
         character.tryLevelUp();
 
         characterHistoryRepository.save(new CharacterHistory(character, character.getLevel()));
-
         return CharacterGrowthResponse.from(character, previousLevel);
     }
 
@@ -87,12 +84,11 @@ public class CharacterCommandService {
     }
 
     // 키워드 값이 미리 정해진 형식일 경우 값이 맞는지를 검사
-    private String validatePresetKeyword(String keyword) {
-        try {
-            return CharacterKeyword.valueOf(keyword.toUpperCase()).name();
-        } catch (IllegalArgumentException e) {
-            throw new GeneralException(ErrorStatus.INVALID_CHARACTER_KEYWORD);
-        }
+    private String validatePresetKeyword(String koreanKeyword) {
+
+        return CharacterKeyword.fromKorean(koreanKeyword)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_CHARACTER_KEYWORD))
+                .name();
     }
 
     // 유저 정보 가져오기

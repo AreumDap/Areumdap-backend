@@ -12,12 +12,12 @@ public record RegisterCharacterRequest(
         @NotNull(message = "계절은 필수 입력 값입니다.")
         Season season,
 
-        @Schema(description = "선택한 키워드", example = "[\"WARM\", \"BRIGHT\"]")
+        @Schema(description = "선택한 키워드", example = "[\"부드러운\", \"다정한\"]")
         @NotNull(message = "키워드는 필수 입력 값입니다.")
         @Size(max = 3, message = "키워드는 최대 3개까지 선택 가능합니다.")
         List<@Size(max = 100, message = "키워드는 100자를 초과할 수 없습니다.") String> keywords,
 
-        @Schema(description = "키워드 타입 (PRESET or CUSTOM)", example = "PRESET")
+        @Schema(description = "키워드 타입인 경우 => PRESET 직접 작성인 경우 =>  CUSTOM", example = "PRESET")
         @NotNull
         KeywordType keywordType
 ) {
