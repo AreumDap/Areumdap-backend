@@ -38,6 +38,6 @@ public class MissionCommandService {
         }
 
         mission.complete();
-        characterCommandService.addXpIfPossible(user, mission.getReward().intValue());
+        characterCommandService.addXpIfPossible(user, Math.toIntExact(mission.getReward()));
     }
 }
