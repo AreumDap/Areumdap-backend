@@ -83,5 +83,6 @@ public interface UserQuestionQueryRepository extends JpaRepository<UserQuestion,
             @Param("end") LocalDateTime end,
             Pageable pageable // service에서 개수 설정
     );
+
 }
 

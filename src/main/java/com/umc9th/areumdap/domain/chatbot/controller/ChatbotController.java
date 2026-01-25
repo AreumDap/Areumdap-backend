@@ -28,4 +28,5 @@ public class ChatbotController implements ChatbotControllerDocs {
                 chatbotQueryService.getRecommendQuestions(userId)
         );
     }
+
 }

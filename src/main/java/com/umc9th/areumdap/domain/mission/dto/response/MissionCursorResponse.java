@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record MissionCursorResponse(
-        List<MissionResponse> missions,
+        List<GetMissionResponse> missions,
         LocalDateTime nextCursorTime,
         Long nextCursorId,
         boolean hasNext

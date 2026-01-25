@@ -5,18 +5,19 @@ import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryDto;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryResponse;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterMeResponse;
+import com.umc9th.areumdap.domain.character.dto.response.CharacterMissionDto;
 import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.entity.CharacterHistory;
+import com.umc9th.areumdap.domain.mission.entity.Mission;
 import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
-import com.umc9th.areumdap.domain.character.repository.CharacterHistoryRepository;
+import com.umc9th.areumdap.domain.mission.repository.MissionQueryRepository;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
+import com.umc9th.areumdap.domain.character.repository.CharacterHistoryRepository;
 import com.umc9th.areumdap.domain.user.entity.UserOnboarding;
 import com.umc9th.areumdap.domain.user.repository.UserOnboardingRepository;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -26,6 +27,7 @@ public class CharacterQueryService {
 
 
     private final CharacterRepository characterRepository;
+    private final MissionQueryRepository missionQueryRepository;
     private final UserOnboardingRepository userOnboardingRepository;
     private final CharacterHistoryRepository characterHistoryRepository;
 
@@ -37,8 +39,14 @@ public class CharacterQueryService {
 
         UserOnboarding userOnboarding = userOnboardingRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_ONBOARDING_NOT_FOUND));
+        
+        List<Mission> missionList = missionQueryRepository.findAllByUserChatThread_User_Id(userId);
 
-
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        List<CharacterMissionDto> missions = missionList.stream()
+                .filter(mission -> !mission.getDueDate().isBefore(now))
+                .map(CharacterMissionDto::from)
+                .toList();
 
         boolean canLevelUp = character.getLevel() < CharacterLevel.LEVEL_4.getLevel()
                 && character.getCurrentXp() >= character.getGoalXp();
@@ -50,6 +58,7 @@ public class CharacterQueryService {
                 .currentXp(character.getCurrentXp())
                 .goalXp(character.getGoalXp())
                 .hasLevelUpParams(canLevelUp)
+                .missions(missions)
                 .build();
     }
 

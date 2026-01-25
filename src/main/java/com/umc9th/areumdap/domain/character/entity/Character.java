@@ -64,6 +64,10 @@ public class Character extends BaseEntity {
         this.goalXp = nextGoalXp;
     }
 
+    public void addXp(int amount) {
+        this.currentXp += amount;
+    }
+
     public boolean isMaxLevel() {
         return this.level >= CharacterLevel.LEVEL_4.getLevel();
     }

@@ -33,4 +33,5 @@ public class ChatbotQueryService {
 
         return new GetChatbotRecommendsResponse(responses);
     }
+
 }

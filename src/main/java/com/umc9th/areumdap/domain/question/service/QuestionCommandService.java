@@ -45,4 +45,5 @@ public class QuestionCommandService {
                 .toList();
         return userQuestionRepository.saveAll(userQuestions);
     }
+
 }

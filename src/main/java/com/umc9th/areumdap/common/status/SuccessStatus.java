@@ -59,9 +59,17 @@ public enum SuccessStatus implements BaseStatus {
     GET_ALL_SAVED_QUESTION_SUCCESS(HttpStatus.OK,"QUES_200","저장된 질문 조회 성공"),
 
     /**
+     * Mission
+     */
+    GET_MISSION_DETAIL_SUCCESS(HttpStatus.OK, "MISSION_200", "성찰과제 상세 조회 성공"),
+    COMPLETE_MISSION_SUCCESS(HttpStatus.CREATED, "MISSION_201", "과제 수행 완료! XP가 지급되었습니다."),
+
+
+    /**
      * ChatBot
      */
     GET_CHATBOT_RECOMMEND_SUCCESS(HttpStatus.OK, "CHATBOT_200", "AI 대화 질문 추천 조회 성공"),
+
     /**
      *  Mission
      */
