@@ -3,6 +3,10 @@ package com.umc9th.areumdap.domain.ai.builder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HistorySummaryPromptBuilder {
     private static final ObjectMapper om =
@@ -61,17 +65,16 @@ public class HistorySummaryPromptBuilder {
             {{session_summary}}
             """;
 
-    public static String build(String[] summaries) {
+    public static String build(List<UserChatThread> chatThreads) {
         StringBuilder summaryBlock = new StringBuilder();
 
-        for (int i = 0; i < summaries.length; i++) {
+        chatThreads.forEach(c -> {
             summaryBlock
                     .append("- 요약 ")
-                    .append(i + 1)
                     .append(": ")
-                    .append(summaries[i])
+                    .append(c.getSummary())
                     .append("\n");
-        }
+            });
 
         return SYSTEM_PROMPT + USER_PROMPT.replace(
                 "{{session_summary}}",
