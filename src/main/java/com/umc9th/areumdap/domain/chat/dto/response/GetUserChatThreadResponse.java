@@ -1,5 +1,7 @@
 package com.umc9th.areumdap.domain.chat.dto.response;
 
+import com.umc9th.areumdap.common.exception.GeneralException;
+import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.mission.enums.Tag;
 
@@ -15,6 +17,9 @@ public record GetUserChatThreadResponse(
         boolean favorite
 ) {
     public static GetUserChatThreadResponse from(UserChatThread thread) {
+        if (thread.getUserQuestion() == null){
+            throw new GeneralException(ErrorStatus.USER_QUESTION_NOT_FOUND);
+        }
         return new GetUserChatThreadResponse(
                 thread.getId(),
                 thread.getUserQuestion().getTag(),
