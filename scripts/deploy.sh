@@ -52,7 +52,7 @@ SUCCESS=false
 
 for i in {1..10}
 do
-  if curl -f http://localhost:${NEW_PORT}/actuator/health > /dev/null 2>&1; then
+  if curl -fsS --connect-timeout 1 --max-time 3 http://localhost:${NEW_PORT}/actuator/health > /dev/null 2>&1; then
     SUCCESS=true
     echo "헬스체크 성공"
     break
@@ -72,6 +72,12 @@ fi
 echo "nginx 전환 중..."
 sudo sed -i "s/set \$service_port .*/set \$service_port $NEW_PORT;/" $NGINX_CONF
 sudo nginx -t
+if ! grep -q "set \\$service_port $NEW_PORT;" "$NGINX_CONF"; then
+  echo "nginx 포트 전환 실패"
+  docker stop areumdap-backend-${NEW_PORT} 2>/dev/null || true
+  docker rm areumdap-backend-${NEW_PORT} 2>/dev/null || true
+  exit 1
+fi
 sudo systemctl reload nginx
 
 #7 기존 컨테이너 종료
