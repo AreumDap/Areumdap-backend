@@ -1,6 +1,7 @@
 package com.umc9th.areumdap.domain.chat.repository;
 
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -18,7 +19,7 @@ public interface UserChatThreadQueryRepository extends Repository<UserChatThread
         order by t.updatedAt desc, t.id desc
     """)
     List<UserChatThread> findLatest(
-            Long userId,
+            @Param("userId") Long userId,
             Pageable pageable
     );
 
@@ -34,9 +35,9 @@ public interface UserChatThreadQueryRepository extends Repository<UserChatThread
         order by t.updatedAt desc, t.id desc
     """)
     List<UserChatThread> findLatestWithCursor(
-            Long userId,
-            LocalDateTime cursorTime,
-            Long cursorId,
+            @Param("userId") Long userId,
+            @Param("cursorTime") LocalDateTime cursorTime,
+            @Param("cursorId") Long cursorId,
             Pageable pageable
     );
 
@@ -49,7 +50,7 @@ public interface UserChatThreadQueryRepository extends Repository<UserChatThread
         order by t.updatedAt desc, t.id desc
     """)
     List<UserChatThread> findFavoriteLatest(
-            Long userId,
+            @Param("userId") Long userId,
             Pageable pageable
     );
 
@@ -66,9 +67,10 @@ public interface UserChatThreadQueryRepository extends Repository<UserChatThread
         order by t.updatedAt desc, t.id desc
     """)
     List<UserChatThread> findFavoriteLatestWithCursor(
-            Long userId,
-            LocalDateTime cursorTime,
-            Long cursorId,
+
+            @Param("userId") Long userId,
+            @Param("cursorTime") LocalDateTime cursorTime,
+            @Param("cursorId") Long cursorId,
             Pageable pageable
     );
 }
