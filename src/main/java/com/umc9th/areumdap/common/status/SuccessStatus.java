@@ -79,7 +79,7 @@ public enum SuccessStatus implements BaseStatus {
     /**
      *  Chat
      */
-    GET_ALL_USER_CHAT_THREAD_SUCCESS(HttpStatus.OK,"CHAT_200","유저 채팅창 목록 조회 완료");
+    GET_USER_CHAT_THREADS_SUCCESS(HttpStatus.OK,"CHAT_200","유저 채팅창 목록 조회 완료");
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
