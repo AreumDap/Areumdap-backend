@@ -3,31 +3,32 @@ package com.umc9th.areumdap.domain.chat.controller;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.chat.controller.docs.ChatControllerDocs;
-import com.umc9th.areumdap.domain.chat.dto.request.UserChatThreadCursorRequest;
-import com.umc9th.areumdap.domain.chat.dto.response.UserChatThreadCursorResponse;
-import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
+import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
+import com.umc9th.areumdap.domain.chat.dto.response.CreateChatThreadResponse;
+import com.umc9th.areumdap.domain.chat.service.ChatCommandService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/api/chat")
 @RestController
+@RequestMapping("/api/chatbot")
 @RequiredArgsConstructor
 public class ChatController implements ChatControllerDocs {
+    private final ChatCommandService chatCommandService;
 
-    private final UserChatThreadQueryService service;
-
-    @Override
-    @GetMapping("/threads")
-    public ResponseEntity<ApiResponse<UserChatThreadCursorResponse>> getThreads(
+    @PostMapping("/start")
+    public ResponseEntity<ApiResponse<CreateChatThreadResponse>> createChatThread(
             @AuthenticationPrincipal Long userId,
-            @RequestParam(defaultValue = "false") boolean favorite,
-            @ModelAttribute UserChatThreadCursorRequest cursor
+            @Valid @RequestBody CreateChatThreadRequest request
     ) {
         return ApiResponse.success(
-                SuccessStatus.GET_USER_CHAT_THREADS_SUCCESS,
-                service.getThreads(userId, favorite, cursor)
+                SuccessStatus.CREATE_CHAT_THREAD_SUCCESS,
+                chatCommandService.createChatThread(userId, request)
         );
     }
 

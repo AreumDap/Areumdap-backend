@@ -1,17 +1,4 @@
 services:
-  backend:
-    image: jihoonkim501/areumdap-backend:latest
-    container_name: areumdap-backend
-    ports:
-      - "8080:8080"
-    env_file:
-      - .env.prod
-    volumes:
-      - /home/ubuntu/app/firebase-service-account.json:/home/ubuntu/app/firebase-service-account.json:ro
-    restart: always
-    depends_on:
-      - redis
-
   redis:
     image: redis:7
     container_name: areumdap-redis
