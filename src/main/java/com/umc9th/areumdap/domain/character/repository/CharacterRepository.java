@@ -11,9 +11,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface CharacterRepository extends JpaRepository<Character, Long> {
-    Optional<Character> findByUser(User user);
 
-    @org.springframework.data.jpa.repository.Query("SELECT c FROM Character c JOIN FETCH c.user u WHERE u.id = :userId AND u.deleted = false")
+    @Query("SELECT c FROM Character c JOIN FETCH c.user u WHERE u.id = :userId AND u.deleted = false")
     Optional<Character> findByUserId(@org.springframework.data.repository.query.Param("userId") Long userId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

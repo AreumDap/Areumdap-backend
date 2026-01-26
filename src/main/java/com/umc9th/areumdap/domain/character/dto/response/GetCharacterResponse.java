@@ -25,9 +25,12 @@ public record GetCharacterResponse(
         Boolean hasLevelUpParams,
 
         @Schema(description = "미션 목록")
-        List<CharacterMissionDto> missions
+        List<CharacterMissionDto> missions,
+
+        @Schema(description = "캐릭터 이미지")
+        String imageUrl
 ) {
-    public static GetCharacterResponse from(Character character, boolean canLevelUp, List<CharacterMissionDto> missions) {
+    public static GetCharacterResponse from(Character character, boolean canLevelUp, List<CharacterMissionDto> missions, String imageUrl) {
         return new GetCharacterResponse(
                 character.getId(),
                 "아름이",
@@ -35,7 +38,9 @@ public record GetCharacterResponse(
                 character.getCurrentXp(),
                 character.getGoalXp(),
                 canLevelUp,
-                missions
+                missions,
+                imageUrl
         );
     }
+
 }

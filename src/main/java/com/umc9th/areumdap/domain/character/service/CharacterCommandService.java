@@ -3,7 +3,7 @@ package com.umc9th.areumdap.domain.character.service;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.character.dto.request.RegisterCharacterRequest;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterGrowthResponse;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterGrowthResponse;
 import com.umc9th.areumdap.domain.character.dto.response.RegisterCharacterResponse;
 import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.entity.CharacterHistory;
@@ -31,16 +31,17 @@ public class CharacterCommandService {
     private final CharacterHistoryRepository characterHistoryRepository;
 
     // 캐릭터 성장
-    public CharacterGrowthResponse levelUp(Long userId) {
+    public GetCharacterGrowthResponse levelUp(Long userId) {
         User user = getUser(userId);
         Character character = characterRepository.findByUserWithLock(user)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
 
         int previousLevel = character.getLevel();
         character.tryLevelUp();
+        int requiredXpForNextLevel = Math.max(0, character.getGoalXp() - character.getCurrentXp());
 
         characterHistoryRepository.save(new CharacterHistory(character, character.getLevel()));
-        return CharacterGrowthResponse.from(character, previousLevel);
+        return GetCharacterGrowthResponse.of(character.getId(), previousLevel, character.getLevel(), character.getCurrentXp(), requiredXpForNextLevel);
     }
 
     // 캐릭터 생성
@@ -50,12 +51,11 @@ public class CharacterCommandService {
             throw new GeneralException(ErrorStatus.CHARACTER_ALREADY_EXISTS);
 
         List<String> keywords = normalizeKeywords(request);
-        Character character = characterRepository.save(
-                Character.create(user, request.season(), keywords)
-        );
-
+        Character character = characterRepository.save(Character.create(user, request.season(), keywords));
         String imageUrl = characterImageResolver.resolve(character.getSeason(), character.getLevel());
-        return new RegisterCharacterResponse(character.getId(),imageUrl);
+
+        characterHistoryRepository.save(new CharacterHistory(character, character.getLevel()));
+        return new RegisterCharacterResponse(character.getId(), imageUrl);
     }
 
     // 캐릭터 XP 추가 (성장 가능 시 XP 추가 불가)

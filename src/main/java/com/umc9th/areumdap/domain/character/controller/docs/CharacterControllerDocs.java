@@ -2,7 +2,7 @@ package com.umc9th.areumdap.domain.character.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.domain.character.dto.request.RegisterCharacterRequest;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterGrowthResponse;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterGrowthResponse;
 import com.umc9th.areumdap.domain.character.dto.response.GetCharacterHistoryResponse;
 import com.umc9th.areumdap.domain.character.dto.response.GetCharacterResponse;
 import com.umc9th.areumdap.domain.character.dto.response.RegisterCharacterResponse;
@@ -69,11 +69,11 @@ public interface CharacterControllerDocs {
     @PostMapping("/growth")
     @Operation(summary = "캐릭터 성장")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "캐릭터 성장 성공", content = @Content(schema = @Schema(implementation = CharacterGrowthResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "캐릭터 성장 성공", content = @Content(schema = @Schema(implementation = GetCharacterGrowthResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "XP 부족", content = @Content()),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "최고 레벨일 경우", content = @Content())
     })
-    ResponseEntity<ApiResponse<CharacterGrowthResponse>> levelUp(
+    ResponseEntity<ApiResponse<GetCharacterGrowthResponse>> levelUp(
             @AuthenticationPrincipal Long userId
     );
 

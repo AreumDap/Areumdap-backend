@@ -4,7 +4,7 @@ import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.character.controller.docs.CharacterControllerDocs;
 import com.umc9th.areumdap.domain.character.dto.request.RegisterCharacterRequest;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterGrowthResponse;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterGrowthResponse;
 import com.umc9th.areumdap.domain.character.dto.response.GetCharacterHistoryResponse;
 import com.umc9th.areumdap.domain.character.dto.response.GetCharacterResponse;
 import com.umc9th.areumdap.domain.character.dto.response.RegisterCharacterResponse;
@@ -48,11 +48,11 @@ public class CharacterController implements CharacterControllerDocs {
     }
 
     @Override
-    @PostMapping("/growth")
-    public ResponseEntity<ApiResponse<CharacterGrowthResponse>> levelUp(
+    @PostMapping("/level")
+    public ResponseEntity<ApiResponse<GetCharacterGrowthResponse>> levelUp(
             @AuthenticationPrincipal Long userId
     ) {
-        CharacterGrowthResponse response = characterCommandService.levelUp(userId);
+        GetCharacterGrowthResponse response = characterCommandService.levelUp(userId);
         return ApiResponse.success(SuccessStatus.CHARACTER_GROWTH_SUCCESS, response);
     }
 
