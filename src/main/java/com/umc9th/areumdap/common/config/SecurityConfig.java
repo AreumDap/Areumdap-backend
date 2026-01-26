@@ -53,6 +53,12 @@ public class SecurityConfig {
             "/api/oauth/naver/login",
     };
 
+    /** 헬스체크 및 모니터링 관련 경로 */
+    private static final String[] ACTUATOR_URIS = {
+            "/actuator/health",
+            "/actuator/info"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -62,6 +68,7 @@ public class SecurityConfig {
                         .requestMatchers(SWAGGER_URIS).permitAll()
                         .requestMatchers(AUTH_URIS).permitAll()
                         .requestMatchers(OAUTH_URIS).permitAll()
+                        .requestMatchers(ACTUATOR_URIS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -75,6 +82,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173", "http://localhost:8080","https://areum-dap.online"));
         configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("*"));

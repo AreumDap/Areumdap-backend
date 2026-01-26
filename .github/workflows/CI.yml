@@ -95,13 +95,20 @@ jobs:
                 base-url: ${CHARACTER_IMAGE_BASEURL}
           logging:
             discord:
-              webhook-url: ${DISCORD_WEBHOOK_URL}
-          
+              webhook-url: ${DISCORD_WEBHOOK_URL}          
           firebase:
             credentials:
               path: ${FIREBASE_CREDENTIALS_PATH}
           server:
             forward-headers-strategy: framework
+          management:
+            endpoints:
+              web:
+                exposure:
+                  include: health
+            endpoint:
+              health:
+                show-details: always
           EOF
 
       - name: Grant execute permission for Gradle Wrapper

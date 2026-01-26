@@ -85,6 +85,9 @@ dependencies {
 
     //OpenAI
     implementation 'com.openai:openai-java:4.16.1'
+
+    // Actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {
