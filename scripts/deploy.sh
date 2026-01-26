@@ -11,7 +11,11 @@ FIREBASE_JSON="/home/ubuntu/app/firebase-service-account.json"
 echo "=== Blue-Green Deploy Start ==="
 
 #1 현재 nginx가 바라보는 포트 확인 (없으면 기본 8080)
-CURRENT_PORT=$(grep service_port $NGINX_CONF | grep -o '[0-9]\+' || echo $BLUE_PORT)
+CURRENT_PORT=$(grep -oP 'set \$service_port \K[0-9]+' $NGINX_CONF | head -n 1)
+
+if [ -z "$CURRENT_PORT" ]; then
+  CURRENT_PORT=$BLUE_PORT
+fi
 
 if [ -z "$CURRENT_PORT" ]; then
   CURRENT_PORT=$BLUE_PORT
@@ -40,6 +44,7 @@ docker rm -f areumdap-backend-${NEW_PORT} 2>/dev/null || true
 echo "새 컨테이너 실행 (${NEW_PORT})"
 docker run -d \
   --name areumdap-backend-${NEW_PORT} \
+  --network areumdap-net \
   -p ${NEW_PORT}:8080 \
   --env-file ${ENV_FILE} \
   -v ${FIREBASE_JSON}:${FIREBASE_JSON}:ro \

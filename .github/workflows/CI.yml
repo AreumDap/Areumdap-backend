@@ -46,6 +46,14 @@ jobs:
                     auth: true
                     starttls:
                       enable: true
+            ai:
+              openai:
+                api-key: ${OPENAI_API_KEY}
+                chat:
+                  options:
+                    model: gpt-4o-mini
+                    temperature: 0.3
+                    max-tokens: 1200
             data:
               redis:
                 port: ${REDIS_PORT}
