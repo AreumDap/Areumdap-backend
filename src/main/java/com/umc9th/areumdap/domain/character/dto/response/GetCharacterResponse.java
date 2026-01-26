@@ -1,11 +1,11 @@
 package com.umc9th.areumdap.domain.character.dto.response;
 
+import com.umc9th.areumdap.domain.character.entity.Character;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
-import lombok.Builder;
 
-@Builder
-public record CharacterMeResponse(
+import java.util.List;
+
+public record GetCharacterResponse(
         @Schema(description = "캐릭터 ID", example = "1")
         Long characterId,
 
@@ -25,6 +25,22 @@ public record CharacterMeResponse(
         Boolean hasLevelUpParams,
 
         @Schema(description = "미션 목록")
-        List<CharacterMissionDto> missions
+        List<CharacterMissionDto> missions,
+
+        @Schema(description = "캐릭터 이미지")
+        String imageUrl
 ) {
+    public static GetCharacterResponse from(Character character, boolean canLevelUp, List<CharacterMissionDto> missions, String imageUrl) {
+        return new GetCharacterResponse(
+                character.getId(),
+                "아름이",
+                character.getLevel(),
+                character.getCurrentXp(),
+                character.getGoalXp(),
+                canLevelUp,
+                missions,
+                imageUrl
+        );
+    }
+
 }

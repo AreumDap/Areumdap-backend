@@ -77,8 +77,11 @@ public enum ErrorStatus implements BaseStatus {
     CHARACTER_SEASON_MUST_BE_NOT_NULL(HttpStatus.BAD_REQUEST, "CHAR_400", "계절은 필수 입력 값입니다."),
     CHARACTER_KEYWORDS_MUST_BE_NOT_NULL(HttpStatus.BAD_REQUEST, "CHAR_400", "키워드는 필수 입력 값입니다."),
     CHARACTER_KEYWORDS_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "CHAR_400", "키워드는 최대 3개까지 선택 가능합니다."),
+    INVALID_CHARACTER_KEYWORD(HttpStatus.BAD_REQUEST,"CHAR_400","잘못된 키워드 값입니다"),
     CHARACTER_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAR_404", "캐릭터 정보를 찾을 수 없습니다."),
+    CHARACTER_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAR_404", "캐릭터 이미지를 찾을 수 없습니다."),
     CHARACTER_ALREADY_MAX_LEVEL(HttpStatus.CONFLICT, "CHAR_409", "이미 최고 단계로 성장했습니다."),
+    CHARACTER_ALREADY_EXISTS(HttpStatus.CONFLICT, "CHAR_409", "캐릭터가 이미 존재합니다."),
 
     /**
      * Cursor

@@ -3,11 +3,11 @@ package com.umc9th.areumdap.domain.character.controller;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.character.controller.docs.CharacterControllerDocs;
-import com.umc9th.areumdap.domain.character.dto.request.CreateCharacterRequest;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterCreateResponse;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterGrowthResponse;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryResponse;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterMeResponse;
+import com.umc9th.areumdap.domain.character.dto.request.RegisterCharacterRequest;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterGrowthResponse;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterHistoryResponse;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterResponse;
+import com.umc9th.areumdap.domain.character.dto.response.RegisterCharacterResponse;
 import com.umc9th.areumdap.domain.character.service.CharacterCommandService;
 import com.umc9th.areumdap.domain.character.service.CharacterQueryService;
 import jakarta.validation.Valid;
@@ -29,39 +29,40 @@ public class CharacterController implements CharacterControllerDocs {
     private final CharacterCommandService characterCommandService;
 
     @Override
-    @PostMapping
-    public ResponseEntity<ApiResponse<CharacterCreateResponse>> createCharacter(
+    @PostMapping("")
+    public ResponseEntity<ApiResponse<RegisterCharacterResponse>> registerCharacter(
             @AuthenticationPrincipal Long userId,
-            @Valid @RequestBody CreateCharacterRequest request
+            @Valid @RequestBody RegisterCharacterRequest registerCharacterRequest
     ) {
-        CharacterCreateResponse response = characterCommandService.createCharacter(userId, request);
-        return ApiResponse.success(SuccessStatus.CREATE_CHARACTER_SUCCESS, response);
+        RegisterCharacterResponse response = characterCommandService.registerCharacter(userId, registerCharacterRequest);
+        return ApiResponse.success(SuccessStatus.REGISTER_CHARACTER_SUCCESS, response);
     }
 
     @Override
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<CharacterMeResponse>> getCharacterMain(
+    public ResponseEntity<ApiResponse<GetCharacterResponse>> getCharacterMain(
             @AuthenticationPrincipal Long userId
     ) {
-        CharacterMeResponse response = characterQueryService.getCharacterMain(userId);
+        GetCharacterResponse response = characterQueryService.getCharacter(userId);
         return ApiResponse.success(SuccessStatus.GET_CHARACTER_MAIN_SUCCESS, response);
     }
 
     @Override
-    @PostMapping("/growth")
-    public ResponseEntity<ApiResponse<CharacterGrowthResponse>> levelUp(
+    @PostMapping("/level")
+    public ResponseEntity<ApiResponse<GetCharacterGrowthResponse>> levelUp(
             @AuthenticationPrincipal Long userId
     ) {
-        CharacterGrowthResponse response = characterCommandService.levelUp(userId);
+        GetCharacterGrowthResponse response = characterCommandService.levelUp(userId);
         return ApiResponse.success(SuccessStatus.CHARACTER_GROWTH_SUCCESS, response);
     }
 
     @Override
     @GetMapping("/history")
-    public ResponseEntity<ApiResponse<CharacterHistoryResponse>> getCharacterHistory(
+    public ResponseEntity<ApiResponse<GetCharacterHistoryResponse>> getCharacterHistory(
             @AuthenticationPrincipal Long userId
     ) {
-        CharacterHistoryResponse response = characterQueryService.getCharacterHistory(userId);
+        GetCharacterHistoryResponse response = characterQueryService.getCharacterHistory(userId);
         return ApiResponse.success(SuccessStatus.GET_CHARACTER_HISTORY_SUCCESS, response);
     }
+
 }
