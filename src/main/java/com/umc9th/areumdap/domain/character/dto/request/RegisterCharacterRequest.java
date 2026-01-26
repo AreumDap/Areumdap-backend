@@ -1,7 +1,7 @@
 package com.umc9th.areumdap.domain.character.dto.request;
 
 import com.umc9th.areumdap.domain.character.enums.KeywordType;
-import com.umc9th.areumdap.domain.character.enums.Season;
+import com.umc9th.areumdap.domain.character.enums.CharacterSeason;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,7 +10,7 @@ import java.util.List;
 public record RegisterCharacterRequest(
         @Schema(description = "선택한 계절", example = "SPRING")
         @NotNull(message = "계절은 필수 입력 값입니다.")
-        Season season,
+        CharacterSeason characterSeason,
 
         @Schema(description = "선택한 키워드", example = "[\"부드러운\", \"다정한\"]")
         @NotNull(message = "키워드는 필수 입력 값입니다.")

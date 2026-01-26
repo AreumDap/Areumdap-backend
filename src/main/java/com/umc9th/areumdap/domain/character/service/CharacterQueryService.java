@@ -43,7 +43,7 @@ public class CharacterQueryService {
 
         boolean canLevelUp = character.getLevel() < CharacterLevel.LEVEL_4.getLevel()
                 && character.getCurrentXp() >= character.getGoalXp();
-        String imageUrl = characterImageResolver.resolve(character.getSeason(), character.getLevel());
+        String imageUrl = characterImageResolver.resolve(character.getCharacterSeason(), character.getLevel());
 
         return GetCharacterResponse.from(character,canLevelUp,missions,imageUrl);
     }

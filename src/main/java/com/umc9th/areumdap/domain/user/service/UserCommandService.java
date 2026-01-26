@@ -67,7 +67,7 @@ public class UserCommandService {
         if (user.isOnboardingCompleted())
             throw new GeneralException(ErrorStatus.USER_ONBOARDING_ALREADY_EXISTS);
 
-        if (!characterRepository.existsByUser(user))
+        if (characterRepository.findByUser(user).isEmpty())
             throw new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND);
 
         user.updateNikeName(request.nickname());

@@ -1,6 +1,6 @@
 package com.umc9th.areumdap.domain.character.resolver;
 
-import com.umc9th.areumdap.domain.character.enums.Season;
+import com.umc9th.areumdap.domain.character.enums.CharacterSeason;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,10 +10,10 @@ public class CharacterImageResolver {
     @Value("${areumdap.character.image.base-url}")
     private String baseUrl;
 
-    public String resolve(Season season, int level) {
+    public String resolve(CharacterSeason characterSeason, int level) {
         return baseUrl +
                 "/character/" +
-                season.name().toLowerCase() +
+                characterSeason.name().toLowerCase() +
                 "/stage" + level + ".png";
     }
 

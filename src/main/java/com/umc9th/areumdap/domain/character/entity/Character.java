@@ -3,7 +3,7 @@ package com.umc9th.areumdap.domain.character.entity;
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
-import com.umc9th.areumdap.domain.character.enums.Season;
+import com.umc9th.areumdap.domain.character.enums.CharacterSeason;
 import com.umc9th.areumdap.domain.user.entity.User;
 import jakarta.persistence.*;
 import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
@@ -52,7 +52,7 @@ public class Character extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "season", columnDefinition = "season_enum", nullable = false)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    private Season season;
+    private CharacterSeason characterSeason;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "keywords", columnDefinition = "text[]")
@@ -89,10 +89,10 @@ public class Character extends BaseEntity {
     }
 
     // 캐릭터 생성
-    public static Character create(User user, Season season, List<String> keywords) {
+    public static Character create(User user, CharacterSeason characterSeason, List<String> keywords) {
         return Character.builder()
                 .user(user)
-                .season(season)
+                .characterSeason(characterSeason)
                 .keywords(keywords)
                 .build();
     }

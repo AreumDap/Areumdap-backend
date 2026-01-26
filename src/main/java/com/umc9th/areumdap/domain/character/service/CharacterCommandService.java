@@ -8,6 +8,7 @@ import com.umc9th.areumdap.domain.character.dto.response.RegisterCharacterRespon
 import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.entity.CharacterHistory;
 import com.umc9th.areumdap.domain.character.enums.CharacterKeyword;
+import com.umc9th.areumdap.domain.character.enums.CharacterSeason;
 import com.umc9th.areumdap.domain.character.enums.KeywordType;
 import com.umc9th.areumdap.domain.character.repository.CharacterHistoryRepository;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
@@ -15,6 +16,7 @@ import com.umc9th.areumdap.domain.character.resolver.CharacterImageResolver;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +35,7 @@ public class CharacterCommandService {
     // 캐릭터 성장
     public GetCharacterGrowthResponse levelUp(Long userId) {
         User user = getUser(userId);
-        Character character = characterRepository.findByUserWithLock(user)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
+        Character character = getCharacterByUser(user);
 
         int previousLevel = character.getLevel();
         character.tryLevelUp();
@@ -47,21 +48,23 @@ public class CharacterCommandService {
     // 캐릭터 생성
     public RegisterCharacterResponse registerCharacter(Long userId, RegisterCharacterRequest request) {
         User user = getUser(userId);
-        if (characterRepository.existsByUser(user))
-            throw new GeneralException(ErrorStatus.CHARACTER_ALREADY_EXISTS);
-
         List<String> keywords = normalizeKeywords(request);
-        Character character = characterRepository.save(Character.create(user, request.season(), keywords));
-        String imageUrl = characterImageResolver.resolve(character.getSeason(), character.getLevel());
 
-        characterHistoryRepository.save(new CharacterHistory(character, character.getLevel()));
-        return new RegisterCharacterResponse(character.getId(), imageUrl);
+        try {
+            Character character = characterRepository.save(Character.create(user, request.characterSeason(), keywords));
+            String imageUrl = characterImageResolver.resolve(character.getCharacterSeason(), character.getLevel());
+
+            characterHistoryRepository.save(new CharacterHistory(character, character.getLevel()));
+            return new RegisterCharacterResponse(character.getId(), imageUrl);
+        } catch (DataIntegrityViolationException e) {
+            throw new GeneralException(ErrorStatus.CHARACTER_ALREADY_EXISTS);
+        }
+
     }
 
     // 캐릭터 XP 추가 (성장 가능 시 XP 추가 불가)
     public void addXpIfPossible(User user, int amount) {
-        Character character = characterRepository.findByUserWithLock(user)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
+        Character character = getCharacterByUser(user);
 
         if (character.getCurrentXp() >= character.getGoalXp()) {
             throw new GeneralException(ErrorStatus.CHARACTER_LEVEL_UP_REQUIRED);
@@ -70,31 +73,41 @@ public class CharacterCommandService {
         character.addXp(amount);
     }
 
-
     // 캐릭터 키워드 가져오기
     private List<String> normalizeKeywords(RegisterCharacterRequest request) {
 
         if (request.keywordType() == KeywordType.CUSTOM) {
-            return request.keywords();
+            return request.keywords(); // 그대로 저장
         }
 
+        // PRESET인 경우만 검증
         return request.keywords().stream()
-                .map(this::validatePresetKeyword)
+                .map(keyword -> validatePresetKeyword(keyword, request.characterSeason()))
                 .toList();
     }
 
     // 키워드 값이 미리 정해진 형식일 경우 값이 맞는지를 검사
-    private String validatePresetKeyword(String koreanKeyword) {
+    private String validatePresetKeyword(String koreanKeyword, CharacterSeason season) {
+        CharacterKeyword keyword = CharacterKeyword.fromKorean(koreanKeyword)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_CHARACTER_KEYWORD));
 
-        return CharacterKeyword.fromKorean(koreanKeyword)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_CHARACTER_KEYWORD))
-                .name();
+        if (!season.supports(keyword)) {
+            throw new GeneralException(ErrorStatus.INVALID_CHARACTER_KEYWORD);
+        }
+
+        return koreanKeyword; // 그대로 String 반환
     }
 
     // 유저 정보 가져오기
     private User getUser(Long userId) {
         return userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    // 캐릭터 정보 가져오기
+    private Character getCharacterByUser(User user) {
+        return characterRepository.findByUserWithLock(user)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
     }
 
 }
