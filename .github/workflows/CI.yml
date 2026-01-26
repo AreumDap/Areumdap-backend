@@ -90,7 +90,9 @@ jobs:
                 poll:
                   max-messages: 10
                   wait-time-seconds: 10
-          
+            character:
+              image:
+                base-url: ${CHARACTER_IMAGE_BASEURL}
           logging:
             discord:
               webhook-url: ${DISCORD_WEBHOOK_URL}
@@ -98,6 +100,8 @@ jobs:
           firebase:
             credentials:
               path: ${FIREBASE_CREDENTIALS_PATH}
+          server:
+            forward-headers-strategy: framework
           EOF
 
       - name: Grant execute permission for Gradle Wrapper
