@@ -16,10 +16,11 @@ import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
 import com.umc9th.areumdap.domain.chatbot.service.ChatbotAiService;
-import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -31,6 +32,7 @@ public class ChatCommandService {
     private final UserRepository userRepository;
     private final UserQuestionRepository userQuestionRepository;
     private final ChatbotAiService chatbotAiService;
+    private final ChatCacheService chatCacheService;
 
     public CreateChatThreadResponse createChatThread(Long userId, CreateChatThreadRequest request) {
         User user = userRepository.findByIdAndDeletedFalse(userId)
@@ -55,6 +57,9 @@ public class ChatCommandService {
                 .build();
         chatHistoryRepository.save(botHistory);
 
+        // Redis 캐시 초기화 (첫 BOT 메시지 저장)
+        chatCacheService.setChatHistories(userChatThread.getId(), List.of(botHistory));
+
         return new CreateChatThreadResponse(request.content(), userChatThread.getId());
     }
 
@@ -69,6 +74,7 @@ public class ChatCommandService {
             throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
         }
 
+        // 유저 메시지 저장
         ChatHistory userMessage = ChatHistory.builder()
                 .content(request.content())
                 .userChatThread(chatThread)
@@ -76,8 +82,10 @@ public class ChatCommandService {
                 .build();
         chatHistoryRepository.save(userMessage);
 
+        // AI 응답 생성
         String chatbotResponse = chatbotAiService.generateResponse(chatThread, request.content());
 
+        // AI 응답 저장
         ChatHistory botMessage = ChatHistory.builder()
                 .content(chatbotResponse)
                 .userChatThread(chatThread)
@@ -85,6 +93,9 @@ public class ChatCommandService {
                 .build();
         chatHistoryRepository.save(botMessage);
 
+        // Redis 캐시 업데이트 (유저 메시지 + AI 응답)
+        chatCacheService.addMessage(chatThread.getId(), request.content(), SenderType.USER);
+        chatCacheService.addMessage(chatThread.getId(), chatbotResponse, SenderType.BOT);
 
         return new SendChatMessageResponse(chatbotResponse, chatThread.getId());
     }
