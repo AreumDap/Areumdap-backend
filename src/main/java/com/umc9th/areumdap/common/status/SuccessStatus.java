@@ -73,7 +73,12 @@ public enum SuccessStatus implements BaseStatus {
     /**
      *  Mission
      */
-    GET_ALL_COMPLETED_MISSION_SUCCESS(HttpStatus.OK,"MISS_200","완료한 과제 조회 완료");
+    GET_ALL_COMPLETED_MISSION_SUCCESS(HttpStatus.OK,"MISS_200","완료한 과제 조회 완료"),
+
+    /**
+     *  Chat
+     */
+    CREATE_CHAT_THREAD_SUCCESS(HttpStatus.CREATED, "CHAT_201", "채팅 스레드 생성 성공");
 
     private final HttpStatus httpStatus;
     private final String code;
