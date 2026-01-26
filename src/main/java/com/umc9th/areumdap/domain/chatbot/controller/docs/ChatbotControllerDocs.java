@@ -2,7 +2,9 @@ package com.umc9th.areumdap.domain.chatbot.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
+import com.umc9th.areumdap.domain.chat.dto.request.SendChatMessageRequest;
 import com.umc9th.areumdap.domain.chat.dto.response.CreateChatThreadResponse;
+import com.umc9th.areumdap.domain.chat.dto.response.SendChatMessageResponse;
 import com.umc9th.areumdap.domain.chatbot.dto.response.GetChatbotRecommendsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,5 +39,17 @@ public interface ChatbotControllerDocs {
     ResponseEntity<ApiResponse<CreateChatThreadResponse>> createChatThread(
             @AuthenticationPrincipal Long userId,
             @RequestBody CreateChatThreadRequest request
+    );
+
+    @Operation(summary = "채팅 메시지 전송", description = "사용자 메시지를 전송하고 AI 응답을 받습니다")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "메시지 전송 성공", content = @Content(schema = @Schema(implementation = SendChatMessageResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "채팅 스레드 접근 권한 없음", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자 또는 채팅 스레드를 찾을 수 없음", content = @Content())
+    })
+    ResponseEntity<ApiResponse<SendChatMessageResponse>> sendChatResponse(
+            @AuthenticationPrincipal Long userId,
+            @RequestBody SendChatMessageRequest request
     );
 }

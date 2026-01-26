@@ -3,7 +3,9 @@ package com.umc9th.areumdap.domain.chatbot.controller;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
+import com.umc9th.areumdap.domain.chat.dto.request.SendChatMessageRequest;
 import com.umc9th.areumdap.domain.chat.dto.response.CreateChatThreadResponse;
+import com.umc9th.areumdap.domain.chat.dto.response.SendChatMessageResponse;
 import com.umc9th.areumdap.domain.chat.service.ChatCommandService;
 import com.umc9th.areumdap.domain.chatbot.controller.docs.ChatbotControllerDocs;
 import com.umc9th.areumdap.domain.chatbot.dto.response.GetChatbotRecommendsResponse;
@@ -41,6 +43,17 @@ public class ChatbotController implements ChatbotControllerDocs {
         return ApiResponse.success(
                 SuccessStatus.CREATE_CHAT_THREAD_SUCCESS,
                 chatCommandService.createChatThread(userId, request)
+        );
+    }
+
+    @PostMapping("")
+    public ResponseEntity<ApiResponse<SendChatMessageResponse>> sendChatResponse(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody SendChatMessageRequest request
+    ){
+        return ApiResponse.success(
+            SuccessStatus.SEND_CHAT_MESSAGE_SUCCESS,
+            chatCommandService.sendChatMessage(userId, request)
         );
     }
 }
