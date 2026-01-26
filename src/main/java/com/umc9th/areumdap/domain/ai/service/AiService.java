@@ -3,6 +3,7 @@ package com.umc9th.areumdap.domain.ai.service;
 import com.umc9th.areumdap.domain.ai.builder.HistorySummaryPromptBuilder;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.chat.repository.UserChatThreadRepository;
+import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.ChatClient;
@@ -16,10 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AiService {
     private final ChatClient chatClient;
-    private UserChatThreadRepository userChatThreadRepository;
+    private UserChatThreadQueryService userChatThreadQueryService;
 
     public String getHistorySummary(Long userId) {
-        List<UserChatThread> userChatThreads = userChatThreadRepository.findByUserId(userId);
+        List<UserChatThread> userChatThreads = userChatThreadQueryService.findByUserId(userId);
         String prompt = HistorySummaryPromptBuilder.build(userChatThreads);
 
         // 현재까지
