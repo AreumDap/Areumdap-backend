@@ -52,5 +52,6 @@ public class UserChatThread extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_question_id", nullable = true)
-    private UserQuestion userQuestionId;
+    private UserQuestion userQuestion;
+
 }

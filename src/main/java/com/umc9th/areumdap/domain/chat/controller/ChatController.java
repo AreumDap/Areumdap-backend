@@ -31,4 +31,5 @@ public class ChatController implements ChatControllerDocs {
                 chatCommandService.createChatThread(userId, request)
         );
     }
+
 }

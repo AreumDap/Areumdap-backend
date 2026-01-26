@@ -25,4 +25,5 @@ public interface ChatControllerDocs {
             @AuthenticationPrincipal Long userId,
             @RequestBody CreateChatThreadRequest request
     );
+  
 }
