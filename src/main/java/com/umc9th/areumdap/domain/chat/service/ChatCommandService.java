@@ -28,7 +28,7 @@ public class ChatCommandService {
     private final UserQuestionRepository userQuestionRepository;
 
     public CreateChatThreadResponse createChatThread(Long userId, CreateChatThreadRequest request) {
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         UserQuestion userQuestion = userQuestionRepository.findById(request.userQuestionId())
@@ -50,7 +50,7 @@ public class ChatCommandService {
                 .build();
         chatHistoryRepository.save(botHistory);
 
-        return CreateChatThreadResponse.of(request.content(), userChatThread.getId());
+        return new CreateChatThreadResponse(request.content(), userChatThread.getId());
     }
 
 }

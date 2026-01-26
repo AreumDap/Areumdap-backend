@@ -37,7 +37,7 @@ public class UserChatThread extends BaseEntity {
 
     @Column(name = "favorite", nullable = false)
     @Builder.Default
-    private Boolean favorite = false;
+    private boolean favorite = false;
 
     @OneToMany(mappedBy = "userChatThread", cascade = CascadeType.ALL)
     @Builder.Default

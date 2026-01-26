@@ -23,11 +23,8 @@ public class ChatController implements ChatControllerDocs {
 
     @PostMapping("/start")
     public ResponseEntity<ApiResponse<CreateChatThreadResponse>> createChatThread(
-            @AuthenticationPrincipal
-            Long userId,
-            @Valid
-            @RequestBody
-            CreateChatThreadRequest request
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody CreateChatThreadRequest request
     ) {
         return ApiResponse.success(
                 SuccessStatus.CREATE_CHAT_THREAD_SUCCESS,
