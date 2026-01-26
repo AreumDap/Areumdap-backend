@@ -3,8 +3,8 @@ package com.umc9th.areumdap.domain.character.controller.docs;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.domain.character.dto.request.RegisterCharacterRequest;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterGrowthResponse;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryResponse;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterMeResponse;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterHistoryResponse;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterResponse;
 import com.umc9th.areumdap.domain.character.dto.response.RegisterCharacterResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -59,10 +59,10 @@ public interface CharacterControllerDocs {
     @GetMapping("/me")
     @Operation(summary = "내 캐릭터 조회")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "캐릭터 조회 성공", content = @Content(schema = @Schema(implementation = CharacterMeResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "캐릭터 조회 성공", content = @Content(schema = @Schema(implementation = GetCharacterResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "캐릭터 정보 없음", content = @Content())
     })
-    ResponseEntity<ApiResponse<CharacterMeResponse>> getCharacterMain(
+    ResponseEntity<ApiResponse<GetCharacterResponse>> getCharacterMain(
             @AuthenticationPrincipal Long userId
     );
 
@@ -80,10 +80,10 @@ public interface CharacterControllerDocs {
     @GetMapping("/history")
     @Operation(summary = "캐릭터 성장 히스토리 조회")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성장 히스토리 조회 성공", content = @Content(schema = @Schema(implementation = CharacterHistoryResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성장 히스토리 조회 성공", content = @Content(schema = @Schema(implementation = GetCharacterHistoryResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "캐릭터 정보 없음", content = @Content())
     })
-    ResponseEntity<ApiResponse<CharacterHistoryResponse>> getCharacterHistory(
+    ResponseEntity<ApiResponse<GetCharacterHistoryResponse>> getCharacterHistory(
             @AuthenticationPrincipal Long userId
     );
 

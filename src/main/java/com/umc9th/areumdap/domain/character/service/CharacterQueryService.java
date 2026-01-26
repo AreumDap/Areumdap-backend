@@ -3,8 +3,8 @@ package com.umc9th.areumdap.domain.character.service;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryDto;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryResponse;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterMeResponse;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterHistoryResponse;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterResponse;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterMissionDto;
 import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.entity.CharacterHistory;
@@ -13,11 +13,11 @@ import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
 import com.umc9th.areumdap.domain.mission.repository.MissionQueryRepository;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
 import com.umc9th.areumdap.domain.character.repository.CharacterHistoryRepository;
-import com.umc9th.areumdap.domain.user.entity.UserOnboarding;
-import com.umc9th.areumdap.domain.user.repository.UserOnboardingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,48 +25,29 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class CharacterQueryService {
 
-
     private final CharacterRepository characterRepository;
     private final MissionQueryRepository missionQueryRepository;
-    private final UserOnboardingRepository userOnboardingRepository;
     private final CharacterHistoryRepository characterHistoryRepository;
 
-    // 캐릭터 조회
-    public CharacterMeResponse getCharacterMain(Long userId) {
-        
-        Character character = characterRepository.findByUserId(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
-
-        UserOnboarding userOnboarding = userOnboardingRepository.findByUserId(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_ONBOARDING_NOT_FOUND));
-        
+    // 자신의 캐릭터 조회
+    public GetCharacterResponse getCharacter(Long userId) {
+        Character character = getCharacterByUserID(userId);
         List<Mission> missionList = missionQueryRepository.findAllByUserChatThread_User_Id(userId);
 
-        java.time.LocalDateTime now = java.time.LocalDateTime.now();
         List<CharacterMissionDto> missions = missionList.stream()
-                .filter(mission -> !mission.getDueDate().isBefore(now))
+                .filter(mission -> !mission.getDueDate().isBefore(LocalDateTime.now()))
                 .map(CharacterMissionDto::from)
                 .toList();
 
         boolean canLevelUp = character.getLevel() < CharacterLevel.LEVEL_4.getLevel()
                 && character.getCurrentXp() >= character.getGoalXp();
 
-        return CharacterMeResponse.builder()
-                .characterId(character.getId())
-                .nickname(userOnboarding.getNickname())
-                .level(character.getLevel())
-                .currentXp(character.getCurrentXp())
-                .goalXp(character.getGoalXp())
-                .hasLevelUpParams(canLevelUp)
-                .missions(missions)
-                .build();
+        return GetCharacterResponse.from(character,canLevelUp,missions);
     }
 
     // 캐릭터 히스토리 조회
-    public CharacterHistoryResponse getCharacterHistory(Long userId) {
-        Character character = characterRepository.findByUserId(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
-
+    public GetCharacterHistoryResponse getCharacterHistory(Long userId) {
+        Character character = getCharacterByUserID(userId);
         List<CharacterHistory> historyList = characterHistoryRepository.findAllByCharacterOrderByCreatedAt(character);
 
         List<CharacterHistoryDto> responseList = new java.util.ArrayList<>();
@@ -76,10 +57,13 @@ public class CharacterQueryService {
                 .map(history -> new CharacterHistoryDto(history.getLevel(), history.getCreatedAt().toLocalDate()))
                 .toList());
 
-        return CharacterHistoryResponse.builder()
-                .pastDescription(character.getPastDescription())
-                .presentDescription(character.getPresentDescription())
-                .historyList(responseList)
-                .build();
+        return GetCharacterHistoryResponse.from(character, responseList);
     }
+
+    // 유저 아이디로 캐릭터 조회
+    public Character getCharacterByUserID(Long userId) {
+        return characterRepository.findByUserId(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
+    }
+
 }

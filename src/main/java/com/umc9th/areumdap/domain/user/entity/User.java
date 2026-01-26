@@ -75,6 +75,13 @@ public class User extends BaseEntity {
     @Column(name = "notification_time")
     private LocalTime notificationTime;
 
+    @Column(name = "onboarding_completed", nullable = false)
+    @Builder.Default
+    private boolean onboardingCompleted = false;
+
+    @Column(name = "nickname", length = 10)
+    private String nickname;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<UserChatThread> userChatThreads = new ArrayList<>();
@@ -132,4 +139,11 @@ public class User extends BaseEntity {
         return (long) (currentYear - birth.getYear() + 1); // 한국 나이
     }
 
+    public void completeOnboarding() {
+        this.onboardingCompleted = true;
+    }
+
+    public void updateNikeName(String nickname) {
+        this.nickname = nickname;
+    }
 }

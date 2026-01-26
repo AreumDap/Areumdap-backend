@@ -5,8 +5,8 @@ import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.character.controller.docs.CharacterControllerDocs;
 import com.umc9th.areumdap.domain.character.dto.request.RegisterCharacterRequest;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterGrowthResponse;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterHistoryResponse;
-import com.umc9th.areumdap.domain.character.dto.response.CharacterMeResponse;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterHistoryResponse;
+import com.umc9th.areumdap.domain.character.dto.response.GetCharacterResponse;
 import com.umc9th.areumdap.domain.character.dto.response.RegisterCharacterResponse;
 import com.umc9th.areumdap.domain.character.service.CharacterCommandService;
 import com.umc9th.areumdap.domain.character.service.CharacterQueryService;
@@ -40,10 +40,10 @@ public class CharacterController implements CharacterControllerDocs {
 
     @Override
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<CharacterMeResponse>> getCharacterMain(
+    public ResponseEntity<ApiResponse<GetCharacterResponse>> getCharacterMain(
             @AuthenticationPrincipal Long userId
     ) {
-        CharacterMeResponse response = characterQueryService.getCharacterMain(userId);
+        GetCharacterResponse response = characterQueryService.getCharacter(userId);
         return ApiResponse.success(SuccessStatus.GET_CHARACTER_MAIN_SUCCESS, response);
     }
 
@@ -58,10 +58,10 @@ public class CharacterController implements CharacterControllerDocs {
 
     @Override
     @GetMapping("/history")
-    public ResponseEntity<ApiResponse<CharacterHistoryResponse>> getCharacterHistory(
+    public ResponseEntity<ApiResponse<GetCharacterHistoryResponse>> getCharacterHistory(
             @AuthenticationPrincipal Long userId
     ) {
-        CharacterHistoryResponse response = characterQueryService.getCharacterHistory(userId);
+        GetCharacterHistoryResponse response = characterQueryService.getCharacterHistory(userId);
         return ApiResponse.success(SuccessStatus.GET_CHARACTER_HISTORY_SUCCESS, response);
     }
 
