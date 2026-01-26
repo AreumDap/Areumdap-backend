@@ -67,8 +67,8 @@ public class UserController implements UserControllerDocs {
     }
 
     @Override
-    @GetMapping("/threads")
-    public ResponseEntity<ApiResponse<UserChatThreadCursorResponse>> getThreads(
+    @GetMapping("/chat/threads")
+    public ResponseEntity<ApiResponse<UserChatThreadCursorResponse>> getUserChatThreads(
             @AuthenticationPrincipal Long userId,
             @RequestParam(defaultValue = "false") boolean favorite,
             @Valid @ModelAttribute UserChatThreadCursorRequest cursor

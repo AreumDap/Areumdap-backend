@@ -83,7 +83,7 @@ public interface UserControllerDocs {
                 """
     )
     @GetMapping("/threads")
-    ResponseEntity<ApiResponse<UserChatThreadCursorResponse>> getThreads(
+    ResponseEntity<ApiResponse<UserChatThreadCursorResponse>> getUserChatThreads(
             @AuthenticationPrincipal Long userId,
             @Parameter(
                     description = "true면 즐겨찾기 채팅방만 조회, false면 전체 최신순 조회"
