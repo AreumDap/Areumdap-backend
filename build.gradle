@@ -22,6 +22,13 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:0.8.1"
+    }
 }
 
 dependencies {
@@ -83,11 +90,11 @@ dependencies {
     //FCM
     implementation 'com.google.firebase:firebase-admin:9.2.0'
 
-    //OpenAI
-    implementation 'com.openai:openai-java:4.16.1'
-
     // Actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    
+    // Spring-ai
+    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 }
 
 tasks.named('test') {

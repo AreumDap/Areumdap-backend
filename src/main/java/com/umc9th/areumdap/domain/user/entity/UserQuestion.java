@@ -47,4 +47,8 @@ public class UserQuestion extends BaseEntity {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Tag tag;
 
+    public void markAsUsed() {
+        this.used = true;
+    }
+
 }
