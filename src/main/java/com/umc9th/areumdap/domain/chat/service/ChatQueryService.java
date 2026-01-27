@@ -60,7 +60,8 @@ public class ChatQueryService {
                 report.getSummaryContent(),
                 tags,
                 insights,
-                missions
+                missions,
+                report.getCreatedAt().toLocalDate()
         );
     }
 }

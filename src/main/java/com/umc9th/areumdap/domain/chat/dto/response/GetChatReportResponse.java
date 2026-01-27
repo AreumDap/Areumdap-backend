@@ -4,6 +4,7 @@ import com.umc9th.areumdap.domain.mission.dto.response.MissionSummaryResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportInsightResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportTagResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public record GetChatReportResponse(
@@ -14,7 +15,8 @@ public record GetChatReportResponse(
         String summaryContent,
         List<ReportTagResponse> reportTags ,
         List<ReportInsightResponse> insightContents,
-        List<MissionSummaryResponse> missions
+        List<MissionSummaryResponse> missions,
+        LocalDate createdAt
 
 ) {
 }
