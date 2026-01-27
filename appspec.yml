@@ -2,17 +2,7 @@ version: 0.0
 os: linux
 
 hooks:
-  ApplicationStop:
-    - location: scripts/stop.sh
-      timeout: 300
-      runas: root
-
-  AfterInstall:
-    - location: scripts/docker_cleanup.sh
-      timeout: 300
-      runas: root
-
   ApplicationStart:
-    - location: scripts/start.sh
+    - location: scripts/deploy.sh
       timeout: 300
       runas: root
