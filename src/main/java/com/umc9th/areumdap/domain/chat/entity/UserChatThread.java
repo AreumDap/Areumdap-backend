@@ -50,7 +50,7 @@ public class UserChatThread extends BaseEntity {
     private List<Mission> missions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_question_id")
+    @JoinColumn(name = "user_question_id", nullable = false)
     private UserQuestion userQuestion;
 
 }
