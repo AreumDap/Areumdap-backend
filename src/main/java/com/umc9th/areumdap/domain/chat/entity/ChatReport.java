@@ -1,9 +1,12 @@
-package com.umc9th.areumdap.domain.report.entity;
+package com.umc9th.areumdap.domain.chat.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
-import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
+import com.umc9th.areumdap.domain.report.entity.ReportInsightContent;
+import com.umc9th.areumdap.domain.report.entity.ReportTag;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Table(name = "chat_report")
 @Entity
@@ -36,9 +39,9 @@ public class ChatReport extends BaseEntity {
     @Column(name = "summary_content", nullable = false, columnDefinition = "TEXT")
     private String summaryContent;
 
-    @Column(name = "report_tag", nullable = false)
-    private String reportTag;
+    @OneToMany(mappedBy = "chatReport", fetch = FetchType.LAZY)
+    private List<ReportTag> reportTags;
 
-    @Column(name = "insight_content", nullable = false, columnDefinition = "TEXT")
-    private String insightContent;
+    @OneToMany(mappedBy = "chatReport", fetch = FetchType.LAZY)
+    private List<ReportInsightContent> insights;
 }

@@ -102,11 +102,16 @@ public enum ErrorStatus implements BaseStatus {
     CHAT_THREAD_NOT_FOUND(HttpStatus.NOT_FOUND,"THREAD_404","채팅창을 찾을 수 없습니다."),
 
     /**
-     * QUESTION
+     * Question
      */
     ALREADY_SAVED_QUESTION(HttpStatus.BAD_REQUEST,"QUESTION_400","이미 저장한 질문입니다."),
     QUESTION_BANK_NOT_FOUND(HttpStatus.NOT_FOUND,"QUESTION_404","존재하지 않는 질문은행 입니다."),
     USER_QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND,"USER_QUESTION_404","존재하지 않는 유저 질문입니다."),
+
+    /**
+     *  Report
+     */
+    CHAT_REPORT_NOT_FOUND(HttpStatus.NOT_FOUND,"REPORT_404","존재하지 않는 레포트입니다."),
 
     /**
      * ChatBot
