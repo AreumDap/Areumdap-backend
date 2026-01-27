@@ -19,11 +19,11 @@ import com.umc9th.areumdap.domain.chatbot.service.ChatbotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ChatCommandService {
 
@@ -33,12 +33,14 @@ public class ChatCommandService {
     private final UserQuestionRepository userQuestionRepository;
     private final ChatbotService chatbotAiService;
     private final ChatCacheService chatCacheService;
+    private final TransactionTemplate transactionTemplate;
 
     private User getUser(Long userId) {
         return userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 
+    @Transactional
     public CreateChatThreadResponse createChatThread(Long userId, CreateChatThreadRequest request) {
         User user = getUser(userId);
 
@@ -67,36 +69,43 @@ public class ChatCommandService {
         return new CreateChatThreadResponse(request.content(), userChatThread.getId());
     }
 
-    public SendChatMessageResponse sendChatMessage(Long userId, SendChatMessageRequest request){
-        User user = getUser(userId);
+    public SendChatMessageResponse sendChatMessage(Long userId, SendChatMessageRequest request) {
+        // 트랜잭션 1: 유저 확인 + 채팅 스레드 조회 + 유저 메시지 저장
+        UserChatThread chatThread = transactionTemplate.execute(status -> {
+            User user = getUser(userId);
 
-        UserChatThread chatThread = userChatThreadRepository.findById(request.userChatThreadId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
+            UserChatThread thread = userChatThreadRepository.findById(request.userChatThreadId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
 
-        if (!chatThread.getUser().getId().equals(userId)) {
-            throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
-        }
+            if (!thread.getUser().getId().equals(userId)) {
+                throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
+            }
 
-        // 유저 메시지 저장
-        ChatHistory userMessage = ChatHistory.builder()
-                .content(request.content())
-                .userChatThread(chatThread)
-                .senderType(SenderType.USER)
-                .build();
-        chatHistoryRepository.save(userMessage);
+            // 유저 메시지 저장
+            ChatHistory userMessage = ChatHistory.builder()
+                    .content(request.content())
+                    .userChatThread(thread)
+                    .senderType(SenderType.USER)
+                    .build();
+            chatHistoryRepository.save(userMessage);
 
-        // AI 응답 생성
+            return thread;
+        });
+
+        // AI 응답 생성 (트랜잭션 외부 - DB 커넥션 점유 X)
         String chatbotResponse = chatbotAiService.generateResponse(chatThread, request.content());
 
-        // AI 응답 저장
-        ChatHistory botMessage = ChatHistory.builder()
-                .content(chatbotResponse)
-                .userChatThread(chatThread)
-                .senderType(SenderType.BOT)
-                .build();
-        chatHistoryRepository.save(botMessage);
+        // 트랜잭션 2: AI 응답 저장
+        transactionTemplate.executeWithoutResult(status -> {
+            ChatHistory botMessage = ChatHistory.builder()
+                    .content(chatbotResponse)
+                    .userChatThread(chatThread)
+                    .senderType(SenderType.BOT)
+                    .build();
+            chatHistoryRepository.save(botMessage);
+        });
 
-        // Redis 캐시 업데이트 (유저 메시지 + AI 응답)
+        // Redis 캐시 업데이트 (트랜잭션 불필요)
         chatCacheService.addMessage(chatThread.getId(), request.content(), SenderType.USER);
         chatCacheService.addMessage(chatThread.getId(), chatbotResponse, SenderType.BOT);
 
