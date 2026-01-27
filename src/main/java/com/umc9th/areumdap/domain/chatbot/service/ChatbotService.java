@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ChatbotAiService {
+public class ChatbotService {
     private final OpenAiChatClient chatClient;
     private final ChatHistoryRepository chatHistoryRepository;
     private final ChatCacheService chatCacheService;

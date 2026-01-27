@@ -15,7 +15,7 @@ import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
-import com.umc9th.areumdap.domain.chatbot.service.ChatbotAiService;
+import com.umc9th.areumdap.domain.chatbot.service.ChatbotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +31,7 @@ public class ChatCommandService {
     private final ChatHistoryRepository chatHistoryRepository;
     private final UserRepository userRepository;
     private final UserQuestionRepository userQuestionRepository;
-    private final ChatbotAiService chatbotAiService;
+    private final ChatbotService chatbotAiService;
     private final ChatCacheService chatCacheService;
 
     public CreateChatThreadResponse createChatThread(Long userId, CreateChatThreadRequest request) {
