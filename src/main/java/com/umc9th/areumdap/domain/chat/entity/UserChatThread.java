@@ -3,7 +3,6 @@ package com.umc9th.areumdap.domain.chat.entity;
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.domain.mission.entity.Mission;
 import com.umc9th.areumdap.domain.question.entity.QuestionBank;
-import com.umc9th.areumdap.domain.report.entity.ChatReport;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import jakarta.persistence.*;
@@ -51,6 +50,7 @@ public class UserChatThread extends BaseEntity {
     private List<Mission> missions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_question_id", nullable = true)
-    private UserQuestion userQuestionId;
+    @JoinColumn(name = "user_question_id", nullable = false)
+    private UserQuestion userQuestion;
+
 }

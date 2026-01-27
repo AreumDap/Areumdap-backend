@@ -37,9 +37,9 @@ public enum ErrorStatus implements BaseStatus {
     /**
      * User
      */
+    INVALID_USER_NOTIFICATION_SETTING(HttpStatus.BAD_REQUEST,"USER_400", "알림이 켜져 있을 경우 알림 시간은 필수입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_404", "유저가 존재하지 않습니다."),
     USER_ONBOARDING_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_404", "유저 온보딩 정보를 찾을 수 없습니다."),
-    INVALID_USER_NOTIFICATION_SETTING(HttpStatus.BAD_REQUEST,"USER_404", "알림이 켜져 있을 경우 알림 시간은 필수입니다."),
     USER_ONBOARDING_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_409", "유저 온보딩이 이미 존재합니다."),
 
     /**
@@ -103,11 +103,16 @@ public enum ErrorStatus implements BaseStatus {
     CHAT_THREAD_ACCESS_DENIED(HttpStatus.FORBIDDEN,"THREAD_403", "채팅 스레드 접근 권한이 없습니다"),
 
     /**
-     * QUESTION
+     * Question
      */
     ALREADY_SAVED_QUESTION(HttpStatus.BAD_REQUEST,"QUESTION_400","이미 저장한 질문입니다."),
     QUESTION_BANK_NOT_FOUND(HttpStatus.NOT_FOUND,"QUESTION_404","존재하지 않는 질문은행 입니다."),
     USER_QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND,"USER_QUESTION_404","존재하지 않는 유저 질문입니다."),
+
+    /**
+     *  Report
+     */
+    CHAT_REPORT_NOT_FOUND(HttpStatus.NOT_FOUND,"REPORT_404","존재하지 않는 레포트입니다."),
 
     /**
      * ChatBot

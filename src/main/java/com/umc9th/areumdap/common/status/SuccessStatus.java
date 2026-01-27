@@ -70,7 +70,6 @@ public enum SuccessStatus implements BaseStatus {
      */
     GET_CHATBOT_RECOMMEND_SUCCESS(HttpStatus.OK, "CHATBOT_200", "AI 대화 질문 추천 조회 성공"),
 
-
     /**
      *  Mission
      */
@@ -80,7 +79,9 @@ public enum SuccessStatus implements BaseStatus {
      *  Chat
      */
     CREATE_CHAT_THREAD_SUCCESS(HttpStatus.CREATED, "CHAT_201", "채팅 스레드 생성 성공"),
-    SEND_CHAT_MESSAGE_SUCCESS(HttpStatus.OK, "CHAT_200","메시지 전송 성공");
+    SEND_CHAT_MESSAGE_SUCCESS(HttpStatus.OK, "CHAT_200","메시지 전송 성공"),
+    GET_USER_CHAT_THREADS_SUCCESS(HttpStatus.OK,"CHAT_200","유저 채팅창 목록 조회 완료"),
+    GET_CHAT_REPORT_SUCCESS(HttpStatus.OK,"CHAT_200","채팅 레포트 조회 성공");
 
     private final HttpStatus httpStatus;
     private final String code;
