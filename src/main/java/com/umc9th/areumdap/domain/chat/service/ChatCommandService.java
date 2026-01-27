@@ -34,9 +34,13 @@ public class ChatCommandService {
     private final ChatbotService chatbotAiService;
     private final ChatCacheService chatCacheService;
 
-    public CreateChatThreadResponse createChatThread(Long userId, CreateChatThreadRequest request) {
-        User user = userRepository.findByIdAndDeletedFalse(userId)
+    private User getUser(Long userId) {
+        return userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    public CreateChatThreadResponse createChatThread(Long userId, CreateChatThreadRequest request) {
+        User user = getUser(userId);
 
         UserQuestion userQuestion = userQuestionRepository.findById(request.userQuestionId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_QUESTION_NOT_FOUND));
@@ -64,8 +68,7 @@ public class ChatCommandService {
     }
 
     public SendChatMessageResponse sendChatMessage(Long userId, SendChatMessageRequest request){
-        User user = userRepository.findByIdAndDeletedFalse(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        User user = getUser(userId);
 
         UserChatThread chatThread = userChatThreadRepository.findById(request.userChatThreadId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
