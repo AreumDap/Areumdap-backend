@@ -41,11 +41,10 @@ public class ChatbotController implements ChatbotControllerDocs {
     public ResponseEntity<ApiResponse<CreateChatThreadResponse>> createChatThread(
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody CreateChatThreadRequest request
+
     ) {
-        return ApiResponse.success(
-                SuccessStatus.CREATE_CHAT_THREAD_SUCCESS,
-                chatCommandService.createChatThread(userId, request)
-        );
+        CreateChatThreadResponse response = chatCommandService.createChatThread(userId, request);
+        return ApiResponse.success(SuccessStatus.CREATE_CHAT_THREAD_SUCCESS, response);
     }
 
     @Override
@@ -54,9 +53,7 @@ public class ChatbotController implements ChatbotControllerDocs {
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody SendChatMessageRequest request
     ){
-        return ApiResponse.success(
-            SuccessStatus.SEND_CHAT_MESSAGE_SUCCESS,
-            chatCommandService.sendChatMessage(userId, request)
-        );
+        SendChatMessageResponse response = chatCommandService.sendChatMessage(userId, request);
+        return ApiResponse.success(SuccessStatus.SEND_CHAT_MESSAGE_SUCCESS, response);
     }
 }
