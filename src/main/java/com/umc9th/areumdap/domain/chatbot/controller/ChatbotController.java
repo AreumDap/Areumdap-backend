@@ -23,6 +23,7 @@ public class ChatbotController implements ChatbotControllerDocs {
 
     private final ChatbotQueryService chatbotQueryService;
 
+    @Override
     @GetMapping("/recommend")
     public ResponseEntity<ApiResponse<GetChatbotRecommendsResponse>> getChatbotRecommend(
             @AuthenticationPrincipal Long userId
@@ -35,6 +36,7 @@ public class ChatbotController implements ChatbotControllerDocs {
 
     private final ChatCommandService chatCommandService;
 
+    @Override
     @PostMapping("/start")
     public ResponseEntity<ApiResponse<CreateChatThreadResponse>> createChatThread(
             @AuthenticationPrincipal Long userId,
@@ -46,6 +48,7 @@ public class ChatbotController implements ChatbotControllerDocs {
         );
     }
 
+    @Override
     @PostMapping("")
     public ResponseEntity<ApiResponse<SendChatMessageResponse>> sendChatResponse(
             @AuthenticationPrincipal Long userId,
