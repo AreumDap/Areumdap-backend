@@ -23,9 +23,10 @@ public class AiService {
         List<UserChatThread> userChatThreads = userChatThreadQueryService.findByUserId(userId);
         String prompt = HistorySummaryPromptBuilder.build(userChatThreads);
 
-        // 현재까지
-        // 과거 + 현재 동시에 반환
+        String result = chatClient.call(prompt);
 
-        return chatClient.call(prompt);
+        log.debug(result);
+
+        return result;
     }
 }
