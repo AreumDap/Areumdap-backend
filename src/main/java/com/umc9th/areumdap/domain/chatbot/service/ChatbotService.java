@@ -18,6 +18,7 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.openai.OpenAiChatClient;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ChatbotService {
     private final OpenAiChatClient chatClient;
     private final ChatHistoryRepository chatHistoryRepository;
