@@ -100,6 +100,7 @@ public enum ErrorStatus implements BaseStatus {
      */
     CHAT_HISTORY_NOT_FOUND(HttpStatus.NOT_FOUND,"HISTORY_404","chatHistory를 찾을 수 없습니다."),
     CHAT_THREAD_NOT_FOUND(HttpStatus.NOT_FOUND,"THREAD_404","채팅창을 찾을 수 없습니다."),
+    CHAT_THREAD_ACCESS_DENIED(HttpStatus.FORBIDDEN,"THREAD_403", "채팅 스레드 접근 권한이 없습니다"),
 
     /**
      * Question
@@ -116,6 +117,7 @@ public enum ErrorStatus implements BaseStatus {
     /**
      * ChatBot
      */
+    CHATBOT_RESPONSE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"CHATBOT_500", "챗봇 응답 생성에 실패했습니다"),
     QUESTION_BANK_NOT_ENOUGH(HttpStatus.UNPROCESSABLE_ENTITY, "CHATBOT_422", "배정 가능한 질문이 부족합니다.");
 
     private final HttpStatus httpStatus;

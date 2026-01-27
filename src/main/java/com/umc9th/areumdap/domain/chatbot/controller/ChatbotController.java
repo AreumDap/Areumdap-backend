@@ -2,15 +2,19 @@ package com.umc9th.areumdap.domain.chatbot.controller;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
+import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
+import com.umc9th.areumdap.domain.chat.dto.request.SendChatMessageRequest;
+import com.umc9th.areumdap.domain.chat.dto.response.CreateChatThreadResponse;
+import com.umc9th.areumdap.domain.chat.dto.response.SendChatMessageResponse;
+import com.umc9th.areumdap.domain.chat.service.ChatCommandService;
 import com.umc9th.areumdap.domain.chatbot.controller.docs.ChatbotControllerDocs;
 import com.umc9th.areumdap.domain.chatbot.dto.response.GetChatbotRecommendsResponse;
 import com.umc9th.areumdap.domain.chatbot.service.ChatbotQueryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/chatbot")
 @RestController
@@ -19,6 +23,7 @@ public class ChatbotController implements ChatbotControllerDocs {
 
     private final ChatbotQueryService chatbotQueryService;
 
+    @Override
     @GetMapping("/recommend")
     public ResponseEntity<ApiResponse<GetChatbotRecommendsResponse>> getChatbotRecommend(
             @AuthenticationPrincipal Long userId
@@ -29,4 +34,26 @@ public class ChatbotController implements ChatbotControllerDocs {
         );
     }
 
+    private final ChatCommandService chatCommandService;
+
+    @Override
+    @PostMapping("/start")
+    public ResponseEntity<ApiResponse<CreateChatThreadResponse>> createChatThread(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody CreateChatThreadRequest request
+
+    ) {
+        CreateChatThreadResponse response = chatCommandService.createChatThread(userId, request);
+        return ApiResponse.success(SuccessStatus.CREATE_CHAT_THREAD_SUCCESS, response);
+    }
+
+    @Override
+    @PostMapping("")
+    public ResponseEntity<ApiResponse<SendChatMessageResponse>> sendChatResponse(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody SendChatMessageRequest request
+    ){
+        SendChatMessageResponse response = chatCommandService.sendChatMessage(userId, request);
+        return ApiResponse.success(SuccessStatus.SEND_CHAT_MESSAGE_SUCCESS, response);
+    }
 }
