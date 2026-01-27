@@ -15,6 +15,9 @@ public class HistorySummaryPromptBuilder {
                     .addModule(new JavaTimeModule())
                     .build();
 
+    private static final DateTimeFormatter DATE_FORMATTER =
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     private static final String SYSTEM_PROMPT = """
             너는 ‘아름답’ 서비스의 회고 서술 AI이다.
             
@@ -98,14 +101,18 @@ public class HistorySummaryPromptBuilder {
     public static String build(List<UserChatThread> chatThreads) {
         StringBuilder summaryBlock = new StringBuilder();
 
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         chatThreads.forEach(thread -> {
+            String summary = thread.getReport().getSummaryContent();
+
+            if (summary == null || summary.isBlank()) {
+                return;
+            }
+
             summaryBlock
                     .append("- ")
-                    .append(thread.getUpdatedAt().format(formatter))
+                    .append(thread.getUpdatedAt().format(DATE_FORMATTER))
                     .append(": ")
-                    .append(thread.getSummary())
+                    .append(summary)
                     .append("\n");
             });
 

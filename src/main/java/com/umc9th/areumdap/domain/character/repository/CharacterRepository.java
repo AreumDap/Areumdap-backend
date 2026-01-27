@@ -19,6 +19,4 @@ public interface CharacterRepository extends JpaRepository<Character, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT c FROM Character c JOIN c.user u WHERE u = :user AND u.deleted = false")
     Optional<Character> findByUserWithLock(@Param("user") User user);
-
-    Long user(User user);
 }
