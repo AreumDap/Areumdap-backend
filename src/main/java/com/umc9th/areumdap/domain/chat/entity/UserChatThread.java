@@ -41,7 +41,4 @@ public class UserChatThread extends BaseEntity {
     @OneToMany(mappedBy = "userChatThread", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Question> questions = new ArrayList<>();
-
-    @Column(name = "summary")
-    private String summary;
 }
