@@ -21,14 +21,15 @@ public class ChatCacheService {
     private static final String CACHE_PREFIX = "chat:thread:";
     private static final long CACHE_TTL_MINUTES = 30;
 
-    @SuppressWarnings("unchecked")
     public List<ChatMessageCache> getChatHistories(Long threadId) { //캐시에서 대화 내역 조회
         String key = CACHE_PREFIX + threadId;
         try {
-            Object cached = redisTemplate.opsForValue().get(key);
-            if (cached != null) {
+            List<Object> cached = redisTemplate.opsForList().range(key, 0, -1);
+            if (cached != null && !cached.isEmpty()) {
                 log.debug("Cache hit for thread: {}", threadId);
-                return (List<ChatMessageCache>) cached;
+                return cached.stream()
+                        .map(obj -> (ChatMessageCache) obj)
+                        .toList();
             }
         } catch (Exception e) {
             log.warn("Failed to get cache for thread: {}", threadId, e);
@@ -39,10 +40,16 @@ public class ChatCacheService {
     public void setChatHistories(Long threadId, List<ChatHistory> histories) { //대화 내역 캐시 저장
         String key = CACHE_PREFIX + threadId;
         try {
-            List<ChatMessageCache> cacheList = histories.stream()
-                    .map(ChatMessageCache::from)
-                    .toList();
-            redisTemplate.opsForValue().set(key, cacheList, CACHE_TTL_MINUTES, TimeUnit.MINUTES);
+            // 기존 캐시 삭제 후 새로 저장
+            redisTemplate.delete(key);
+
+            if (!histories.isEmpty()) {
+                List<ChatMessageCache> cacheList = histories.stream()
+                        .map(ChatMessageCache::from)
+                        .toList();
+                redisTemplate.opsForList().rightPushAll(key, cacheList.toArray());
+                redisTemplate.expire(key, CACHE_TTL_MINUTES, TimeUnit.MINUTES);
+            }
             log.debug("Cache set for thread: {}", threadId);
         } catch (Exception e) {
             log.warn("Failed to set cache for thread: {}", threadId, e);
@@ -52,11 +59,10 @@ public class ChatCacheService {
     public void addMessage(Long threadId, String content, SenderType senderType) { //캐시에 새 메시지 추가
         String key = CACHE_PREFIX + threadId;
         try {
-            @SuppressWarnings("unchecked")
-            List<ChatMessageCache> cached = (List<ChatMessageCache>) redisTemplate.opsForValue().get(key);
-            if (cached != null) {
-                cached.add(new ChatMessageCache(content, senderType));
-                redisTemplate.opsForValue().set(key, cached, CACHE_TTL_MINUTES, TimeUnit.MINUTES);
+            // RPUSH 원자적 연산으로 동시성 문제 해결
+            Long size = redisTemplate.opsForList().rightPush(key, new ChatMessageCache(content, senderType));
+            if (size != null && size > 0) {
+                redisTemplate.expire(key, CACHE_TTL_MINUTES, TimeUnit.MINUTES);
                 log.debug("Message added to cache for thread: {}", threadId);
             }
         } catch (Exception e) {
