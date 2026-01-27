@@ -18,8 +18,8 @@ public interface ChatControllerDocs {
     @Operation(summary = "채팅 레포트 조회")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "채팅 레포트 조회 성공", content = @Content()),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값이 올바르지 않는 경우", content = @Content()),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "레포트가 존재하지 않는 경우", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값이 올바르지 않은 경우", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "레포트가 존재하지 않은 경우", content = @Content()),
     })
     ResponseEntity<ApiResponse<GetChatReportResponse>> getChatReport(
             @AuthenticationPrincipal Long userId,
