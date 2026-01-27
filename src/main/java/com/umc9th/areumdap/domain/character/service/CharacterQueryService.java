@@ -8,6 +8,7 @@ import com.umc9th.areumdap.domain.character.dto.response.GetCharacterResponse;
 import com.umc9th.areumdap.domain.character.dto.response.CharacterMissionDto;
 import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.entity.CharacterHistory;
+import com.umc9th.areumdap.domain.character.enums.CharacterSeason;
 import com.umc9th.areumdap.domain.character.resolver.CharacterImageResolver;
 import com.umc9th.areumdap.domain.mission.entity.Mission;
 import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
@@ -53,12 +54,10 @@ public class CharacterQueryService {
         Character character = getCharacterByUserId(userId);
         List<CharacterHistory> historyList = characterHistoryRepository.findAllByCharacterOrderByCreatedAt(character);
 
-        List<CharacterHistoryDto> responseList = new java.util.ArrayList<>();
-        responseList.add(new CharacterHistoryDto(1, character.getCreatedAt().toLocalDate()));
-        
-        responseList.addAll(historyList.stream()
-                .map(history -> new CharacterHistoryDto(history.getLevel(), history.getCreatedAt().toLocalDate()))
-                .toList());
+        CharacterSeason season = character.getCharacterSeason();
+        List<CharacterHistoryDto> responseList = historyList.stream()
+                .map(history -> CharacterHistoryDto.of(history, characterImageResolver.resolve(season, history.getLevel())))
+                .toList();
 
         return GetCharacterHistoryResponse.from(character, responseList);
     }
