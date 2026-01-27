@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import jakarta.validation.Valid;
 
 @Tag(name = "Chatbot", description = "챗봇 API")
 public interface ChatbotControllerDocs {
@@ -38,7 +39,7 @@ public interface ChatbotControllerDocs {
     })
     ResponseEntity<ApiResponse<CreateChatThreadResponse>> createChatThread(
             @AuthenticationPrincipal Long userId,
-            @RequestBody CreateChatThreadRequest request
+            @Valid @RequestBody CreateChatThreadRequest request
     );
 
     @Operation(summary = "채팅 메시지 전송", description = "사용자 메시지를 전송하고 AI 응답을 받습니다")
@@ -50,6 +51,6 @@ public interface ChatbotControllerDocs {
     })
     ResponseEntity<ApiResponse<SendChatMessageResponse>> sendChatResponse(
             @AuthenticationPrincipal Long userId,
-            @RequestBody SendChatMessageRequest request
+            @Valid @RequestBody SendChatMessageRequest request
     );
 }
