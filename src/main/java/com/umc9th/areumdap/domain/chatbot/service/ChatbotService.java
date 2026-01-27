@@ -60,14 +60,24 @@ public class ChatbotService {
             List<ChatHistory> histories = chatHistoryRepository
                     .findByUserChatThreadOrderByCreatedAtAsc(chatThread);
 
-            for (ChatHistory history : histories) {
+            // 마지막 히스토리가 현재 유저 메시지와 동일한지 확인하여 중복 방지
+            List<ChatHistory> historiesToProcess = histories;
+            if (!histories.isEmpty()) {
+                ChatHistory lastHistory = histories.get(histories.size() - 1);
+                if (lastHistory.getSenderType() == SenderType.USER
+                        && lastHistory.getContent().equals(userMessage)) {
+                    historiesToProcess = histories.subList(0, histories.size() - 1);
+                }
+            }
+
+            for (ChatHistory history : historiesToProcess) {
                 if (history.getSenderType() == SenderType.BOT) {
                     messages.add(new AssistantMessage(history.getContent()));
                 } else {
                     messages.add(new UserMessage(history.getContent()));
                 }
             }
-            chatCacheService.setChatHistories(chatThread.getId(), histories); // 캐시에 저장
+            chatCacheService.setChatHistories(chatThread.getId(), historiesToProcess); // 캐시에 저장 (현재 유저 메시지 제외)
         }
 
         messages.add(new UserMessage(userMessage)); // 현재 유저 메시지 추가
