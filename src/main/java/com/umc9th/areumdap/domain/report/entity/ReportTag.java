@@ -2,6 +2,7 @@ package com.umc9th.areumdap.domain.report.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.domain.chat.entity.ChatReport;
+
 import jakarta.persistence.*;
 import lombok.*;
 

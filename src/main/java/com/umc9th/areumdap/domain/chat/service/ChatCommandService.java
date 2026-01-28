@@ -3,7 +3,9 @@ package com.umc9th.areumdap.domain.chat.service;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
+import com.umc9th.areumdap.domain.chat.dto.request.SendChatMessageRequest;
 import com.umc9th.areumdap.domain.chat.dto.response.CreateChatThreadResponse;
+import com.umc9th.areumdap.domain.chat.dto.response.SendChatMessageResponse;
 import com.umc9th.areumdap.domain.chat.entity.ChatHistory;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.chat.enums.SenderType;
@@ -13,12 +15,15 @@ import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
+import com.umc9th.areumdap.domain.chatbot.service.ChatbotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ChatCommandService {
 
@@ -26,10 +31,18 @@ public class ChatCommandService {
     private final ChatHistoryRepository chatHistoryRepository;
     private final UserRepository userRepository;
     private final UserQuestionRepository userQuestionRepository;
+    private final ChatbotService chatbotAiService;
+    private final ChatCacheService chatCacheService;
+    private final TransactionTemplate transactionTemplate;
 
-    public CreateChatThreadResponse createChatThread(Long userId, CreateChatThreadRequest request) {
-        User user = userRepository.findByIdAndDeletedFalse(userId)
+    private User getUser(Long userId) {
+        return userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    @Transactional
+    public CreateChatThreadResponse createChatThread(Long userId, CreateChatThreadRequest request) {
+        User user = getUser(userId);
 
         UserQuestion userQuestion = userQuestionRepository.findById(request.userQuestionId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_QUESTION_NOT_FOUND));
@@ -39,6 +52,7 @@ public class ChatCommandService {
         UserChatThread userChatThread = UserChatThread.builder()
                 .user(user)
                 .questionBank(userQuestion.getQuestionBank())
+                .userQuestion(userQuestion)
                 .favorite(false)
                 .build();
         userChatThreadRepository.save(userChatThread);
@@ -50,7 +64,52 @@ public class ChatCommandService {
                 .build();
         chatHistoryRepository.save(botHistory);
 
+        // Redis 캐시 초기화 (첫 BOT 메시지 저장)
+        chatCacheService.setChatHistories(userChatThread.getId(), List.of(botHistory));
+
         return new CreateChatThreadResponse(request.content(), userChatThread.getId());
     }
 
+    public SendChatMessageResponse sendChatMessage(Long userId, SendChatMessageRequest request) {
+        // 트랜잭션 1: 유저 확인 + 채팅 스레드 조회 + 유저 메시지 저장
+        UserChatThread chatThread = transactionTemplate.execute(status -> {
+            User user = getUser(userId);
+
+            UserChatThread thread = userChatThreadRepository.findById(request.userChatThreadId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
+
+            if (!thread.getUser().getId().equals(userId)) {
+                throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
+            }
+
+            // 유저 메시지 저장
+            ChatHistory userMessage = ChatHistory.builder()
+                    .content(request.content())
+                    .userChatThread(thread)
+                    .senderType(SenderType.USER)
+                    .build();
+            chatHistoryRepository.save(userMessage);
+
+            return thread;
+        });
+
+        // AI 응답 생성 (트랜잭션 외부 - DB 커넥션 점유 X)
+        String chatbotResponse = chatbotAiService.generateResponse(chatThread, request.content());
+
+        // 트랜잭션 2: AI 응답 저장
+        transactionTemplate.executeWithoutResult(status -> {
+            ChatHistory botMessage = ChatHistory.builder()
+                    .content(chatbotResponse)
+                    .userChatThread(chatThread)
+                    .senderType(SenderType.BOT)
+                    .build();
+            chatHistoryRepository.save(botMessage);
+        });
+
+        // Redis 캐시 업데이트 (트랜잭션 불필요)
+        chatCacheService.addMessage(chatThread.getId(), request.content(), SenderType.USER);
+        chatCacheService.addMessage(chatThread.getId(), chatbotResponse, SenderType.BOT);
+
+        return new SendChatMessageResponse(chatbotResponse, chatThread.getId());
+    }
 }
