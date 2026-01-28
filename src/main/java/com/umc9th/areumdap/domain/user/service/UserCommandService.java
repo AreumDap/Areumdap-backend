@@ -5,7 +5,8 @@ import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
-import com.umc9th.areumdap.domain.user.dto.request.UpdateUserProfileRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserBirthRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNicknameRequest;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.enums.OAuthProvider;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
@@ -70,7 +71,7 @@ public class UserCommandService {
         if (characterRepository.findByUser(user).isEmpty())
             throw new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND);
 
-        user.updateNikeName(request.nickname());
+        user.updateNickname(request.nickname());
         user.completeOnboarding();
     }
 
@@ -83,10 +84,16 @@ public class UserCommandService {
         user.updateNotificationSetting(request.notificationEnabled(), request.notificationTime());
     }
 
-    // 유저 프로필 수정
-    public void updateUserProfile(Long userId, UpdateUserProfileRequest request) {
+    // 유저 생년월일 수정
+    public void updateUserBirth(Long userId, UpdateUserBirthRequest request) {
         User user = getUser(userId);
         user.updateBirth(request.birth());
+    }
+
+    // 유저 닉네임 수정
+    public void updateUserNickname(Long userId, UpdateUserNicknameRequest request) {
+        User user = getUser(userId);
+        user.updateNickname(request.nickname());
     }
 
     // 회원탈퇴 시 소프트 delete 방식 적용

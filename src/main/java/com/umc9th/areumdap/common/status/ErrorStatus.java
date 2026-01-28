@@ -42,6 +42,7 @@ public enum ErrorStatus implements BaseStatus {
     USER_ONBOARDING_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_404", "유저 온보딩 정보를 찾을 수 없습니다."),
     USER_ONBOARDING_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_409", "유저 온보딩이 이미 존재합니다."),
 
+
     /**
      * Notification
      * */

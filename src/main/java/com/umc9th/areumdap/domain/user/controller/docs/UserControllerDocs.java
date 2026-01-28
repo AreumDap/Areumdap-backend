@@ -4,8 +4,9 @@ import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.domain.chat.dto.request.UserChatThreadCursorRequest;
 import com.umc9th.areumdap.domain.chat.dto.response.UserChatThreadCursorResponse;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserBirthRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
-import com.umc9th.areumdap.domain.user.dto.request.UpdateUserProfileRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNicknameRequest;
 import com.umc9th.areumdap.domain.user.dto.response.GetUserProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,16 +45,28 @@ public interface UserControllerDocs {
             @AuthenticationPrincipal Long userId
     );
 
-    @PatchMapping("/profile")
-    @Operation(summary = "유저 프로필 수정")
+    @PatchMapping("/birth")
+    @Operation(summary = "유저 생년월일 수정")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "유저 프로필 수정 성공", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "유저 생년월일 수정 성공", content = @Content()),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "요청 값이 잘못된 경우", content = @Content()),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content())
     })
-    ResponseEntity<ApiResponse<Void>> updateUserProfile(
+    ResponseEntity<ApiResponse<Void>> updateUserBirth(
             @AuthenticationPrincipal Long userId,
-            @Valid @RequestBody UpdateUserProfileRequest updateUserProfileRequest
+            @Valid @RequestBody UpdateUserBirthRequest updateUserBirthRequest
+    );
+
+    @PatchMapping("/nickname")
+    @Operation(summary = "유저 닉네임 수정")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "유저 닉네임 수정 성공", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "요청 값이 잘못된 경우", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content())
+    })
+    ResponseEntity<ApiResponse<Void>> updateUserNickname(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody UpdateUserNicknameRequest updateUserNicknameRequest
     );
 
     @PatchMapping("/notification")
