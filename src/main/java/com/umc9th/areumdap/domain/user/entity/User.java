@@ -143,7 +143,7 @@ public class User extends BaseEntity {
         this.onboardingCompleted = true;
     }
 
-    public void updateNikeName(String nickname) {
+    public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
 }
