@@ -1,9 +1,9 @@
-package com.umc9th.areumdap.domain.ai.config;
+package com.umc9th.areumdap.domain.chatbot.config;
 
 
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AiConfig {
+public class ChatbotConfig {
 
 }

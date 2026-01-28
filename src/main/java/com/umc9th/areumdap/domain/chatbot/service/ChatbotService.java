@@ -1,5 +1,12 @@
 package com.umc9th.areumdap.domain.chatbot.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.umc9th.areumdap.common.exception.GeneralException;
+import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.chatbot.builder.HistorySummaryPromptBuilder;
+import com.umc9th.areumdap.domain.chatbot.dto.response.HistorySummaryResponseDto;
+import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
 import org.springframework.ai.chat.prompt.Prompt;
 import com.umc9th.areumdap.domain.chat.dto.ChatMessageCache;
 import com.umc9th.areumdap.domain.chat.entity.ChatHistory;
@@ -34,6 +41,8 @@ public class ChatbotService {
     private final ChatHistoryRepository chatHistoryRepository;
     private final ChatCacheService chatCacheService;
     private String systemPrompt;
+    private final UserChatThreadQueryService userChatThreadQueryService;
+    private final ObjectMapper objectMapper;
 
     @PostConstruct
     public void init() throws IOException {
@@ -87,5 +96,59 @@ public class ChatbotService {
         Prompt prompt = new Prompt(messages);
         ChatResponse response = chatClient.call(prompt);
         return response.getResult().getOutput().getContent();
+    }
+
+    public HistorySummaryResponseDto getHistorySummary(Long userId) {
+        List<UserChatThread> userChatThreads = userChatThreadQueryService.findByUserId(userId);
+        String prompt = HistorySummaryPromptBuilder.build(userChatThreads);
+
+        String raw = chatClient.call(prompt);
+
+        return parse(raw, HistorySummaryResponseDto.class);
+    }
+
+    // String(JSON) -> DTO [feat. Blue]
+    private <T> T parse(String raw, Class<T> clazz) {
+        try {
+            String json = extractJson(raw);
+            return objectMapper.readValue(json, clazz);
+        } catch (Exception e) {
+            throw new GeneralException(ErrorStatus.AI_RESPONSE_NOT_PARSE);
+        }
+    }
+
+    private <T> T parse(String raw, TypeReference<T> typeRef) {
+        try {
+            String json = extractJson(raw);
+            return objectMapper.readValue(json, typeRef);
+        } catch (Exception e) {
+            throw new GeneralException(ErrorStatus.AI_RESPONSE_NOT_PARSE);
+        }
+    }
+
+    private String extractJson(String raw) {
+        int objStart = raw.indexOf("{");
+        int arrStart = raw.indexOf("[");
+
+        int start;
+
+        if (objStart == -1 && arrStart == -1) {
+            throw new GeneralException(ErrorStatus.AI_RESPONSE_NOT_JSON);
+        }
+
+        // 둘 중 먼저 나온 쪽 선택
+        if (objStart == -1) start = arrStart;
+        else if (arrStart == -1) start = objStart;
+        else start = Math.min(objStart, arrStart);
+
+        char openChar = raw.charAt(start);
+        char closeChar = (openChar == '{') ? '}' : ']';
+
+        int end = raw.lastIndexOf(closeChar);
+        if (end == -1 || end <= start) {
+            throw new GeneralException(ErrorStatus.AI_RESPONSE_NOT_JSON);
+        }
+
+        return raw.substring(start, end + 1);
     }
 }

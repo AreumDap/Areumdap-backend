@@ -1,4 +1,4 @@
-package com.umc9th.areumdap.domain.ai.builder;
+package com.umc9th.areumdap.domain.chatbot.builder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
