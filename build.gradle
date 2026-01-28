@@ -8,6 +8,7 @@ group = 'com.umc9th'
 version = '0.0.1-SNAPSHOT'
 description = 'areumdap-be'
 
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)

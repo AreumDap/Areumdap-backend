@@ -49,6 +49,12 @@ public enum ErrorStatus implements BaseStatus {
     NOTIFICATION_SENDING_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "NOTI_500", "FCM 푸시 알림을 보내는 과정에서 오류가 발생하였습니다."),
 
     /**
+     * AI
+     */
+    AI_RESPONSE_NOT_JSON(HttpStatus.INTERNAL_SERVER_ERROR,  "AI_500", "AI 응답이 JSON 형식이 아님"),
+    AI_RESPONSE_NOT_PARSE(HttpStatus.INTERNAL_SERVER_ERROR, "AI_500", "AI 응답 파싱 실패"),
+
+    /**
      * JWT
      */
     JWT_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "JWT_401", "토큰이 존재하지 않습니다."),
