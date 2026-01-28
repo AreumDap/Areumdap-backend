@@ -47,12 +47,13 @@ public class UserController implements UserControllerDocs {
     }
 
     @Override
-    @PatchMapping("/profile")
-    public ResponseEntity<ApiResponse<Void>> updateUserProfile(
+
+    @PatchMapping("/birth")
+    public ResponseEntity<ApiResponse<Void>> updateUserBirth(
             @AuthenticationPrincipal  Long userId,
             @Valid @RequestBody UpdateUserProfileRequest updateUserProfileRequest
     ) {
-        userCommandService.updateUserProfile(userId, updateUserProfileRequest);
+        userCommandService.updateUserBirth(userId, updateUserProfileRequest);
         return ApiResponse.success(SuccessStatus.UPDATE_USER_PROFILE_SUCCESS);
     }
 

@@ -83,8 +83,8 @@ public class UserCommandService {
         user.updateNotificationSetting(request.notificationEnabled(), request.notificationTime());
     }
 
-    // 유저 프로필 수정
-    public void updateUserProfile(Long userId, UpdateUserProfileRequest request) {
+    // 유저 생년월일 수정
+    public void updateUserBirth(Long userId, UpdateUserProfileRequest request) {
         User user = getUser(userId);
         user.updateBirth(request.birth());
     }
