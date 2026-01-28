@@ -15,6 +15,6 @@ public class UserChatThreadQueryService {
     private final UserChatThreadRepository userChatThreadRepository;
 
     public List<UserChatThread> findByUserId(Long userId){
-        return this.userChatThreadRepository.findByUserId(userId);
+        return this.userChatThreadRepository.findByIdAndIsDeletedFalse(userId);
     }
 }
