@@ -51,6 +51,7 @@ public class ChatCommandService {
 
         UserChatThread userChatThread = UserChatThread.builder()
                 .user(user)
+                .userQuestion(userQuestion)
                 .questionBank(userQuestion.getQuestionBank())
                 .favorite(false)
                 .build();

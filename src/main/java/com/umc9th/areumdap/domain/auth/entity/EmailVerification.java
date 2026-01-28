@@ -15,13 +15,13 @@ public class EmailVerification extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,length = 50, unique = true)
+    @Column(nullable = false, length = 50, unique = true)
     private String email;
 
     @Column(name = "is_verified", nullable = false)
     private boolean verified = false;
 
-    @Column(name ="verification_code", length = 6)
+    @Column(name = "verification_code", length = 6)
     private String verificationCode;
 
     public void updateVerificationCode(String verificationCode) {
