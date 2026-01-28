@@ -2,7 +2,6 @@ package com.umc9th.areumdap.domain.user.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
-import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
@@ -22,7 +21,6 @@ import java.time.LocalDate;
 public class UserCommandService {
 
     private final UserRepository userRepository;
-    private final UserOnboardingCommandService userOnboardingCommandService;
     private final CharacterRepository characterRepository;
 
     // 유저 등록
@@ -63,27 +61,22 @@ public class UserCommandService {
     }
 
     // 유저 온보딩 저장
-    public Long registerUserOnboarding(Long userId, RegisterUserOnboardingRequest request) {
-        User user = userRepository.findByIdAndDeletedFalse(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    public void registerUserOnboarding(Long userId, RegisterUserOnboardingRequest request) {
+        User user = getUser(userId);
 
-        Character character = characterRepository.findByUser(user)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
+        if (user.isOnboardingCompleted())
+            throw new GeneralException(ErrorStatus.USER_ONBOARDING_ALREADY_EXISTS);
 
-        return userOnboardingCommandService.registerUserOnboarding(
-                user,
-                request.season(),
-                request.keywords(),
-                character.getId(),
-                request.nickname()
-        );
+        if (characterRepository.findByUser(user).isEmpty())
+            throw new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND);
+
+        user.updateNikeName(request.nickname());
+        user.completeOnboarding();
     }
 
     // 유저 알림 값 수정
     public void updateUserNotificationSetting(Long userId, UpdateUserNotificationSettingRequest request) {
-        User user = userRepository.findByIdAndDeletedFalse(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-
+        User user = getUser(userId);
 
         if (request.notificationEnabled() && request.notificationTime() == null)
             throw new GeneralException(ErrorStatus.INVALID_USER_NOTIFICATION_SETTING);
@@ -92,9 +85,7 @@ public class UserCommandService {
 
     // 유저 프로필 수정
     public void updateUserProfile(Long userId, UpdateUserProfileRequest request) {
-        User user = userRepository.findByIdAndDeletedFalse(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-
+        User user = getUser(userId);
         user.updateBirth(request.birth());
     }
 
@@ -111,6 +102,12 @@ public class UserCommandService {
     // 유저 리프레시 토큰 업데이트
     public void updateRefreshToken(User user, String refreshToken) {
         user.updateRefreshToken(refreshToken);
+    }
+
+    // 유저 정보 가져오기
+    public User getUser(Long userId) {
+        return userRepository.findByIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 
 }

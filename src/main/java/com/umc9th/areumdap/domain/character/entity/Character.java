@@ -3,12 +3,17 @@ package com.umc9th.areumdap.domain.character.entity;
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.character.enums.CharacterSeason;
 import com.umc9th.areumdap.domain.user.entity.User;
 import jakarta.persistence.*;
 import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
-@Table(name = "characters")
+import java.util.List;
+
+@Table(name = "character")
 @Entity
 @Getter
 @Builder
@@ -37,10 +42,21 @@ public class Character extends BaseEntity {
     private Integer goalXp = CharacterLevel.LEVEL_1.getGoalXp();
 
     @Column(name = "past_description", columnDefinition = "TEXT")
-    private String pastDescription;
+    @Builder.Default
+    private String pastDescription="";
 
     @Column(name = "present_description", columnDefinition = "TEXT")
-    private String presentDescription;
+    @Builder.Default
+    private String presentDescription="";
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "season", columnDefinition = "season_enum", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    private CharacterSeason characterSeason;
+
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "keywords", columnDefinition = "text[]")
+    private List<String> keywords;
 
     public Character(User user) {
         this.user = user;
@@ -64,7 +80,21 @@ public class Character extends BaseEntity {
         this.goalXp = nextGoalXp;
     }
 
+    public void addXp(int amount) {
+        this.currentXp += amount;
+    }
+
     public boolean isMaxLevel() {
         return this.level >= CharacterLevel.LEVEL_4.getLevel();
     }
+
+    // 캐릭터 생성
+    public static Character create(User user, CharacterSeason characterSeason, List<String> keywords) {
+        return Character.builder()
+                .user(user)
+                .characterSeason(characterSeason)
+                .keywords(keywords)
+                .build();
+    }
+
 }

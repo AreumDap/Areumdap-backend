@@ -49,8 +49,39 @@ public enum SuccessStatus implements BaseStatus {
      */
     GET_CHARACTER_MAIN_SUCCESS(HttpStatus.OK, "CHAR_200", "캐릭터 메인 조회 성공"),
     GET_CHARACTER_HISTORY_SUCCESS(HttpStatus.OK, "CHAR_200", "성장 히스토리 조회 성공"),
-    CREATE_CHARACTER_SUCCESS(HttpStatus.CREATED, "CHAR_201", "캐릭터 생성에 성공했습니다."),
-    CHARACTER_GROWTH_SUCCESS(HttpStatus.CREATED, "CHAR_201", "캐릭터 성장 성공");
+    REGISTER_CHARACTER_SUCCESS(HttpStatus.CREATED, "CHAR_201", "캐릭터 생성에 성공했습니다."),
+    CHARACTER_GROWTH_SUCCESS(HttpStatus.CREATED, "CHAR_201", "캐릭터 성장 성공"),
+
+    /**
+     *  Question
+     */
+    CREATE_QUESTION_SUCCESS(HttpStatus.CREATED,"QUES_201","질문 저장 성공"),
+    GET_ALL_SAVED_QUESTION_SUCCESS(HttpStatus.OK,"QUES_200","저장된 질문 조회 성공"),
+
+    /**
+     * Mission
+     */
+    GET_MISSION_DETAIL_SUCCESS(HttpStatus.OK, "MISSION_200", "성찰과제 상세 조회 성공"),
+    COMPLETE_MISSION_SUCCESS(HttpStatus.CREATED, "MISSION_201", "과제 수행 완료! XP가 지급되었습니다."),
+
+
+    /**
+     * ChatBot
+     */
+    GET_CHATBOT_RECOMMEND_SUCCESS(HttpStatus.OK, "CHATBOT_200", "AI 대화 질문 추천 조회 성공"),
+
+    /**
+     *  Mission
+     */
+    GET_ALL_COMPLETED_MISSION_SUCCESS(HttpStatus.OK,"MISS_200","완료한 과제 조회 완료"),
+
+    /**
+     *  Chat
+     */
+    CREATE_CHAT_THREAD_SUCCESS(HttpStatus.CREATED, "CHAT_201", "채팅 스레드 생성 성공"),
+    SEND_CHAT_MESSAGE_SUCCESS(HttpStatus.OK, "CHAT_200","메시지 전송 성공"),
+    GET_USER_CHAT_THREADS_SUCCESS(HttpStatus.OK,"CHAT_200","유저 채팅창 목록 조회 완료"),
+    GET_CHAT_REPORT_SUCCESS(HttpStatus.OK,"CHAT_200","채팅 레포트 조회 성공");
 
     private final HttpStatus httpStatus;
     private final String code;

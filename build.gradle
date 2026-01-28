@@ -41,7 +41,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // Springdoc OpenAPI (Swagger)
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0"
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'
@@ -91,6 +91,9 @@ dependencies {
     //FCM
     implementation 'com.google.firebase:firebase-admin:9.2.0'
 
+    // Actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    
     // Spring-ai
     implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 }

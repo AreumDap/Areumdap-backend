@@ -2,9 +2,9 @@ package com.umc9th.areumdap.domain.chat.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.domain.mission.entity.Mission;
-import com.umc9th.areumdap.domain.question.entity.Question;
-import com.umc9th.areumdap.domain.report.entity.Report;
+import com.umc9th.areumdap.domain.question.entity.QuestionBank;
 import com.umc9th.areumdap.domain.user.entity.User;
+import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,21 +24,33 @@ public class UserChatThread extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_bank_id")
+    private QuestionBank questionBank;
+
+    @Column(name = "summary")
+    private String summary;
+
+    @Column(name = "favorite", nullable = false)
+    @Builder.Default
+    private boolean favorite = false;
 
     @OneToMany(mappedBy = "userChatThread", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ChatHistory> chatHistories = new ArrayList<>();
 
     @OneToOne(mappedBy = "userChatThread", cascade = CascadeType.ALL)
-    private Report report;
+    private ChatReport chatReport;
 
     @OneToMany(mappedBy = "userChatThread", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Mission> missions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "userChatThread", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<Question> questions = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_question_id", nullable = false)
+    private UserQuestion userQuestion;
+
 }

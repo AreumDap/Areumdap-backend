@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface UserChatThreadRepository extends JpaRepository<UserChatThread, Long > {
-    List<UserChatThread> findByIdAndIsDeletedFalse(Long userId);
+    List<UserChatThread> findById(Long userId);
 }
