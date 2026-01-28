@@ -4,8 +4,8 @@ import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.domain.chat.dto.request.UserChatThreadCursorRequest;
 import com.umc9th.areumdap.domain.chat.dto.response.UserChatThreadCursorResponse;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserBirthRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
-import com.umc9th.areumdap.domain.user.dto.request.UpdateUserProfileRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNicknameRequest;
 import com.umc9th.areumdap.domain.user.dto.response.GetUserProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,7 +54,7 @@ public interface UserControllerDocs {
     })
     ResponseEntity<ApiResponse<Void>> updateUserBirth(
             @AuthenticationPrincipal Long userId,
-            @Valid @RequestBody UpdateUserProfileRequest updateUserProfileRequest
+            @Valid @RequestBody UpdateUserBirthRequest updateUserBirthRequest
     );
 
     @PatchMapping("/nickname")

@@ -7,8 +7,8 @@ import com.umc9th.areumdap.domain.chat.dto.response.UserChatThreadCursorResponse
 import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
 import com.umc9th.areumdap.domain.user.controller.docs.UserControllerDocs;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserBirthRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
-import com.umc9th.areumdap.domain.user.dto.request.UpdateUserProfileRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNicknameRequest;
 import com.umc9th.areumdap.domain.user.dto.response.GetUserProfileResponse;
 import com.umc9th.areumdap.domain.user.service.UserCommandService;
@@ -51,10 +51,10 @@ public class UserController implements UserControllerDocs {
     @PatchMapping("/birth")
     public ResponseEntity<ApiResponse<Void>> updateUserBirth(
             @AuthenticationPrincipal  Long userId,
-            @Valid @RequestBody UpdateUserProfileRequest updateUserProfileRequest
+            @Valid @RequestBody UpdateUserBirthRequest updateUserBirthRequest
     ) {
-        userCommandService.updateUserBirth(userId, updateUserProfileRequest);
-        return ApiResponse.success(SuccessStatus.UPDATE_USER_PROFILE_SUCCESS);
+        userCommandService.updateUserBirth(userId, updateUserBirthRequest);
+        return ApiResponse.success(SuccessStatus.UPDATE_USER_BIRTH_SUCCESS);
     }
 
     @Override

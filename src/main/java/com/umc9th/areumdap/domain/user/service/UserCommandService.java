@@ -5,7 +5,7 @@ import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNotificationSettingRequest;
-import com.umc9th.areumdap.domain.user.dto.request.UpdateUserProfileRequest;
+import com.umc9th.areumdap.domain.user.dto.request.UpdateUserBirthRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserNicknameRequest;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.enums.OAuthProvider;
@@ -85,7 +85,7 @@ public class UserCommandService {
     }
 
     // 유저 생년월일 수정
-    public void updateUserBirth(Long userId, UpdateUserProfileRequest request) {
+    public void updateUserBirth(Long userId, UpdateUserBirthRequest request) {
         User user = getUser(userId);
         user.updateBirth(request.birth());
     }
