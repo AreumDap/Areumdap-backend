@@ -53,6 +53,7 @@ public class ChatCommandService {
                 .user(user)
                 .userQuestion(userQuestion)
                 .questionBank(userQuestion.getQuestionBank())
+                .userQuestion(userQuestion)
                 .favorite(false)
                 .build();
         userChatThreadRepository.save(userChatThread);
