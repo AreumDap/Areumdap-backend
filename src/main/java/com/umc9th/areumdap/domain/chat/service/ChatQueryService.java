@@ -2,9 +2,13 @@ package com.umc9th.areumdap.domain.chat.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.chat.dto.response.ChatHistoryResponse;
+import com.umc9th.areumdap.domain.chat.dto.response.GetChatHistoriesResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.GetChatReportResponse;
 import com.umc9th.areumdap.domain.chat.entity.ChatReport;
+import com.umc9th.areumdap.domain.chat.repository.ChatHistoryRepository;
 import com.umc9th.areumdap.domain.chat.repository.ChatReportRepository;
+import com.umc9th.areumdap.domain.chat.repository.UserChatThreadRepository;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionSummaryResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportInsightResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportTagResponse;
@@ -20,6 +24,8 @@ import java.util.List;
 public class ChatQueryService {
 
     private final ChatReportRepository chatReportRepository;
+    private final UserChatThreadRepository userChatThreadRepository;
+    private final ChatHistoryRepository chatHistoryRepository;
 
     public GetChatReportResponse getChatReport(Long userId, Long reportId) {
 
@@ -64,4 +70,20 @@ public class ChatQueryService {
                 report.getCreatedAt().toLocalDate()
         );
     }
+
+    public GetChatHistoriesResponse getChatHistories(Long userId, Long threadId) {
+
+        userChatThreadRepository
+                .findByIdAndUser_IdAndUser_DeletedFalse(threadId, userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED));
+
+        List<ChatHistoryResponse> histories = chatHistoryRepository
+                .findByUserChatThreadIdOrderByCreatedAtAsc(threadId)
+                .stream()
+                .map(ChatHistoryResponse::from)
+                .toList();
+
+        return GetChatHistoriesResponse.of(threadId, histories);
+    }
+
 }

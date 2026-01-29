@@ -7,5 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ChatHistoryRepository extends JpaRepository<ChatHistory, Long> {
+
     List<ChatHistory> findByUserChatThreadOrderByCreatedAtAsc(UserChatThread userChatThread);
+
+    List<ChatHistory> findByUserChatThreadIdOrderByCreatedAtAsc(Long threadId);
+
 }

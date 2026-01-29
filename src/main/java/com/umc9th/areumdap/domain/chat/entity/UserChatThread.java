@@ -53,6 +53,4 @@ public class UserChatThread extends BaseEntity {
     @JoinColumn(name = "user_question_id", nullable = false)
     private UserQuestion userQuestion;
 
-    @Column()
-    private boolean isDeleted;
 }
