@@ -6,13 +6,13 @@ import com.umc9th.areumdap.domain.chat.dto.response.ChatHistoryResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.GetChatHistoriesResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.GetChatReportResponse;
 import com.umc9th.areumdap.domain.chat.entity.ChatReport;
-import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.chat.repository.ChatHistoryRepository;
 import com.umc9th.areumdap.domain.chat.repository.ChatReportRepository;
 import com.umc9th.areumdap.domain.chat.repository.UserChatThreadRepository;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionSummaryResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportInsightResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportTagResponse;
+import com.umc9th.areumdap.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,12 +74,9 @@ public class ChatQueryService {
 
     public GetChatHistoriesResponse getChatHistories(Long userId, Long threadId) {
 
-        UserChatThread thread = userChatThreadRepository.findById(threadId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
-
-        if (!thread.getUser().getId().equals(userId)) {
-            throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
-        }
+        userChatThreadRepository
+                .findByIdAndUser_IdAndUser_DeletedFalse(threadId, userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED));
 
         List<ChatHistoryResponse> histories = chatHistoryRepository
                 .findByUserChatThreadIdOrderByCreatedAtAsc(threadId)
