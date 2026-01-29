@@ -6,8 +6,6 @@ import com.umc9th.areumdap.domain.mission.enums.Tag;
 import com.umc9th.areumdap.domain.question.entity.QuestionBank;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Table(name = "user_question", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "chat_history_id"})
