@@ -2,8 +2,6 @@ package com.umc9th.areumdap.domain.user.controller;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
-import com.umc9th.areumdap.domain.chat.dto.request.UserChatThreadCursorRequest;
-import com.umc9th.areumdap.domain.chat.dto.response.UserChatThreadCursorResponse;
 import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
 import com.umc9th.areumdap.domain.user.controller.docs.UserControllerDocs;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
@@ -75,19 +73,6 @@ public class UserController implements UserControllerDocs {
     ) {
         userCommandService.updateUserNotificationSetting(userId, updateUserNotificationSettingRequest);
         return ApiResponse.success(SuccessStatus.UPDATE_USER_NOTIFICATION_SETTING_SUCCESS);
-    }
-
-    @Override
-    @GetMapping("/chat/threads")
-    public ResponseEntity<ApiResponse<UserChatThreadCursorResponse>> getUserChatThreads(
-            @AuthenticationPrincipal Long userId,
-            @RequestParam(defaultValue = "false") boolean favorite,
-            @Valid @ModelAttribute UserChatThreadCursorRequest cursor
-    ) {
-        return ApiResponse.success(
-                SuccessStatus.GET_USER_CHAT_THREADS_SUCCESS,
-                userChatThreadQueryService.getThreads(userId, favorite, cursor)
-        );
     }
 
 }
