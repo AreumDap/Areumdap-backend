@@ -19,7 +19,7 @@ public record UserQuestionResponse(
                 userQuestion.getId(),
                 userQuestion.getQuestionBank().getId(),
                 userQuestion.getContent(),
-                userQuestion.getQuestionBank().getTag(),
+                userQuestion.getTag(),
                 userQuestion.getCreatedAt()
         );
     }
