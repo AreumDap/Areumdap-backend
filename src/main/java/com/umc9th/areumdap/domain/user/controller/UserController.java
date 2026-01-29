@@ -2,7 +2,6 @@ package com.umc9th.areumdap.domain.user.controller;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
-import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
 import com.umc9th.areumdap.domain.user.controller.docs.UserControllerDocs;
 import com.umc9th.areumdap.domain.user.dto.request.RegisterUserOnboardingRequest;
 import com.umc9th.areumdap.domain.user.dto.request.UpdateUserBirthRequest;
