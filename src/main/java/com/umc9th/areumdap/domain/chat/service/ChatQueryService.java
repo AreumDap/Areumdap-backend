@@ -12,7 +12,6 @@ import com.umc9th.areumdap.domain.chat.repository.UserChatThreadRepository;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionSummaryResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportInsightResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportTagResponse;
-import com.umc9th.areumdap.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

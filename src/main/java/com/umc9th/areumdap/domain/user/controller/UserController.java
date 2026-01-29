@@ -24,7 +24,6 @@ public class UserController implements UserControllerDocs {
 
     private final UserCommandService userCommandService;
     private final UserQueryService userQueryService;
-    private final UserChatThreadQueryService userChatThreadQueryService;
 
     @Override
     @PostMapping("/onboarding")
