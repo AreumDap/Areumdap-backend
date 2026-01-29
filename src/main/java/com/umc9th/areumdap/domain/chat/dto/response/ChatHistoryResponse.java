@@ -6,7 +6,6 @@ import com.umc9th.areumdap.domain.chat.enums.SenderType;
 import java.time.LocalDateTime;
 
 public record ChatHistoryResponse(
-
         Long id,
         String content,
         SenderType senderType,
