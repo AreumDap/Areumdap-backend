@@ -113,4 +113,16 @@ public class ChatCommandService {
 
         return new SendChatMessageResponse(chatbotResponse, chatThread.getId());
     }
+
+    @Transactional
+    public void updateFavorite(Long userId, Long threadId) {
+        UserChatThread chatThread = userChatThreadRepository.findById(threadId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
+
+        if (!chatThread.getUser().getId().equals(userId)) {
+            throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
+        }
+
+        chatThread.updateFavorite();
+    }
 }

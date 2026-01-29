@@ -7,6 +7,7 @@ import com.umc9th.areumdap.domain.chat.dto.request.UserChatThreadCursorRequest;
 import com.umc9th.areumdap.domain.chat.dto.response.GetChatHistoriesResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.GetChatReportResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.UserChatThreadCursorResponse;
+import com.umc9th.areumdap.domain.chat.service.ChatCommandService;
 import com.umc9th.areumdap.domain.chat.service.ChatQueryService;
 import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class ChatController implements ChatControllerDocs {
 
     private final ChatQueryService chatQueryService;
+    private final ChatCommandService chatCommandService;
     private final UserChatThreadQueryService userChatThreadQueryService;
 
     @Override
@@ -61,4 +63,13 @@ public class ChatController implements ChatControllerDocs {
         );
     }
 
+    @Override
+    @PatchMapping("/threads/{threadId}/favorite")
+    public ResponseEntity<ApiResponse<Void>> updateFavorite(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long threadId
+    ) {
+        chatCommandService.updateFavorite(userId, threadId);
+        return ApiResponse.success(SuccessStatus.UPDATE_FAVORITE_SUCCESS);
+    }
 }
