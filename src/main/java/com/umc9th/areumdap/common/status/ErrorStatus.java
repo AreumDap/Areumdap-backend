@@ -108,6 +108,7 @@ public enum ErrorStatus implements BaseStatus {
     CHAT_HISTORY_NOT_FOUND(HttpStatus.NOT_FOUND,"HISTORY_404","chatHistory를 찾을 수 없습니다."),
     CHAT_THREAD_NOT_FOUND(HttpStatus.NOT_FOUND,"THREAD_404","채팅창을 찾을 수 없습니다."),
     CHAT_THREAD_ACCESS_DENIED(HttpStatus.FORBIDDEN,"THREAD_403", "채팅 스레드 접근 권한이 없습니다"),
+    CHAT_THREAD_FORBIDDEN(HttpStatus.FORBIDDEN,"THREAD_403","유저 ID 와 스레드의 유저 ID가 다릅니다."),
 
     /**
      * Question
