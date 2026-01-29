@@ -6,8 +6,6 @@ import com.umc9th.areumdap.domain.mission.enums.Tag;
 import com.umc9th.areumdap.domain.question.entity.QuestionBank;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Table(name = "user_question", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "chat_history_id"})
@@ -24,12 +22,16 @@ public class UserQuestion extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_bank_id")
+    @JoinColumn(name = "question_bank_id", nullable = false)
     private QuestionBank questionBank;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_user_question_id")
+    private UserQuestion parentQuestion;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_history_id")
@@ -42,10 +44,9 @@ public class UserQuestion extends BaseEntity {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tag", columnDefinition = "tag_enum",nullable = false)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    private Tag tag;
+    public Tag getTag() {
+        return questionBank.getTag();
+    }
 
     public void markAsUsed() {
         this.used = true;

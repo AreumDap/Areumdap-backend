@@ -5,7 +5,6 @@ import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.chat.entity.ChatHistory;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.chat.repository.ChatHistoryRepository;
-import com.umc9th.areumdap.domain.mission.enums.Tag;
 import com.umc9th.areumdap.domain.question.entity.QuestionBank;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
@@ -48,22 +47,32 @@ public class UserQuestionCommandService {
         User user = userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        // 대화 시작 질문(관리자 Bank 질문) 조회
-        QuestionBank startBank = thread.getQuestionBank();
-        if (startBank == null) {
-            throw new GeneralException(ErrorStatus.QUESTION_BANK_NOT_FOUND);
+        /*
+         * 질문 계보 결정
+         * - thread가 UserQuestion에서 시작된 경우 → parentQuestion 존재
+         * - thread가 QuestionBank에서 시작된 경우 → parentQuestion 없음
+         */
+        UserQuestion parentQuestion = thread.getUserQuestion(); // nullable
+        QuestionBank questionBank;
+
+        if (parentQuestion != null) {
+            // UserQuestion → UserQuestion 파생
+            questionBank = parentQuestion.getQuestionBank();
+        } else {
+            // QuestionBank → UserQuestion
+            questionBank = thread.getQuestionBank();
+            if (questionBank == null) {
+                throw new GeneralException(ErrorStatus.QUESTION_BANK_NOT_FOUND);
+            }
         }
 
-        // 태그 결정: 시작 Bank의 태그를 컨텍스트로 사용
-        Tag contextTag = startBank.getTag();
-
-        // 즉석 질문 저장
         UserQuestion userQuestion = UserQuestion.builder()
-                .questionBank(startBank)                  // 대화 시작 질문
                 .user(user)
+                .questionBank(questionBank)              // 루트 Bank 유지
+                .parentQuestion(parentQuestion)
                 .chatHistory(chatHistory)
-                .content(chatHistory.getContent())        // 즉석 질문 본문
-                .tag(contextTag)                           // 컨텍스트 태그
+                .content(chatHistory.getContent())       // 즉석 질문 본문
+                .used(false)
                 .build();
 
         userQuestionRepository.save(userQuestion);

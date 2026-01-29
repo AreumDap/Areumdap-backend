@@ -24,11 +24,12 @@ public class QuestionCommandService {
     private final UserQuestionRepository userQuestionRepository;
     private final UserRepository userRepository;
 
-    public List<UserQuestion> assignRandomQuestions(Long userId){
+    public List<UserQuestion> assignRandomQuestions(Long userId) {
         User user = userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        List<QuestionBank> randomQuestions = questionBankRepository.findRandomQuestions(userId, PageRequest.of(0, 5));
+        List<QuestionBank> randomQuestions =
+                questionBankRepository.findRandomQuestions(userId, PageRequest.of(0, 5));
 
         if (randomQuestions.size() < 5) {
             throw new GeneralException(ErrorStatus.QUESTION_BANK_NOT_ENOUGH);
@@ -38,11 +39,12 @@ public class QuestionCommandService {
                 .map(q -> UserQuestion.builder()
                         .user(user)
                         .questionBank(q)
+                        .parentQuestion(null)
                         .content(q.getContent())
-                        .tag(q.getTag())
                         .used(false)
                         .build())
                 .toList();
+
         return userQuestionRepository.saveAll(userQuestions);
     }
 
