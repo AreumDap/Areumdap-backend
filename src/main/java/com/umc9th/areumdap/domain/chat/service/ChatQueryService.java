@@ -5,7 +5,6 @@ import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.chat.dto.response.ChatHistoryResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.GetChatHistoriesResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.GetChatReportResponse;
-import com.umc9th.areumdap.domain.chat.entity.ChatHistory;
 import com.umc9th.areumdap.domain.chat.entity.ChatReport;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.chat.repository.ChatHistoryRepository;
