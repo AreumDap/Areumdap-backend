@@ -1,6 +1,7 @@
 package com.umc9th.areumdap.domain.chat.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
+import com.umc9th.areumdap.domain.chat.dto.response.GetChatHistoriesResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.GetChatReportResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,4 +27,14 @@ public interface ChatControllerDocs {
             @PathVariable Long reportId
     );
 
+    @GetMapping("/{threadId}")
+    @Operation(summary = "채팅 기록 조회")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "채팅 기록 조회 성공", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값이 올바르지 않은 경우", content = @Content()),
+    })
+    ResponseEntity<ApiResponse<GetChatHistoriesResponse>> getChatHistories(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long threadId
+    );
 }

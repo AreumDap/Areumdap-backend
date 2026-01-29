@@ -3,6 +3,7 @@ package com.umc9th.areumdap.domain.chat.controller;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.chat.controller.docs.ChatControllerDocs;
+import com.umc9th.areumdap.domain.chat.dto.response.GetChatHistoriesResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.GetChatReportResponse;
 import com.umc9th.areumdap.domain.chat.service.ChatQueryService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,18 @@ public class ChatController implements ChatControllerDocs {
         return ApiResponse.success(
                 SuccessStatus.GET_CHAT_REPORT_SUCCESS,
                 chatQueryService.getChatReport(userId, reportId)
+        );
+    }
+
+    @Override
+    @GetMapping("/{threadId}")
+    public ResponseEntity<ApiResponse<GetChatHistoriesResponse>> getChatHistories(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long threadId
+    ){
+        return ApiResponse.success(
+                SuccessStatus.GET_CHAT_HISTORIES_SUCCESS,
+                chatQueryService.getChatHistories(userId,threadId)
         );
     }
 
