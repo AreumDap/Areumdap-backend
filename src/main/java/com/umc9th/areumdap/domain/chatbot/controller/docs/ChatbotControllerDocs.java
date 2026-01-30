@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
 
 @Tag(name = "Chatbot", description = "챗봇 API")
@@ -52,5 +53,16 @@ public interface ChatbotControllerDocs {
     ResponseEntity<ApiResponse<SendChatMessageResponse>> sendChatResponse(
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody SendChatMessageRequest request
+    );
+
+    @Operation(summary = "대화 스레드 삭제", description = "대화 스레드와 관련 데이터를 삭제합니다")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "대화 스레드 삭제 성공", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "채팅 스레드 접근 권한 없음", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "채팅 스레드를 찾을 수 없음", content = @Content())
+    })
+    ResponseEntity<ApiResponse<Void>> deleteChatThread(
+            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userChatThreadId
     );
 }

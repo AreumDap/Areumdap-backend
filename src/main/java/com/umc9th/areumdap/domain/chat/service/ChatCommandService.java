@@ -125,4 +125,28 @@ public class ChatCommandService {
 
         chatThread.updateFavorite();
     }
+
+    @Transactional
+    public void deleteChatThread(Long userId, Long userChatThreadId) {
+        UserChatThread chatThread = userChatThreadRepository.findById(userChatThreadId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
+
+        if (!chatThread.getUser().getId().equals(userId)) {
+            throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
+        }
+
+        // ChatHistory를 참조하는 UserQuestion의 chatHistory를 null로 설정하고 used를 false로 변경
+        List<UserQuestion> userQuestions = userQuestionRepository.findByChatHistory_UserChatThread_Id(userChatThreadId);
+        for (UserQuestion uq : userQuestions) {
+            uq.clearChatHistory();
+            uq.markAsUnused();
+        }
+
+        // UserQuestion used false로 변경
+        chatThread.getUserQuestion().markAsUnused();
+
+        userChatThreadRepository.delete(chatThread);
+
+        chatCacheService.invalidateCache(userChatThreadId);
+    }
 }

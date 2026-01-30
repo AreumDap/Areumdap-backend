@@ -56,4 +56,14 @@ public class ChatbotController implements ChatbotControllerDocs {
         SendChatMessageResponse response = chatCommandService.sendChatMessage(userId, request);
         return ApiResponse.success(SuccessStatus.SEND_CHAT_MESSAGE_SUCCESS, response);
     }
+
+    @Override
+    @DeleteMapping("")
+    public ResponseEntity<ApiResponse<Void>> deleteChatThread(
+            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userChatThreadId
+    ) {
+        chatCommandService.deleteChatThread(userId, userChatThreadId);
+        return ApiResponse.success(SuccessStatus.DELETE_CHAT_THREAD_SUCCESS);
+    }
 }

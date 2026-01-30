@@ -84,7 +84,8 @@ public enum SuccessStatus implements BaseStatus {
     GET_USER_CHAT_THREADS_SUCCESS(HttpStatus.OK,"CHAT_200","유저 채팅창 목록 조회 성공"),
     GET_CHAT_HISTORIES_SUCCESS(HttpStatus.OK,"CHAT_200","채팅 기록 조회 성공"),
     GET_CHAT_REPORT_SUCCESS(HttpStatus.OK,"CHAT_200","채팅 레포트 조회 성공"),
-    UPDATE_FAVORITE_SUCCESS(HttpStatus.OK,"CHAT_200","즐겨찾기 상태 변경 성공");
+    UPDATE_FAVORITE_SUCCESS(HttpStatus.OK,"CHAT_200","즐겨찾기 상태 변경 성공"),
+    DELETE_CHAT_THREAD_SUCCESS(HttpStatus.OK,"CHAT_200","대화 스레드 삭제 성공");
 
     private final HttpStatus httpStatus;
     private final String code;
