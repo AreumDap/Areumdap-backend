@@ -2,6 +2,8 @@ package com.umc9th.areumdap.domain.mission.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.domain.mission.dto.request.CompleteMissionRequest;
+import com.umc9th.areumdap.domain.mission.dto.request.CreateMissionRequest;
+import com.umc9th.areumdap.domain.mission.dto.response.CreateMissionResponse;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionResponse;
 import com.umc9th.areumdap.domain.mission.dto.request.CursorRequest;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionCursorResponse;
@@ -22,6 +24,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Mission", description = "성찰과제 API")
 public interface MissionControllerDocs {
+
+    @PostMapping
+    @Operation(summary = "AI 성찰과제 생성", description = "대화 요약을 기반으로 AI가 성찰과제 3개를 생성합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "성찰과제 생성 성공", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = CreateMissionResponse.class)
+            )),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "대화 요약이 존재하지 않음", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "채팅 스레드 접근 권한 없음", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "채팅 스레드를 찾을 수 없음", content = @Content())
+    })
+    ResponseEntity<ApiResponse<CreateMissionResponse>> createMissions(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody CreateMissionRequest request
+    );
 
     @PostMapping("/complete")
     @Operation(summary = "과제 수행 완료")

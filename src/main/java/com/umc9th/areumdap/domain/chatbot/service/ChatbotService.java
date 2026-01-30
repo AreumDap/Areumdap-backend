@@ -6,7 +6,9 @@ import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.chatbot.builder.ChatSummaryPromptBuilder;
 import com.umc9th.areumdap.domain.chatbot.builder.HistorySummaryPromptBuilder;
+import com.umc9th.areumdap.domain.chatbot.builder.MissionRewardPromptBuilder;
 import com.umc9th.areumdap.domain.chatbot.dto.response.HistorySummaryResponseDto;
+import com.umc9th.areumdap.domain.chatbot.dto.response.SelfPracticesResponse;
 import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
 import org.springframework.ai.chat.prompt.Prompt;
 import com.umc9th.areumdap.domain.chat.dto.ChatMessageCache;
@@ -120,6 +122,12 @@ public class ChatbotService {
 
         String prompt = ChatSummaryPromptBuilder.build(histories);
         return chatClient.call(prompt);
+    }
+
+    public SelfPracticesResponse generateMissions(String summary) {
+        String prompt = MissionRewardPromptBuilder.build(summary);
+        String raw = chatClient.call(prompt);
+        return parse(raw, SelfPracticesResponse.class);
     }
 
     public HistorySummaryResponseDto getHistorySummary(Long userId) {

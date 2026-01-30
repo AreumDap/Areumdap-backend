@@ -145,9 +145,11 @@ public class ChatCommandService {
         // AI 요약 생성 (트랜잭션 외부 - DB 커넥션 점유 X)
         String summary = chatbotAiService.summarizeConversation(chatThread);
 
-        // 트랜잭션 2: 요약 저장
+        // 트랜잭션 2: 요약 저장 (엔티티를 다시 조회하여 영속 상태에서 변경 감지)
         transactionTemplate.executeWithoutResult(status -> {
-            chatThread.updateSummary(summary);
+            UserChatThread thread = userChatThreadRepository.findById(chatThread.getId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
+            thread.updateSummary(summary);
         });
 
         return new ChatSummaryResponse(

@@ -101,6 +101,7 @@ public enum ErrorStatus implements BaseStatus {
     MISSION_FORBIDDEN(HttpStatus.FORBIDDEN, "MISSION_403", "해당 성찰과제에 접근할 권한이 없습니다."),
     MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "MISSION_404", "존재하지 않는 과제입니다."),
     MISSION_ALREADY_COMPLETED(HttpStatus.CONFLICT, "MISSION_409", "이미 완료한 과제입니다."),
+    SUMMARY_NOT_FOUND(HttpStatus.BAD_REQUEST, "MISSION_400", "대화 요약이 존재하지 않습니다. 먼저 요약을 생성해주세요."),
 
     /**
      * Chat
