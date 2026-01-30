@@ -2,8 +2,10 @@ package com.umc9th.areumdap.domain.chat.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.chat.dto.request.ChatSummaryRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.SendChatMessageRequest;
+import com.umc9th.areumdap.domain.chat.dto.response.ChatSummaryResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.CreateChatThreadResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.SendChatMessageResponse;
 import com.umc9th.areumdap.domain.chat.entity.ChatHistory;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -112,6 +115,48 @@ public class ChatCommandService {
         chatCacheService.addMessage(chatThread.getId(), chatbotResponse, SenderType.BOT);
 
         return new SendChatMessageResponse(chatbotResponse, chatThread.getId());
+    }
+
+    public ChatSummaryResponse generateSummary(Long userId, ChatSummaryRequest request) {
+        // 트랜잭션 1: 스레드 조회 + 권한 확인 + 대화 내역 조회
+        UserChatThread chatThread = transactionTemplate.execute(status -> {
+            User user = getUser(userId);
+
+            UserChatThread thread = userChatThreadRepository.findById(request.userChatThreadId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
+
+            if (!thread.getUser().getId().equals(userId)) {
+                throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
+            }
+
+            return thread;
+        });
+
+        List<ChatHistory> histories = chatHistoryRepository
+                .findByUserChatThreadOrderByCreatedAtAsc(chatThread);
+
+        // 대화 메타데이터 계산
+        LocalDateTime startedAt = histories.get(0).getCreatedAt();
+        LocalDateTime endedAt = histories.get(histories.size() - 1).getCreatedAt();
+        int durationMinutes = (int) java.time.Duration.between(startedAt, endedAt).toMinutes();
+        int messageCount = histories.size();
+
+        // AI 요약 생성 (트랜잭션 외부 - DB 커넥션 점유 X)
+        String summary = chatbotAiService.summarizeConversation(chatThread);
+
+        // 트랜잭션 2: 요약 저장
+        transactionTemplate.executeWithoutResult(status -> {
+            chatThread.updateSummary(summary);
+        });
+
+        return new ChatSummaryResponse(
+                summary,
+                chatThread.getId(),
+                startedAt,
+                endedAt,
+                durationMinutes,
+                messageCount
+        );
     }
 
     @Transactional

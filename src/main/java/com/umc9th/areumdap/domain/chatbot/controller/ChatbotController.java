@@ -2,8 +2,10 @@ package com.umc9th.areumdap.domain.chatbot.controller;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
+import com.umc9th.areumdap.domain.chat.dto.request.ChatSummaryRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.SendChatMessageRequest;
+import com.umc9th.areumdap.domain.chat.dto.response.ChatSummaryResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.CreateChatThreadResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.SendChatMessageResponse;
 import com.umc9th.areumdap.domain.chat.service.ChatCommandService;
@@ -55,6 +57,16 @@ public class ChatbotController implements ChatbotControllerDocs {
     ){
         SendChatMessageResponse response = chatCommandService.sendChatMessage(userId, request);
         return ApiResponse.success(SuccessStatus.SEND_CHAT_MESSAGE_SUCCESS, response);
+    }
+
+    @Override
+    @PostMapping("/summary")
+    public ResponseEntity<ApiResponse<ChatSummaryResponse>> generateSummary(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody ChatSummaryRequest request //userChatThreadId
+    ) {
+        ChatSummaryResponse response = chatCommandService.generateSummary(userId, request);
+        return ApiResponse.success(SuccessStatus.GENERATE_CHAT_SUMMARY_SUCCESS, response);
     }
 
     @Override

@@ -1,8 +1,10 @@
 package com.umc9th.areumdap.domain.chatbot.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
+import com.umc9th.areumdap.domain.chat.dto.request.ChatSummaryRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.SendChatMessageRequest;
+import com.umc9th.areumdap.domain.chat.dto.response.ChatSummaryResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.CreateChatThreadResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.SendChatMessageResponse;
 import com.umc9th.areumdap.domain.chatbot.dto.response.GetChatbotRecommendsResponse;
@@ -55,7 +57,7 @@ public interface ChatbotControllerDocs {
             @Valid @RequestBody SendChatMessageRequest request
     );
 
-    @Operation(summary = "대화 스레드 삭제", description = "대화 스레드와 관련 데이터를 삭제합니다")
+    @Operation(summary = "대화 종료 api(대화 중지)", description = "대화 스레드와 관련 데이터를 삭제합니다")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "대화 스레드 삭제 성공", content = @Content()),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "채팅 스레드 접근 권한 없음", content = @Content()),
@@ -64,5 +66,17 @@ public interface ChatbotControllerDocs {
     ResponseEntity<ApiResponse<Void>> deleteChatThread(
             @AuthenticationPrincipal Long userId,
             @RequestParam Long userChatThreadId
+    );
+
+    @Operation(summary = "대화 요약 생성", description = "대화 스레드의 전체 대화 내역을 기반으로 AI 요약을 생성합니다")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "대화 요약 생성 성공", content = @Content(schema = @Schema(implementation = ChatSummaryResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "채팅 스레드 접근 권한 없음", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "채팅 스레드를 찾을 수 없음", content = @Content())
+    })
+    ResponseEntity<ApiResponse<ChatSummaryResponse>> generateSummary(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody ChatSummaryRequest request
     );
 }

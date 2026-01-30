@@ -56,4 +56,8 @@ public class UserChatThread extends BaseEntity {
     public void updateFavorite() {
         this.favorite = !this.favorite;
     }
+
+    public void updateSummary(String summary) {
+        this.summary = summary;
+    }
 }
