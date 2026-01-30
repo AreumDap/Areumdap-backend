@@ -13,10 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Chat", description = "채팅 API")
 public interface ChatControllerDocs {
@@ -75,6 +72,18 @@ public interface ChatControllerDocs {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값이 올바르지 않은 경우", content = @Content()),
     })
     ResponseEntity<ApiResponse<GetChatHistoriesResponse>> getChatHistories(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long threadId
+    );
+
+    @PatchMapping("/threads/{threadId}/favorite")
+    @Operation(summary = "채팅방 즐겨찾기 설정/해제")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "즐겨찾기 상태 변경 성공", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값이 올바르지 않은 경우", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "채팅방이 존재하지 않는 경우", content = @Content()),
+    })
+    ResponseEntity<ApiResponse<Void>> updateFavorite(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long threadId
     );
