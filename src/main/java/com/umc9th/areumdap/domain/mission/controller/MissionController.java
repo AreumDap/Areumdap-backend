@@ -2,8 +2,10 @@ package com.umc9th.areumdap.domain.mission.controller;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
+import com.umc9th.areumdap.domain.mission.dto.request.CreateMissionRequest;
 import com.umc9th.areumdap.domain.mission.dto.request.CursorRequest;
 import com.umc9th.areumdap.domain.mission.controller.docs.MissionControllerDocs;
+import com.umc9th.areumdap.domain.mission.dto.response.CreateMissionResponse;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionResponse;
 import com.umc9th.areumdap.domain.mission.dto.request.CompleteMissionRequest;
 import com.umc9th.areumdap.domain.mission.service.MissionCommandService;
@@ -28,6 +30,16 @@ public class MissionController implements MissionControllerDocs {
 
     private final MissionCommandService missionCommandService;
     private final MissionQueryService missionQueryService;
+
+    @Override
+    @PostMapping
+    public ResponseEntity<ApiResponse<CreateMissionResponse>> createMissions(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody CreateMissionRequest request
+    ) {
+        CreateMissionResponse response = missionCommandService.createMissions(userId, request.userChatThreadId());
+        return ApiResponse.success(SuccessStatus.CREATE_MISSION_SUCCESS, response);
+    }
 
     @Override
     @GetMapping("/{missionId}")

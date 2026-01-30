@@ -31,7 +31,7 @@ public class UserChatThread extends BaseEntity {
     @JoinColumn(name = "question_bank_id")
     private QuestionBank questionBank;
 
-    @Column(name = "summary")
+    @Column(name = "summary", length = 512)
     private String summary;
 
     @Column(name = "favorite", nullable = false)
@@ -55,5 +55,9 @@ public class UserChatThread extends BaseEntity {
 
     public void updateFavorite() {
         this.favorite = !this.favorite;
+    }
+
+    public void updateSummary(String summary) {
+        this.summary = summary;
     }
 }

@@ -52,4 +52,12 @@ public class UserQuestion extends BaseEntity {
         this.used = true;
     }
 
+    public void markAsUnused() {
+        this.used = false;
+    }
+
+    public void clearChatHistory() {
+        this.chatHistory = null;
+    }
+
 }
