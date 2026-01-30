@@ -18,6 +18,7 @@ import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
 import com.umc9th.areumdap.domain.chatbot.service.ChatbotService;
+import com.umc9th.areumdap.domain.chatbot.service.ChatbotService.ChatbotResponseResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,12 +99,12 @@ public class ChatCommandService {
         });
 
         // AI 응답 생성 (트랜잭션 외부 - DB 커넥션 점유 X)
-        String chatbotResponse = chatbotAiService.generateResponse(chatThread, request.content());
+        ChatbotResponseResult result = chatbotAiService.generateResponse(chatThread, request.content());
 
         // 트랜잭션 2: AI 응답 저장
         transactionTemplate.executeWithoutResult(status -> {
             ChatHistory botMessage = ChatHistory.builder()
-                    .content(chatbotResponse)
+                    .content(result.content())
                     .userChatThread(chatThread)
                     .senderType(SenderType.BOT)
                     .build();
@@ -112,9 +113,9 @@ public class ChatCommandService {
 
         // Redis 캐시 업데이트 (트랜잭션 불필요)
         chatCacheService.addMessage(chatThread.getId(), request.content(), SenderType.USER);
-        chatCacheService.addMessage(chatThread.getId(), chatbotResponse, SenderType.BOT);
+        chatCacheService.addMessage(chatThread.getId(), result.content(), SenderType.BOT);
 
-        return new SendChatMessageResponse(chatbotResponse, chatThread.getId());
+        return new SendChatMessageResponse(result.content(), chatThread.getId(), result.sessionEnd());
     }
 
     public ChatSummaryResponse generateSummary(Long userId, ChatSummaryRequest request) {

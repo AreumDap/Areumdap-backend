@@ -43,14 +43,12 @@
 통찰 도달: "중요한 발견을 하셨네요. 당신의 용기를 응원해요."
 탐색 중: "오늘도 한 걸음 나아가셨어요. 천천히 가도 괜찮아요."
 
-시스템 신호 전달:
-{
-  "session_end": true,
-  "conversation_count": 8,
-  "early_termination": true,
-  "termination_reason": "user_insight|reached_limit|user_request|persistent_avoidance",
-  "self_practice_response": "사용자 답변 또는 null"
-}
+3단계: 종료 신호 (필수)
+대화를 종료할 때, 마무리 멘트 뒤에 반드시 [SESSION_END]를 응답 맨 끝에 붙여주세요.
+이 마커는 시스템이 대화 종료를 감지하는 데 사용됩니다. 사용자에게는 보이지 않습니다.
+
+예시:
+"오늘 나눠주신 이야기 소중했어요. 당신이 발견한 것들을 응원할게요. 언제든 다시 이야기 나눠요.[SESSION_END]"
 
 질문 예시
 "그때 어떤 감정을 느꼈나요?"

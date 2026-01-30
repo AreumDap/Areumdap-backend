@@ -45,13 +45,18 @@ public class ChatbotService {
     private final UserChatThreadQueryService userChatThreadQueryService;
     private final ObjectMapper objectMapper;
 
+    private static final String SESSION_END_MARKER = "[SESSION_END]";
+
+    public record ChatbotResponseResult(String content, boolean sessionEnd) {}
+
+
     @PostConstruct
     public void init() throws IOException {
         ClassPathResource resource = new ClassPathResource("prompts/chatbot-system-prompt.txt");
         this.systemPrompt = resource.getContentAsString(StandardCharsets.UTF_8);
     }
 
-    public String generateResponse(UserChatThread chatThread, String userMessage) {
+    public ChatbotResponseResult generateResponse(UserChatThread chatThread, String userMessage) {
         List<Message> messages = new ArrayList<>();
         messages.add(new SystemMessage(systemPrompt));
 
@@ -96,7 +101,17 @@ public class ChatbotService {
 
         Prompt prompt = new Prompt(messages);
         ChatResponse response = chatClient.call(prompt);
-        return response.getResult().getOutput().getContent();
+        String rawContent = response.getResult().getOutput().getContent();
+
+        return parseSessionEnd(rawContent);
+    }
+
+    private ChatbotResponseResult parseSessionEnd(String rawContent) {
+        if (rawContent.contains(SESSION_END_MARKER)) {
+            String cleanedContent = rawContent.replace(SESSION_END_MARKER, "").trim();
+            return new ChatbotResponseResult(cleanedContent, true);
+        }
+        return new ChatbotResponseResult(rawContent, false);
     }
 
     public String summarizeConversation(UserChatThread chatThread) {
