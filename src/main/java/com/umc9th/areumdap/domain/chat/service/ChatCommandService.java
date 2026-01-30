@@ -1,5 +1,6 @@
 package com.umc9th.areumdap.domain.chat.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.chat.dto.request.ChatSummaryRequest;
@@ -17,6 +18,7 @@ import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
+import com.umc9th.areumdap.domain.chatbot.dto.response.ChatSummaryContentDto;
 import com.umc9th.areumdap.domain.chatbot.service.ChatbotService;
 import com.umc9th.areumdap.domain.chatbot.service.ChatbotService.ChatbotResponseResult;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,7 @@ public class ChatCommandService {
     private final ChatbotService chatbotAiService;
     private final ChatCacheService chatCacheService;
     private final TransactionTemplate transactionTemplate;
+    private final ObjectMapper objectMapper;
 
     private User getUser(Long userId) {
         return userRepository.findByIdAndDeletedFalse(userId)
@@ -143,17 +146,25 @@ public class ChatCommandService {
         int messageCount = histories.size();
 
         // AI 요약 생성 (트랜잭션 외부 - DB 커넥션 점유 X)
-        String summary = chatbotAiService.summarizeConversation(chatThread);
+        ChatSummaryContentDto summaryContent = chatbotAiService.summarizeConversation(chatThread);
 
-        // 트랜잭션 2: 요약 저장 (엔티티를 다시 조회하여 영속 상태에서 변경 감지)
+        // 트랜잭션 2: 요약 전체를 JSON으로 직렬화하여 DB에 저장
+        String summaryJson;
+        try {
+            summaryJson = objectMapper.writeValueAsString(summaryContent);
+        } catch (Exception e) {
+            throw new GeneralException(ErrorStatus.AI_RESPONSE_NOT_PARSE);
+        }
+
+        String finalSummaryJson = summaryJson;
         transactionTemplate.executeWithoutResult(status -> {
             UserChatThread thread = userChatThreadRepository.findById(chatThread.getId())
                     .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
-            thread.updateSummary(summary);
+            thread.updateSummary(finalSummaryJson);
         });
 
         return new ChatSummaryResponse(
-                summary,
+                summaryContent,
                 chatThread.getId(),
                 startedAt,
                 endedAt,

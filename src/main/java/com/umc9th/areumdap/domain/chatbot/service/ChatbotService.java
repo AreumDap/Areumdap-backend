@@ -7,6 +7,7 @@ import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.chatbot.builder.ChatSummaryPromptBuilder;
 import com.umc9th.areumdap.domain.chatbot.builder.HistorySummaryPromptBuilder;
 import com.umc9th.areumdap.domain.chatbot.builder.MissionRewardPromptBuilder;
+import com.umc9th.areumdap.domain.chatbot.dto.response.ChatSummaryContentDto;
 import com.umc9th.areumdap.domain.chatbot.dto.response.HistorySummaryResponseDto;
 import com.umc9th.areumdap.domain.chatbot.dto.response.SelfPracticesResponse;
 import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
@@ -116,12 +117,13 @@ public class ChatbotService {
         return new ChatbotResponseResult(rawContent, false);
     }
 
-    public String summarizeConversation(UserChatThread chatThread) {
+    public ChatSummaryContentDto summarizeConversation(UserChatThread chatThread) {
         List<ChatHistory> histories = chatHistoryRepository
                 .findByUserChatThreadOrderByCreatedAtAsc(chatThread);
 
         String prompt = ChatSummaryPromptBuilder.build(histories);
-        return chatClient.call(prompt);
+        String raw = chatClient.call(prompt);
+        return parse(raw, ChatSummaryContentDto.class);
     }
 
     public SelfPracticesResponse generateMissions(String summary) {
