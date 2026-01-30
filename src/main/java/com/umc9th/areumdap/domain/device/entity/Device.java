@@ -16,10 +16,10 @@ public class Device extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "token", length = 512)
+    @Column(name = "token", length = 512, nullable = false)
     private String token;
 
-    @Column(name = "os_type", length = 512)
+    @Column(name = "os_type", length = 512, nullable = false)
     private String osType;
 
     @Column(name = "user_id", nullable = false)
