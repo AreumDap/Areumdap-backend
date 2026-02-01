@@ -59,9 +59,12 @@ public class MissionCommandService {
 
         // 트랜잭션 2: 미션 저장
         List<Mission> missions = transactionTemplate.execute(status -> {
+            UserChatThread thread = userChatThreadRepository.findById(chatThread.getId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
+
             List<Mission> savedMissions = response.selfPractices().stream()
                     .map(practice -> Mission.builder()
-                            .userChatThread(chatThread)
+                            .userChatThread(thread)
                             .tag(parseTag(practice.tag()))
                             .title(practice.title())
                             .content(practice.content())
