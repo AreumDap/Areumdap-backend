@@ -81,8 +81,12 @@ public class MissionCommandService {
     }
 
     private Tag parseTag(String tag) {
-        String normalized = tag.replace("-", "_").toUpperCase();
-        return Tag.valueOf(normalized);
+        try {
+            String normalized = tag.replace("-", "_").toUpperCase();
+            return Tag.valueOf(normalized);
+        } catch (IllegalArgumentException e) {
+            throw new GeneralException(ErrorStatus.ILLEGAL_AI_TAG);
+        }
     }
 
     private LocalDateTime calculateDueDate(String duration) {
