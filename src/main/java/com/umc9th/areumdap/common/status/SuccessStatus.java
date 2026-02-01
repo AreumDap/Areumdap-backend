@@ -74,6 +74,7 @@ public enum SuccessStatus implements BaseStatus {
     /**
      *  Mission
      */
+    CREATE_MISSION_SUCCESS(HttpStatus.CREATED, "MISSION_201", "성찰과제 생성 성공"),
     GET_ALL_COMPLETED_MISSION_SUCCESS(HttpStatus.OK,"MISS_200","완료한 과제 조회 완료"),
 
     /**
@@ -84,7 +85,9 @@ public enum SuccessStatus implements BaseStatus {
     GET_USER_CHAT_THREADS_SUCCESS(HttpStatus.OK,"CHAT_200","유저 채팅창 목록 조회 성공"),
     GET_CHAT_HISTORIES_SUCCESS(HttpStatus.OK,"CHAT_200","채팅 기록 조회 성공"),
     GET_CHAT_REPORT_SUCCESS(HttpStatus.OK,"CHAT_200","채팅 레포트 조회 성공"),
-    UPDATE_FAVORITE_SUCCESS(HttpStatus.OK,"CHAT_200","즐겨찾기 상태 변경 성공");
+    UPDATE_FAVORITE_SUCCESS(HttpStatus.OK,"CHAT_200","즐겨찾기 상태 변경 성공"),
+    DELETE_CHAT_THREAD_SUCCESS(HttpStatus.OK,"CHAT_200","대화 스레드 삭제 성공"),
+    GENERATE_CHAT_SUMMARY_SUCCESS(HttpStatus.OK,"CHAT_200","대화 요약 생성 성공");
 
     private final HttpStatus httpStatus;
     private final String code;

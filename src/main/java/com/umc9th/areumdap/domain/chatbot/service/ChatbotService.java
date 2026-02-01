@@ -4,8 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.chatbot.builder.ChatSummaryPromptBuilder;
 import com.umc9th.areumdap.domain.chatbot.builder.HistorySummaryPromptBuilder;
+import com.umc9th.areumdap.domain.chatbot.builder.MissionRewardPromptBuilder;
+import com.umc9th.areumdap.domain.chatbot.dto.response.ChatSummaryContentDto;
 import com.umc9th.areumdap.domain.chatbot.dto.response.HistorySummaryResponseDto;
+import com.umc9th.areumdap.domain.chatbot.dto.response.SelfPracticesResponse;
 import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
 import org.springframework.ai.chat.prompt.Prompt;
 import com.umc9th.areumdap.domain.chat.dto.ChatMessageCache;
@@ -44,13 +48,18 @@ public class ChatbotService {
     private final UserChatThreadQueryService userChatThreadQueryService;
     private final ObjectMapper objectMapper;
 
+    private static final String SESSION_END_MARKER = "[SESSION_END]";
+
+    public record ChatbotResponseResult(String content, boolean sessionEnd) {}
+
+
     @PostConstruct
     public void init() throws IOException {
         ClassPathResource resource = new ClassPathResource("prompts/chatbot-system-prompt.txt");
         this.systemPrompt = resource.getContentAsString(StandardCharsets.UTF_8);
     }
 
-    public String generateResponse(UserChatThread chatThread, String userMessage) {
+    public ChatbotResponseResult generateResponse(UserChatThread chatThread, String userMessage) {
         List<Message> messages = new ArrayList<>();
         messages.add(new SystemMessage(systemPrompt));
 
@@ -95,7 +104,32 @@ public class ChatbotService {
 
         Prompt prompt = new Prompt(messages);
         ChatResponse response = chatClient.call(prompt);
-        return response.getResult().getOutput().getContent();
+        String rawContent = response.getResult().getOutput().getContent();
+
+        return parseSessionEnd(rawContent);
+    }
+
+    private ChatbotResponseResult parseSessionEnd(String rawContent) {
+        if (rawContent.contains(SESSION_END_MARKER)) {
+            String cleanedContent = rawContent.replace(SESSION_END_MARKER, "").trim();
+            return new ChatbotResponseResult(cleanedContent, true);
+        }
+        return new ChatbotResponseResult(rawContent, false);
+    }
+
+    public ChatSummaryContentDto summarizeConversation(UserChatThread chatThread) {
+        List<ChatHistory> histories = chatHistoryRepository
+                .findByUserChatThreadOrderByCreatedAtAsc(chatThread);
+
+        String prompt = ChatSummaryPromptBuilder.build(histories);
+        String raw = chatClient.call(prompt);
+        return parse(raw, ChatSummaryContentDto.class);
+    }
+
+    public SelfPracticesResponse generateMissions(String summary) {
+        String prompt = MissionRewardPromptBuilder.build(summary);
+        String raw = chatClient.call(prompt);
+        return parse(raw, SelfPracticesResponse.class);
     }
 
     public HistorySummaryResponseDto getHistorySummary(Long userId) {

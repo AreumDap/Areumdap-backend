@@ -1,9 +1,12 @@
 package com.umc9th.areumdap.domain.chat.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.chat.dto.request.ChatSummaryRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.SendChatMessageRequest;
+import com.umc9th.areumdap.domain.chat.dto.response.ChatSummaryResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.CreateChatThreadResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.SendChatMessageResponse;
 import com.umc9th.areumdap.domain.chat.entity.ChatHistory;
@@ -15,12 +18,15 @@ import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
+import com.umc9th.areumdap.domain.chatbot.dto.response.ChatSummaryContentDto;
 import com.umc9th.areumdap.domain.chatbot.service.ChatbotService;
+import com.umc9th.areumdap.domain.chatbot.service.ChatbotService.ChatbotResponseResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,6 +40,7 @@ public class ChatCommandService {
     private final ChatbotService chatbotAiService;
     private final ChatCacheService chatCacheService;
     private final TransactionTemplate transactionTemplate;
+    private final ObjectMapper objectMapper;
 
     private User getUser(Long userId) {
         return userRepository.findByIdAndDeletedFalse(userId)
@@ -95,12 +102,12 @@ public class ChatCommandService {
         });
 
         // AI 응답 생성 (트랜잭션 외부 - DB 커넥션 점유 X)
-        String chatbotResponse = chatbotAiService.generateResponse(chatThread, request.content());
+        ChatbotResponseResult result = chatbotAiService.generateResponse(chatThread, request.content());
 
         // 트랜잭션 2: AI 응답 저장
         transactionTemplate.executeWithoutResult(status -> {
             ChatHistory botMessage = ChatHistory.builder()
-                    .content(chatbotResponse)
+                    .content(result.content())
                     .userChatThread(chatThread)
                     .senderType(SenderType.BOT)
                     .build();
@@ -109,9 +116,61 @@ public class ChatCommandService {
 
         // Redis 캐시 업데이트 (트랜잭션 불필요)
         chatCacheService.addMessage(chatThread.getId(), request.content(), SenderType.USER);
-        chatCacheService.addMessage(chatThread.getId(), chatbotResponse, SenderType.BOT);
+        chatCacheService.addMessage(chatThread.getId(), result.content(), SenderType.BOT);
 
-        return new SendChatMessageResponse(chatbotResponse, chatThread.getId());
+        return new SendChatMessageResponse(result.content(), chatThread.getId(), result.sessionEnd());
+    }
+
+    public ChatSummaryResponse generateSummary(Long userId, ChatSummaryRequest request) {
+        // 트랜잭션 1: 스레드 조회 + 권한 확인 + 대화 내역 조회
+        UserChatThread chatThread = transactionTemplate.execute(status -> {
+            User user = getUser(userId);
+
+            UserChatThread thread = userChatThreadRepository.findById(request.userChatThreadId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
+
+            if (!thread.getUser().getId().equals(userId)) {
+                throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
+            }
+
+            return thread;
+        });
+
+        List<ChatHistory> histories = chatHistoryRepository
+                .findByUserChatThreadOrderByCreatedAtAsc(chatThread);
+
+        // 대화 메타데이터 계산
+        LocalDateTime startedAt = histories.get(0).getCreatedAt();
+        LocalDateTime endedAt = histories.get(histories.size() - 1).getCreatedAt();
+        int durationMinutes = (int) java.time.Duration.between(startedAt, endedAt).toMinutes();
+        int messageCount = histories.size();
+
+        // AI 요약 생성 (트랜잭션 외부 - DB 커넥션 점유 X)
+        ChatSummaryContentDto summaryContent = chatbotAiService.summarizeConversation(chatThread);
+
+        // 트랜잭션 2: 요약 전체를 JSON으로 직렬화하여 DB에 저장
+        String summaryJson;
+        try {
+            summaryJson = objectMapper.writeValueAsString(summaryContent);
+        } catch (Exception e) {
+            throw new GeneralException(ErrorStatus.AI_RESPONSE_NOT_PARSE);
+        }
+
+        String finalSummaryJson = summaryJson;
+        transactionTemplate.executeWithoutResult(status -> {
+            UserChatThread thread = userChatThreadRepository.findById(chatThread.getId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
+            thread.updateSummary(finalSummaryJson);
+        });
+
+        return new ChatSummaryResponse(
+                summaryContent,
+                chatThread.getId(),
+                startedAt,
+                endedAt,
+                durationMinutes,
+                messageCount
+        );
     }
 
     @Transactional
@@ -124,5 +183,29 @@ public class ChatCommandService {
         }
 
         chatThread.updateFavorite();
+    }
+
+    @Transactional
+    public void deleteChatThread(Long userId, Long userChatThreadId) {
+        UserChatThread chatThread = userChatThreadRepository.findById(userChatThreadId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
+
+        if (!chatThread.getUser().getId().equals(userId)) {
+            throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
+        }
+
+        // ChatHistory를 참조하는 UserQuestion의 chatHistory를 null로 설정하고 used를 false로 변경
+        List<UserQuestion> userQuestions = userQuestionRepository.findByChatHistory_UserChatThread_Id(userChatThreadId);
+        for (UserQuestion uq : userQuestions) {
+            uq.clearChatHistory();
+            uq.markAsUnused();
+        }
+
+        // UserQuestion used false로 변경
+        chatThread.getUserQuestion().markAsUnused();
+
+        userChatThreadRepository.delete(chatThread);
+
+        chatCacheService.invalidateCache(userChatThreadId);
     }
 }
