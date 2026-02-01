@@ -88,6 +88,11 @@ public class Character extends BaseEntity {
         return this.level >= CharacterLevel.LEVEL_4.getLevel();
     }
 
+    public void updateHistorySummary(String pastDescription, String presentDescription) {
+        this.pastDescription = pastDescription;
+        this.presentDescription = presentDescription;
+    }
+
     // 캐릭터 생성
     public static Character create(User user, CharacterSeason characterSeason, List<String> keywords) {
         return Character.builder()

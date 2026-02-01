@@ -14,11 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/characters")
 @RestController
@@ -54,6 +50,15 @@ public class CharacterController implements CharacterControllerDocs {
     ) {
         GetCharacterGrowthResponse response = characterCommandService.levelUp(userId);
         return ApiResponse.success(SuccessStatus.CHARACTER_GROWTH_SUCCESS, response);
+    }
+
+    @Override
+    @PostMapping("/history/summary")
+    public ResponseEntity<ApiResponse<Void>> updateHistorySummary(
+            @AuthenticationPrincipal Long userId
+    ) {
+        characterCommandService.updateHistorySummary(userId);
+        return ApiResponse.success(SuccessStatus.UPDATE_HISTORY_SUMMARY_SUCCESS);
     }
 
     @Override

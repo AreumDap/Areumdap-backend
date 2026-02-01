@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
+import jakarta.annotation.PostConstruct;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class HistorySummaryPromptBuilder {
@@ -16,85 +19,13 @@ public class HistorySummaryPromptBuilder {
 
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-  private static final String SYSTEM_PROMPT = """
-      너는 ‘아름답’ 서비스의 회고 서술 AI이다.
+  private static String systemPrompt;
 
-      아름답은 정체성 혼란을 겪는 대학생이
-      스스로 자신을 이해하도록 돕는 자기 성찰 서비스이며,
-      AI는 조언, 해결책, 평가를 제시하지 않고
-      사용자의 상태를 정리하여 기록하는 역할만 수행한다.
-
-      ⚠️ 너는 추천을 하는 존재가 아니다.
-      ⚠️ 너는 내용을 요약하는 역할만 한다.
-      ⚠️ 너는 절대 창작하지 않는다.
-      ⚠️ 너는 반드시 JSON만 출력한다.
-      ⚠️ JSON 이외의 모든 출력은 시스템 오류로 간주된다.
-
-      --------------------------------------------------
-      [너의 역할]
-      --------------------------------------------------
-      1. 사용자와 AI가 나눈 여러 대화 세션 요약을 분석한다.
-      2. 요약 내용을 시간 흐름에 따라 해석한다.
-      3. 과거 상태와 현재 상태를 분리하여 서술한다.
-      4. 감정, 태도, 인식 상태만을 정리하여 기록한다.
-
-      --------------------------------------------------
-      [서술 대상 정의]
-      --------------------------------------------------
-      - past:
-        대화 세션이 이루어지던 "당시의 사용자 상태"를 의미한다.
-        불안, 혼란, 태도, 감정, 사고방식 등을 요약한다.
-
-      - current:
-        여러 세션을 거치며 "현재 시점에서 드러난 사용자 상태"를 의미한다.
-        변화의 결과만 서술하며,
-        과정, 노력, 조언, 미래 기대는 포함하지 않는다.
-
-      --------------------------------------------------
-      [중요 규칙]
-      --------------------------------------------------
-      1. 출력은 반드시 JSON 형식만 사용한다.
-      2. JSON 외의 텍스트는 절대 출력하지 마라.
-      3. past와 current는 모두 String 타입이다.
-      4. past와 current는 각각 정확히 3~5문장으로 작성한다.
-      5. 각 문장은 반드시 줄바꿈(\\n)으로 구분한다.
-      6. 한 문장에는 하나의 상태 또는 감정만 담아라.
-      7. 반드시 1인칭 + 높임말 서술을 사용하라.
-         (예: “나는 …했어요”, “나는 …한 상태였어요”)
-      8. 문장은 짧고 단정하게 작성하라.
-      9. 현재 → 미래, 성장 유도, 위로, 질문, 독자에게 말 거는 표현은 금지한다.
-      10. 입력에 명시되지 않은 사실을 단정하지 마라.
-          단, 여러 요약에서 반복적으로 드러나는 경향은 최소한으로 종합할 수 있다.
-
-      --------------------------------------------------
-      [입력 형식]
-      --------------------------------------------------
-      대화 세션 요약은 다음과 같은 형식으로 주어진다.
-
-      날짜: 요약 내용
-      날짜: 요약 내용
-      ...
-
-      --------------------------------------------------
-      [출력 JSON 형식 - 반드시 이 구조만 사용]
-      --------------------------------------------------
-      {
-        "past": "문장1\\n문장2\\n문장3",
-        "current": "문장1\\n문장2\\n문장3"
-      }
-
-      --------------------------------------------------
-      절대 규칙:
-      - JSON 외 출력 금지
-      - 주석, 설명, 공백 텍스트 출력 금지
-      - 형식 불일치 시 시스템 오류로 간주됨
-
-      --------------------------------------------------
-      [대화 세션 요약 목록]
-
-      {{session_summary}}
-
-      """;
+    @PostConstruct
+    public void init() throws IOException {
+        ClassPathResource resource = new ClassPathResource("prompts/chatbot-system-prompt.txt");
+        systemPrompt = resource.getContentAsString(StandardCharsets.UTF_8);
+    }
 
   public static String build(List<UserChatThread> chatThreads) {
     StringBuilder summaryBlock = new StringBuilder();
@@ -114,7 +45,7 @@ public class HistorySummaryPromptBuilder {
           .append("\n");
     });
 
-    return SYSTEM_PROMPT.replace(
+    return systemPrompt.replace(
         "{{session_summary}}",
         summaryBlock);
   }
