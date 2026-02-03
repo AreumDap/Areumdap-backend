@@ -48,6 +48,14 @@ public class MissionQueryService {
 
         Pageable pageable = PageRequest.of(0, size + 1);
 
+        long totalCount = (request.tag() == null)
+                ? missionQueryRepository.countCompletedByUser(
+                userId, COMPLETED
+        )
+                : missionQueryRepository.countCompletedByUserAndTag(
+                userId, COMPLETED, request.tag()
+        );
+
         List<Mission> missions = fetchMissions(
                 userId,
                 request.tag(),
@@ -57,10 +65,11 @@ public class MissionQueryService {
         );
 
         if (missions.isEmpty()) {
-            return MissionCursorResponse.empty();
+            return MissionCursorResponse.empty(totalCount);
         }
 
         boolean hasNext = missions.size() > size;
+
 
         List<Mission> sliced = hasNext
                 ? missions.subList(0, size)
@@ -68,7 +77,8 @@ public class MissionQueryService {
 
         Mission last = sliced.get(sliced.size() - 1);
 
-        return new MissionCursorResponse(
+        return MissionCursorResponse.of(
+                totalCount,
                 GetMissionResponse.from(sliced),
                 last.getUpdatedAt(),
                 last.getId(),
