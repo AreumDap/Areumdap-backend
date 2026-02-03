@@ -16,3 +16,8 @@ spring:
 logging:
   level:
     org.hibernate.SQL: debug
+
+springdoc:
+  swagger-ui:
+    tagsSorter: alpha
+    operationsSorter: method
