@@ -84,5 +84,26 @@ public interface UserQuestionQueryRepository extends JpaRepository<UserQuestion,
             Pageable pageable // service에서 개수 설정
     );
 
+    // tag 없는 경우
+    @Query("""
+    SELECT COUNT(uq)
+    FROM UserQuestion uq
+    WHERE uq.user.id = :userId
+""")
+    long countByUserId(@Param("userId") Long userId);
+
+
+    // tag 있는 경우
+    @Query("""
+    SELECT COUNT(uq)
+    FROM UserQuestion uq
+    JOIN uq.questionBank qb
+    WHERE uq.user.id = :userId
+      AND qb.tag = :tag
+""")
+    long countByUserIdAndTagOnly(
+            @Param("userId") Long userId,
+            @Param("tag") Tag tag
+    );
 }
 

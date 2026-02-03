@@ -30,6 +30,11 @@ public class UserQuestionQueryService {
     ) {
         int size = request.size();
 
+        // size 검증 (방어 코드)
+        if (size <= 0) {
+            throw new GeneralException(ErrorStatus.CURSOR_BAD_REQUEST);
+        }
+
         // cursorTime / cursorId 쌍 검증
         if ((request.cursorTime() == null) != (request.cursorId() == null)) {
             throw new GeneralException(ErrorStatus.CURSOR_BAD_REQUEST);
@@ -41,6 +46,13 @@ public class UserQuestionQueryService {
 
         Pageable pageable = PageRequest.of(0, size + 1);
 
+        long totalCount = (request.tag() == null)
+                ? userQuestionQueryRepository.countByUserId(userId)
+                : userQuestionQueryRepository.countByUserIdAndTagOnly(
+                userId,
+                request.tag()
+        );
+
         List<UserQuestion> userQuestions = fetchUserQuestions(
                 userId,
                 request.tag(),
@@ -50,7 +62,7 @@ public class UserQuestionQueryService {
         );
 
         if (userQuestions.isEmpty()) {
-            return UserQuestionCursorResponse.empty();
+            return UserQuestionCursorResponse.empty(totalCount);
         }
 
         boolean hasNext = userQuestions.size() > size;
@@ -61,7 +73,8 @@ public class UserQuestionQueryService {
 
         UserQuestion last = sliced.get(sliced.size() - 1);
 
-        return new UserQuestionCursorResponse(
+        return UserQuestionCursorResponse.of(
+                totalCount,
                 UserQuestionResponse.fromUserQuestions(sliced),
                 last.getCreatedAt(),
                 last.getId(),

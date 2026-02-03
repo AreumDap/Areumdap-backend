@@ -92,6 +92,32 @@ public interface MissionQueryRepository extends JpaRepository<Mission, Long> {
             Pageable pageable
     );
 
+    // ===== count (tag 없음) =====
+    @Query("""
+        SELECT COUNT(m)
+        FROM Mission m
+        WHERE m.userChatThread.user.id = :userId
+          AND m.missionStatus = :status
+    """)
+    long countCompletedByUser(
+            @Param("userId") Long userId,
+            @Param("status") MissionStatus status
+    );
+
+    // ===== count (tag 있음) =====
+    @Query("""
+        SELECT COUNT(m)
+        FROM Mission m
+        WHERE m.userChatThread.user.id = :userId
+          AND m.missionStatus = :status
+          AND m.tag = :tag
+    """)
+    long countCompletedByUserAndTag(
+            @Param("userId") Long userId,
+            @Param("status") MissionStatus status,
+            @Param("tag") Tag tag
+    );
+
 }
 
 
