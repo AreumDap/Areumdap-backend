@@ -13,6 +13,8 @@ import com.umc9th.areumdap.domain.character.enums.KeywordType;
 import com.umc9th.areumdap.domain.character.repository.CharacterHistoryRepository;
 import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
 import com.umc9th.areumdap.domain.character.resolver.CharacterImageResolver;
+import com.umc9th.areumdap.domain.chatbot.dto.response.HistorySummaryResponse;
+import com.umc9th.areumdap.domain.chatbot.service.ChatbotService;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class CharacterCommandService {
     private final UserRepository userRepository;
     private final CharacterRepository characterRepository;
     private final CharacterHistoryRepository characterHistoryRepository;
+    private final ChatbotService chatbotService;
 
     // 캐릭터 성장
     public GetCharacterGrowthResponse levelUp(Long userId) {
@@ -61,6 +64,20 @@ public class CharacterCommandService {
         }
 
     }
+
+    // 캐릭터 성장 히스토리 업데이트
+    public void updateHistorySummary(Long userId) {
+        User user = getUser(userId);
+        Character character = getCharacterByUser(user);
+
+        HistorySummaryResponse response = chatbotService.generateHistorySummary(userId);
+
+        character.updateHistorySummary(
+                response.pastDescription(),
+                response.currentDescription()
+        );
+    }
+
 
     // 캐릭터 XP 추가 (성장 가능 시 XP 추가 불가)
     public void addXpIfPossible(User user, int amount) {

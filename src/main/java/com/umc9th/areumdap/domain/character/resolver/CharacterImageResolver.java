@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CharacterImageResolver {
 
-    @Value("${areumdap.character.image.base-url}")
+    @Value("${areumdap.character.image.base-url:}")
     private String baseUrl;
 
     public String resolve(CharacterSeason characterSeason, int level) {

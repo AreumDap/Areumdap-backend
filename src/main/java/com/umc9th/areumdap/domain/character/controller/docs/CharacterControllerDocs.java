@@ -77,6 +77,16 @@ public interface CharacterControllerDocs {
             @AuthenticationPrincipal Long userId
     );
 
+    @PostMapping("/history/summary")
+    @Operation(summary = "캐릭터 성장 히스토리 업데이트")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성장 히스토리 업데이트 성공", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "캐릭터 정보 없음", content = @Content())
+    })
+    ResponseEntity<ApiResponse<Void>> updateHistorySummary(
+            @AuthenticationPrincipal Long userId
+    );
+
     @GetMapping("/history")
     @Operation(summary = "캐릭터 성장 히스토리 조회")
     @ApiResponses(value = {

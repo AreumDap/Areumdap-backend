@@ -8,7 +8,7 @@ import com.umc9th.areumdap.domain.chatbot.builder.ChatSummaryPromptBuilder;
 import com.umc9th.areumdap.domain.chatbot.builder.HistorySummaryPromptBuilder;
 import com.umc9th.areumdap.domain.chatbot.builder.MissionRewardPromptBuilder;
 import com.umc9th.areumdap.domain.chatbot.dto.response.ChatSummaryContentDto;
-import com.umc9th.areumdap.domain.chatbot.dto.response.HistorySummaryResponseDto;
+import com.umc9th.areumdap.domain.chatbot.dto.response.HistorySummaryResponse;
 import com.umc9th.areumdap.domain.chatbot.dto.response.SelfPracticesResponse;
 import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -132,13 +132,13 @@ public class ChatbotService {
         return parse(raw, SelfPracticesResponse.class);
     }
 
-    public HistorySummaryResponseDto getHistorySummary(Long userId) {
+    public HistorySummaryResponse generateHistorySummary(Long userId) {
         List<UserChatThread> userChatThreads = userChatThreadQueryService.findByUserId(userId);
         String prompt = HistorySummaryPromptBuilder.build(userChatThreads);
 
         String raw = chatClient.call(prompt);
 
-        return parse(raw, HistorySummaryResponseDto.class);
+        return parse(raw, HistorySummaryResponse.class);
     }
 
     // String(JSON) -> DTO [feat. Blue]
