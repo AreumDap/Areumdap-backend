@@ -43,11 +43,11 @@ public class Character extends BaseEntity {
 
     @Column(name = "past_description", columnDefinition = "TEXT")
     @Builder.Default
-    private String pastDescription="";
+    private String pastDescription = "";
 
     @Column(name = "present_description", columnDefinition = "TEXT")
     @Builder.Default
-    private String presentDescription="";
+    private String presentDescription = "";
 
     @Enumerated(EnumType.STRING)
     @Column(name = "season", columnDefinition = "season_enum", nullable = false)

@@ -36,10 +36,6 @@ public class NotificationScheduler {
                 .withNano(0);
 
         List<User> users = userRepository.findUsersToNotify(now);
-        Map<String, String> data = new HashMap<>();
-
-        data.put("type", "daily");
-        data.put("message", "아름답고 미운새~");
 
         for (User user : users) {
             if (user.getDevice() == null || user.getDevice().getToken() == null)
@@ -60,11 +56,13 @@ public class NotificationScheduler {
                 } else {
                     targetQuestion = todayQuestions.get(0);
                 }
+                Map<String, String> data = new HashMap<>();
+                data.put("content", targetQuestion.getContent());
 
                 notificationService.sendPushAlarm(
                         user.getDevice().getToken(),
                         "오늘의 철학",
-                        targetQuestion.getContent(),
+                        "오늘의 철학 질문을 시작해 보아요!",
                         data);
             } catch (Exception e) {
                 throw new GeneralException(ErrorStatus.NOTIFICATION_SENDING_INTERNAL_SERVER_ERROR);

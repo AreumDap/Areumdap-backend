@@ -19,13 +19,16 @@ public class HistorySummaryPromptBuilder {
 
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-  private static String systemPrompt;
+  private static final String SYSTEM_PROMPT;
 
-    @PostConstruct
-    public void init() throws IOException {
-        ClassPathResource resource = new ClassPathResource("prompts/chatbot-system-prompt.txt");
-        systemPrompt = resource.getContentAsString(StandardCharsets.UTF_8);
-    }
+  static {
+      try {
+          ClassPathResource resource = new ClassPathResource("prompts/history-system-prompt.txt");
+          SYSTEM_PROMPT = resource.getContentAsString(StandardCharsets.UTF_8);
+      } catch (IOException e) {
+          throw new RuntimeException("history-summary-system-prompt 로드 실패", e);
+      }
+  }
 
   public static String build(List<UserChatThread> chatThreads) {
     StringBuilder summaryBlock = new StringBuilder();
@@ -45,7 +48,7 @@ public class HistorySummaryPromptBuilder {
           .append("\n");
     });
 
-    return systemPrompt.replace(
+    return SYSTEM_PROMPT.replace(
         "{{session_summary}}",
         summaryBlock);
   }

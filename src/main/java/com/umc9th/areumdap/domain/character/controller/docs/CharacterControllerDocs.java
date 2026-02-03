@@ -80,7 +80,7 @@ public interface CharacterControllerDocs {
     @PostMapping("/history/summary")
     @Operation(summary = "캐릭터 성장 히스토리 업데이트")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성장 히스토리 업데이트 성공", content = @Content(schema = @Schema(implementation = GetCharacterHistoryResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성장 히스토리 업데이트 성공", content = @Content()),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "캐릭터 정보 없음", content = @Content())
     })
     ResponseEntity<ApiResponse<Void>> updateHistorySummary(
