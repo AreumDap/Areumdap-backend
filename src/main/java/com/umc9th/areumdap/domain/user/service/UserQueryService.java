@@ -32,8 +32,12 @@ public class UserQueryService {
 
     // 로그인 시 회원 탈퇴 여부 검사 및 User 반환
     public User getUserByEmailAndDeletedFalse(String email) {
-        return userQueryRepository.findByEmailAndDeletedFalse(email)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_ALREADY_DELETED));
+        User user = userQueryRepository.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.EMAIL_NOT_FOUND2));
+        if (user.isDeleted()) {
+            throw new GeneralException(ErrorStatus.USER_ALREADY_DELETED);
+        }
+        return user;
     }
 
     // 유저 아이디 + 삭제 여부로 유저 정보 가져오기
