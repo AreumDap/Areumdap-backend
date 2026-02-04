@@ -25,6 +25,7 @@ public enum ErrorStatus implements BaseStatus {
     /**
      * Auth
      */
+    AUTH_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH_401", "로그인이 필요합니다."),
     INVALID_VERIFICATION_CODE(HttpStatus.UNAUTHORIZED, "AUTH_401", "인증 코드가 일치하지 않습니다."),
     VERIFICATION_CODE_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH_401", "인증 코드가 만료되었습니다."),
     EMAIL_NOT_VERIFIED(HttpStatus.UNAUTHORIZED, "AUTH_401", "이메일 인증이 완료되지 않았습니다."),

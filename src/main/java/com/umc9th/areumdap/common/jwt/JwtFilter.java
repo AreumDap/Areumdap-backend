@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -47,15 +48,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+            filterChain.doFilter(request, response);
 
         } catch (GeneralException e) {
-            handleGeneralJwtError(e.getErrorStatus(), response);
-            return;
-        } catch (Exception e) {
-            handleJwtError(e.getMessage(), response);
-            return;
+            throw new AuthenticationCredentialsNotFoundException(
+                    e.getErrorStatus().getMessage());
         }
-        filterChain.doFilter(request, response);
     }
 
     // Authorization Header에서 JWT 추출
