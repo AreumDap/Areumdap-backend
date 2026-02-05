@@ -14,6 +14,8 @@ import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.chat.enums.SenderType;
 import com.umc9th.areumdap.domain.chat.repository.ChatHistoryRepository;
 import com.umc9th.areumdap.domain.chat.repository.UserChatThreadRepository;
+import com.umc9th.areumdap.domain.question.entity.QuestionBank;
+import com.umc9th.areumdap.domain.question.repository.QuestionBankRepository;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
@@ -28,15 +30,26 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class ChatCommandService {
 
+    private static final Long GREETING_QUESTION_BANK_ID = 91L;
+
+    private static final List<String> GREETING_MESSAGES = List.of(
+            "안녕하세요! 오늘 하루는 어떠셨나요?",
+            "반가워요! 오늘은 어떤 이야기를 나눠볼까요?",
+            "안녕하세요! 무슨 생각을 하고 계셨나요?",
+            "좋은 하루예요! 편하게 이야기해 주세요."
+    );
+
     private final UserChatThreadRepository userChatThreadRepository;
     private final ChatHistoryRepository chatHistoryRepository;
     private final UserRepository userRepository;
     private final UserQuestionRepository userQuestionRepository;
+    private final QuestionBankRepository questionBankRepository;
     private final ChatbotService chatbotAiService;
     private final ChatCacheService chatCacheService;
     private final TransactionTemplate transactionTemplate;
@@ -47,26 +60,50 @@ public class ChatCommandService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 
+    private String getRandomGreetingMessage() {
+        int index = new Random().nextInt(GREETING_MESSAGES.size());
+        return GREETING_MESSAGES.get(index);
+    }
+
     @Transactional
     public CreateChatThreadResponse createChatThread(Long userId, CreateChatThreadRequest request) {
         User user = getUser(userId);
 
-        UserQuestion userQuestion = userQuestionRepository.findById(request.userQuestionId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_QUESTION_NOT_FOUND));
+        UserQuestion userQuestion;
+        String botMessage;
 
-        userQuestion.markAsUsed();
+        if (request.userQuestionId() == null) {
+            // 인사 메시지로 시작
+            QuestionBank greetingQuestionBank = questionBankRepository.findById(GREETING_QUESTION_BANK_ID)
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.QUESTION_BANK_NOT_FOUND));
+
+            botMessage = getRandomGreetingMessage();
+
+            userQuestion = UserQuestion.builder()
+                    .user(user)
+                    .questionBank(greetingQuestionBank)
+                    .content(botMessage)
+                    .used(true)
+                    .build();
+            userQuestionRepository.save(userQuestion);
+        } else {
+            // 기존 로직: UserQuestion 기반으로 시작
+            userQuestion = userQuestionRepository.findById(request.userQuestionId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.USER_QUESTION_NOT_FOUND));
+            userQuestion.markAsUsed();
+            botMessage = request.content();
+        }
 
         UserChatThread userChatThread = UserChatThread.builder()
                 .user(user)
                 .userQuestion(userQuestion)
                 .questionBank(userQuestion.getQuestionBank())
-                .userQuestion(userQuestion)
                 .favorite(false)
                 .build();
         userChatThreadRepository.save(userChatThread);
 
         ChatHistory botHistory = ChatHistory.builder()
-                .content(request.content())
+                .content(botMessage)
                 .userChatThread(userChatThread)
                 .senderType(SenderType.BOT)
                 .build();
@@ -75,7 +112,7 @@ public class ChatCommandService {
         // Redis 캐시 초기화 (첫 BOT 메시지 저장)
         chatCacheService.setChatHistories(userChatThread.getId(), List.of(botHistory));
 
-        return new CreateChatThreadResponse(request.content(), userChatThread.getId());
+        return new CreateChatThreadResponse(botMessage, userChatThread.getId());
     }
 
     public SendChatMessageResponse sendChatMessage(Long userId, SendChatMessageRequest request) {
