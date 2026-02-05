@@ -16,26 +16,39 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DeviceCommandService {
 
-    private final UserRepository userRepository;
-    private final DeviceRepository deviceRepository;
+        private final UserRepository userRepository;
+        private final DeviceRepository deviceRepository;
 
-    // 디바이스 정보 등록
-    public void registerDevice(Long userId, RegisterDeviceRequest request) {
-        User user = userRepository.findByIdAndDeletedFalse(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        // 디바이스 정보 등록
+        public void registerDevice(Long userId, RegisterDeviceRequest request) {
+                User user = userRepository.findByIdAndDeletedFalse(userId)
+                                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        Device device = deviceRepository.findByUserId(userId)
-                .orElseGet(() -> Device.builder()
-                        .token(request.deviceToken())
-                        .osType(request.osType())
-                        .userId(userId).
-                        build()
-                );
+                // 이미 존재하는 토큰인지 확인
+                deviceRepository.findByToken(request.deviceToken()).ifPresent(existingDevice -> {
+                        if (!existingDevice.getUserId().equals(userId)) {
+                                // 다른 유저가 해당 토큰을 가지고 있는 경우
+                                userRepository.findById(existingDevice.getUserId()).ifPresent(preOwner -> {
+                                        preOwner.updateDevice(null);
+                                        userRepository.save(preOwner);
+                                });
 
-        device.updateDevice(request.deviceToken(),request.osType());
-        deviceRepository.save(device);
+                                // 기존 디바이스 삭제
+                                deviceRepository.delete(existingDevice);
+                                deviceRepository.flush();
+                        }
+                });
 
-        user.updateDevice(device);
-    }
+                Device device = deviceRepository.findByUserId(userId)
+                                .orElseGet(() -> Device.builder()
+                                                .token(request.deviceToken())
+                                                .osType(request.osType())
+                                                .userId(userId).build());
+
+                device.updateDevice(request.deviceToken(), request.osType());
+                deviceRepository.save(device);
+
+                user.updateDevice(device);
+        }
 
 }
