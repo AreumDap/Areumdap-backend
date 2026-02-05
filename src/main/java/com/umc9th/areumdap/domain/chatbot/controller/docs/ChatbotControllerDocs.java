@@ -34,11 +34,11 @@ public interface ChatbotControllerDocs {
             @AuthenticationPrincipal Long userId
     );
 
-    @Operation(summary = "채팅 스레드 생성", description = "새로운 채팅 스레드를 생성하고 첫 질문을 저장")
+    @Operation(summary = "채팅 스레드 생성", description = "새로운 채팅 스레드를 생성하고 첫 질문을 저장합니다. userQuestionId가 null인 경우 랜덤 인사 메시지로 대화를 시작합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "채팅 스레드 생성 성공",  content = @Content(schema = @Schema(implementation = CreateChatThreadResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패", content = @Content()),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자 또는 유저 질문을 찾을 수 없음", content = @Content())
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음", content = @Content())
     })
     ResponseEntity<ApiResponse<CreateChatThreadResponse>> createChatThread(
             @AuthenticationPrincipal Long userId,
