@@ -30,4 +30,8 @@ public class Device extends BaseEntity {
         this.osType = osType;
     }
 
+    public void changeUserId(Long userId) {
+        this.userId = userId;
+    }
+
 }
