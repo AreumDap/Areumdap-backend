@@ -12,6 +12,7 @@ public record GetUserProfileResponse(
         String name,
         LocalDate birth,
         boolean notificationEnabled,
+        String nickname,
 
         @Schema(
                 description = "알림 시간 (HH:mm)",
@@ -28,6 +29,7 @@ public record GetUserProfileResponse(
                 user.getName(),
                 user.getBirth(),
                 user.isNotificationEnabled(),
+                user.getNickname(),
                 user.getNotificationTime()
         );
     }
