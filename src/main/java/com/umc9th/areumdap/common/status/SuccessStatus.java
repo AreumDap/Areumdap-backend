@@ -65,6 +65,7 @@ public enum SuccessStatus implements BaseStatus {
      */
     GET_MISSION_DETAIL_SUCCESS(HttpStatus.OK, "MISSION_200", "성찰과제 상세 조회 성공"),
     COMPLETE_MISSION_SUCCESS(HttpStatus.CREATED, "MISSION_201", "과제 수행 완료! XP가 지급되었습니다."),
+    DELETE_MISSION_SUCCESS(HttpStatus.OK,"MISSION_200","미션 삭제 성공"),
 
 
     /**

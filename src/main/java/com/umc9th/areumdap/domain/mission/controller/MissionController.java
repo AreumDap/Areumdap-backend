@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -73,6 +72,16 @@ public class MissionController implements MissionControllerDocs {
                         userId, request
                 )
         );
+    }
+
+    @Override
+    @DeleteMapping("/{missionId}")
+    public ResponseEntity<ApiResponse<Void>> deleteMission(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable(name = "missionId") Long missionId
+    ) {
+        missionCommandService.deleteMission(userId, missionId);
+        return ApiResponse.success(SuccessStatus.DELETE_MISSION_SUCCESS);
     }
 
 }

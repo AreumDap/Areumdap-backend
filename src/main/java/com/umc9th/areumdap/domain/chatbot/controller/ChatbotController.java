@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class ChatbotController implements ChatbotControllerDocs {
 
     private final ChatbotQueryService chatbotQueryService;
+    private final ChatCommandService chatCommandService;
 
     @Override
     @GetMapping("/recommend")
@@ -35,8 +36,6 @@ public class ChatbotController implements ChatbotControllerDocs {
                 chatbotQueryService.getRecommendQuestions(userId)
         );
     }
-
-    private final ChatCommandService chatCommandService;
 
     @Override
     @PostMapping("/start")
@@ -50,7 +49,7 @@ public class ChatbotController implements ChatbotControllerDocs {
     }
 
     @Override
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<ApiResponse<SendChatMessageResponse>> sendChatResponse(
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody SendChatMessageRequest request
@@ -70,7 +69,7 @@ public class ChatbotController implements ChatbotControllerDocs {
     }
 
     @Override
-    @DeleteMapping("")
+    @DeleteMapping
     public ResponseEntity<ApiResponse<Void>> deleteChatThread(
             @AuthenticationPrincipal Long userId,
             @RequestParam Long userChatThreadId

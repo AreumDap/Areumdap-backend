@@ -15,12 +15,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Mission", description = "성찰과제 API")
 public interface MissionControllerDocs {
@@ -100,4 +96,18 @@ public interface MissionControllerDocs {
             @Valid @ModelAttribute CursorRequest request
     );
 
+    @DeleteMapping("/{missionId}")
+    @Operation(summary = "미션 삭제",
+            description = """
+                    유저의 아카이브에 저장 되어있는 완료된 미션을 삭제합니다
+                    """)
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "과제 삭제", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "다른 사람의 과제 ID", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "존재하지 않는 과제 ID", content = @Content())
+    })
+    ResponseEntity<ApiResponse<Void>> deleteMission(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable(name = "missionId") Long missionId
+    );
 }
