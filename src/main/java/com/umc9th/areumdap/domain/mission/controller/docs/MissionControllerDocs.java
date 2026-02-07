@@ -1,7 +1,6 @@
 package com.umc9th.areumdap.domain.mission.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
-import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.mission.dto.request.CompleteMissionRequest;
 import com.umc9th.areumdap.domain.mission.dto.request.CreateMissionRequest;
 import com.umc9th.areumdap.domain.mission.dto.response.CreateMissionResponse;
