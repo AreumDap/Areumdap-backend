@@ -1,6 +1,7 @@
 package com.umc9th.areumdap.domain.mission.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
+import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.mission.dto.request.CompleteMissionRequest;
 import com.umc9th.areumdap.domain.mission.dto.request.CreateMissionRequest;
 import com.umc9th.areumdap.domain.mission.dto.response.CreateMissionResponse;
@@ -15,12 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Mission", description = "성찰과제 API")
 public interface MissionControllerDocs {
@@ -100,4 +97,17 @@ public interface MissionControllerDocs {
             @Valid @ModelAttribute CursorRequest request
     );
 
+    @DeleteMapping("/{missionId}")
+    @Operation(summary = "미션 삭제",
+            description = """
+                    유저의 아카이브에 저장 되어있는 완료된 미션을 삭제합니다
+                    """)
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "과제 삭제", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "과제 삭제 요청", content = @Content())
+    })
+    ResponseEntity<ApiResponse<Void>> deleteMission(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable(name = "missionId") Long missionId
+    );
 }
