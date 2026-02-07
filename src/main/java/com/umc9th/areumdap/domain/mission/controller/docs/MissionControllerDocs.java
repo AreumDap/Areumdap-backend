@@ -103,7 +103,8 @@ public interface MissionControllerDocs {
                     """)
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "과제 삭제", content = @Content()),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "과제 삭제 요청", content = @Content())
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "다른 사람의 과제 ID", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "존재하지 않는 과제 ID", content = @Content())
     })
     ResponseEntity<ApiResponse<Void>> deleteMission(
             @AuthenticationPrincipal Long userId,
