@@ -33,7 +33,6 @@ public class MissionCommandService {
     private final ChatbotService chatbotService;
     private final TransactionTemplate transactionTemplate;
 
-    @Transactional
     public CreateMissionResponse createMissions(Long userId, Long userChatThreadId) {
         // 트랜잭션 1: 스레드 조회 + 권한 확인 + 요약 가져오기
         UserChatThread chatThread = transactionTemplate.execute(status -> {
