@@ -73,9 +73,10 @@ public interface UserQuestionQueryRepository extends JpaRepository<UserQuestion,
     );
 
     @Query("SELECT uq FROM UserQuestion uq " +
-            "LEFT JOIN FETCH uq.questionBank " +
+            "LEFT JOIN FETCH uq.questionBank qb " +
             "WHERE uq.user.id = :userId " +
             "AND uq.createdAt BETWEEN :start AND :end " +
+            "AND qb.id != 91 " +
             "ORDER BY uq.createdAt DESC")
     List<UserQuestion> findByUserIdAndCreatedAtBetween(
             @Param("userId") Long userId,

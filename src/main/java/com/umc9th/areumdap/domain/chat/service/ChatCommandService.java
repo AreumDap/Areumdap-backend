@@ -20,6 +20,7 @@ import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
+import com.umc9th.areumdap.domain.mission.enums.Tag;
 import com.umc9th.areumdap.domain.chatbot.dto.response.ChatSummaryContentDto;
 import com.umc9th.areumdap.domain.chatbot.service.ChatbotService;
 import com.umc9th.areumdap.domain.chatbot.service.ChatbotService.ChatbotResponseResult;
@@ -160,6 +161,7 @@ public class ChatCommandService {
 
     public ChatSummaryResponse generateSummary(Long userId, ChatSummaryRequest request) {
         // 트랜잭션 1: 스레드 조회 + 권한 확인 + 대화 내역 조회
+        Tag[] tagHolder = new Tag[1];
         UserChatThread chatThread = transactionTemplate.execute(status -> {
             User user = getUser(userId);
 
@@ -169,6 +171,8 @@ public class ChatCommandService {
             if (!thread.getUser().getId().equals(userId)) {
                 throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
             }
+
+            tagHolder[0] = thread.getQuestionBank().getTag();
 
             return thread;
         });
@@ -206,7 +210,8 @@ public class ChatCommandService {
                 startedAt,
                 endedAt,
                 durationMinutes,
-                messageCount
+                messageCount,
+                tagHolder[0]
         );
     }
 
