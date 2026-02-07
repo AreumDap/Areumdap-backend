@@ -6,7 +6,6 @@ import com.umc9th.areumdap.domain.character.service.CharacterCommandService;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.chat.repository.UserChatThreadRepository;
 import com.umc9th.areumdap.domain.chatbot.dto.response.SelfPracticesResponse;
-import com.umc9th.areumdap.domain.chatbot.dto.response.SelfPracticesResponse.SelfPractice;
 import com.umc9th.areumdap.domain.chatbot.service.ChatbotService;
 import com.umc9th.areumdap.domain.mission.dto.response.CreateMissionResponse;
 import com.umc9th.areumdap.domain.mission.entity.Mission;
@@ -34,6 +33,7 @@ public class MissionCommandService {
     private final ChatbotService chatbotService;
     private final TransactionTemplate transactionTemplate;
 
+    @Transactional
     public CreateMissionResponse createMissions(Long userId, Long userChatThreadId) {
         // 트랜잭션 1: 스레드 조회 + 권한 확인 + 요약 가져오기
         UserChatThread chatThread = transactionTemplate.execute(status -> {
@@ -103,6 +103,26 @@ public class MissionCommandService {
     // 과제 수행 완료(XP 지급)
     @Transactional
     public void completeMission(Long userId, Long missionId) {
+        Mission mission = getOwnedMissionForUpdate(userId, missionId);
+
+        if (mission.getMissionStatus() == MissionStatus.COMPLETED) {
+            throw new GeneralException(ErrorStatus.MISSION_ALREADY_COMPLETED);
+        }
+
+        mission.complete();
+        characterCommandService.addXpIfPossible(
+                mission.getUserChatThread().getUser(),
+                Math.toIntExact(mission.getReward())
+        );
+    }
+
+    @Transactional
+    public void deleteMission(Long userId, Long missionId) {
+        Mission mission = getOwnedMissionForUpdate(userId, missionId);
+        missionRepository.delete(mission);
+    }
+
+    private Mission getOwnedMissionForUpdate(Long userId, Long missionId) {
         User user = userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
@@ -113,11 +133,7 @@ public class MissionCommandService {
             throw new GeneralException(ErrorStatus.MISSION_FORBIDDEN);
         }
 
-        if (mission.getMissionStatus() == MissionStatus.COMPLETED) {
-            throw new GeneralException(ErrorStatus.MISSION_ALREADY_COMPLETED);
-        }
-
-        mission.complete();
-        characterCommandService.addXpIfPossible(user, Math.toIntExact(mission.getReward()));
+        return mission;
     }
+
 }
