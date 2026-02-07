@@ -118,6 +118,11 @@ public class MissionCommandService {
     @Transactional
     public void deleteMission(Long userId, Long missionId) {
         Mission mission = getOwnedMissionForUpdate(userId, missionId);
+
+        if (mission.getMissionStatus() != MissionStatus.COMPLETED) {
+            throw new GeneralException(ErrorStatus.MISSION_NOT_COMPLETED);
+        }
+
         missionRepository.delete(mission);
     }
 
