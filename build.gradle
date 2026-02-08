@@ -96,6 +96,9 @@ dependencies {
     
     // Spring-ai
     implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+
+    // Spring Batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 }
 
 tasks.named('test') {
