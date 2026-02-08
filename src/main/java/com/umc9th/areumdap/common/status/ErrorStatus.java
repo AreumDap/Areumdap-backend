@@ -124,6 +124,7 @@ public enum ErrorStatus implements BaseStatus {
      *  Report
      */
     CHAT_REPORT_NOT_FOUND(HttpStatus.NOT_FOUND,"REPORT_404","존재하지 않는 레포트입니다."),
+    CHAT_REPORT_ALREADY_EXISTS(HttpStatus.CONFLICT, "REPORT_409", "이미 레포트가 존재합니다."),
 
     /**
      * ChatBot

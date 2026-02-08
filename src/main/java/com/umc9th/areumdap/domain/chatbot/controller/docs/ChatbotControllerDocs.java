@@ -2,9 +2,11 @@ package com.umc9th.areumdap.domain.chatbot.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.domain.chat.dto.request.ChatSummaryRequest;
+import com.umc9th.areumdap.domain.chat.dto.request.CreateChatReportRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.SendChatMessageRequest;
 import com.umc9th.areumdap.domain.chat.dto.response.ChatSummaryResponse;
+import com.umc9th.areumdap.domain.chat.dto.response.CreateChatReportResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.CreateChatThreadResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.SendChatMessageResponse;
 import com.umc9th.areumdap.domain.chatbot.dto.response.GetChatbotRecommendsResponse;
@@ -78,5 +80,19 @@ public interface ChatbotControllerDocs {
     ResponseEntity<ApiResponse<ChatSummaryResponse>> generateSummary(
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody ChatSummaryRequest request
+    );
+
+    @Operation(summary = "채팅 레포트 생성", description = "대화 요약을 기반으로 채팅 레포트를 생성합니다. 먼저 /api/chatbot/summary로 요약을 생성한 후 호출해야 합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "채팅 레포트 생성 성공", content = @Content(schema = @Schema(implementation = CreateChatReportResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "대화 요약이 존재하지 않는 경우", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "채팅 스레드 접근 권한 없음", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "채팅 스레드를 찾을 수 없음", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이미 레포트가 존재하는 경우", content = @Content())
+    })
+    ResponseEntity<ApiResponse<CreateChatReportResponse>> createChatReport(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody CreateChatReportRequest request
     );
 }
