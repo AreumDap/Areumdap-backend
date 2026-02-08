@@ -4,18 +4,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.chat.dto.request.ChatSummaryRequest;
+import com.umc9th.areumdap.domain.chat.dto.request.CreateChatReportRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.SendChatMessageRequest;
 import com.umc9th.areumdap.domain.chat.dto.response.ChatSummaryResponse;
+import com.umc9th.areumdap.domain.chat.dto.response.CreateChatReportResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.CreateChatThreadResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.SendChatMessageResponse;
 import com.umc9th.areumdap.domain.chat.entity.ChatHistory;
+import com.umc9th.areumdap.domain.chat.entity.ChatReport;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.chat.enums.SenderType;
 import com.umc9th.areumdap.domain.chat.repository.ChatHistoryRepository;
+import com.umc9th.areumdap.domain.chat.repository.ChatReportRepository;
 import com.umc9th.areumdap.domain.chat.repository.UserChatThreadRepository;
 import com.umc9th.areumdap.domain.question.entity.QuestionBank;
 import com.umc9th.areumdap.domain.question.repository.QuestionBankRepository;
+import com.umc9th.areumdap.domain.report.dto.response.ReportInsightResponse;
+import com.umc9th.areumdap.domain.report.dto.response.ReportTagResponse;
+import com.umc9th.areumdap.domain.report.entity.ReportInsightContent;
+import com.umc9th.areumdap.domain.report.entity.ReportTag;
+import com.umc9th.areumdap.domain.report.repository.ReportInsightContentRepository;
+import com.umc9th.areumdap.domain.report.repository.ReportTagRepository;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
 import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
@@ -29,6 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -48,6 +59,9 @@ public class ChatCommandService {
 
     private final UserChatThreadRepository userChatThreadRepository;
     private final ChatHistoryRepository chatHistoryRepository;
+    private final ChatReportRepository chatReportRepository;
+    private final ReportTagRepository reportTagRepository;
+    private final ReportInsightContentRepository reportInsightContentRepository;
     private final UserRepository userRepository;
     private final UserQuestionRepository userQuestionRepository;
     private final QuestionBankRepository questionBankRepository;
@@ -225,6 +239,98 @@ public class ChatCommandService {
         }
 
         chatThread.updateFavorite();
+    }
+
+    @Transactional
+    public CreateChatReportResponse createChatReport(Long userId, CreateChatReportRequest request) {
+        User user = getUser(userId);
+
+        UserChatThread chatThread = userChatThreadRepository.findById(request.userChatThreadId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
+
+        if (!chatThread.getUser().getId().equals(userId)) {
+            throw new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED);
+        }
+
+        // 이미 레포트가 존재하면 에러
+        if (chatThread.getChatReport() != null) {
+            throw new GeneralException(ErrorStatus.CHAT_REPORT_ALREADY_EXISTS);
+        }
+
+        // summary JSON 파싱
+        String summaryJson = chatThread.getSummary();
+        if (summaryJson == null || summaryJson.isBlank()) {
+            throw new GeneralException(ErrorStatus.SUMMARY_NOT_FOUND);
+        }
+
+        ChatSummaryContentDto summaryContent;
+        try {
+            summaryContent = objectMapper.readValue(summaryJson, ChatSummaryContentDto.class);
+        } catch (Exception e) {
+            throw new GeneralException(ErrorStatus.AI_RESPONSE_NOT_PARSE);
+        }
+
+        // ChatHistory에서 messageCount, durationMinutes 계산
+        List<ChatHistory> histories = chatHistoryRepository
+                .findByUserChatThreadOrderByCreatedAtAsc(chatThread);
+
+        int messageCount = histories.size();
+        int durationMinutes = 0;
+        if (histories.size() >= 2) {
+            LocalDateTime startedAt = histories.get(0).getCreatedAt();
+            LocalDateTime endedAt = histories.get(histories.size() - 1).getCreatedAt();
+            durationMinutes = (int) Duration.between(startedAt, endedAt).toMinutes();
+        }
+
+        // ChatReport 생성 및 저장
+        ChatReport chatReport = ChatReport.builder()
+                .userChatThread(chatThread)
+                .title(summaryContent.title())
+                .messageCount(messageCount)
+                .depth(summaryContent.reflectionDepth())
+                .durationMinutes(durationMinutes)
+                .summaryContent(summaryContent.summary())
+                .build();
+        chatReportRepository.save(chatReport);
+
+        // ReportTag 생성 및 저장
+        List<ReportTag> reportTags = summaryContent.keywords().stream()
+                .map(keyword -> ReportTag.builder()
+                        .chatReport(chatReport)
+                        .reportTag(keyword)
+                        .build())
+                .toList();
+        reportTagRepository.saveAll(reportTags);
+
+        // ReportInsightContent 생성 및 저장
+        List<ReportInsightContent> insights = summaryContent.discoveries().stream()
+                .map(discovery -> ReportInsightContent.builder()
+                        .chatReport(chatReport)
+                        .insightContent(discovery)
+                        .build())
+                .toList();
+        reportInsightContentRepository.saveAll(insights);
+
+        // Response 생성
+        List<ReportTagResponse> tagResponses = reportTags.stream()
+                .map(tag -> new ReportTagResponse(tag.getReportTag()))
+                .toList();
+
+        List<ReportInsightResponse> insightResponses = insights.stream()
+                .map(insight -> new ReportInsightResponse(insight.getId(), insight.getInsightContent()))
+                .toList();
+
+        return new CreateChatReportResponse(
+                chatReport.getId(),
+                chatReport.getTitle(),
+                chatReport.getMessageCount(),
+                chatReport.getDepth(),
+                chatReport.getDurationMinutes(),
+                chatReport.getSummaryContent(),
+                tagResponses,
+                insightResponses,
+                chatReport.getCreatedAt().toLocalDate()
+        );
     }
 
     @Transactional
