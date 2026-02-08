@@ -20,8 +20,6 @@ import com.umc9th.areumdap.domain.chat.repository.ChatReportRepository;
 import com.umc9th.areumdap.domain.chat.repository.UserChatThreadRepository;
 import com.umc9th.areumdap.domain.question.entity.QuestionBank;
 import com.umc9th.areumdap.domain.question.repository.QuestionBankRepository;
-import com.umc9th.areumdap.domain.report.dto.response.ReportInsightResponse;
-import com.umc9th.areumdap.domain.report.dto.response.ReportTagResponse;
 import com.umc9th.areumdap.domain.report.entity.ReportInsightContent;
 import com.umc9th.areumdap.domain.report.entity.ReportTag;
 import com.umc9th.areumdap.domain.report.repository.ReportInsightContentRepository;
@@ -243,9 +241,7 @@ public class ChatCommandService {
 
     @Transactional
     public CreateChatReportResponse createChatReport(Long userId, CreateChatReportRequest request) {
-        User user = getUser(userId);
-
-        UserChatThread chatThread = userChatThreadRepository.findById(request.userChatThreadId())
+       UserChatThread chatThread = userChatThreadRepository.findById(request.userChatThreadId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND));
 
         if (!chatThread.getUser().getId().equals(userId)) {
@@ -311,26 +307,7 @@ public class ChatCommandService {
                 .toList();
         reportInsightContentRepository.saveAll(insights);
 
-        // Response 생성
-        List<ReportTagResponse> tagResponses = reportTags.stream()
-                .map(tag -> new ReportTagResponse(tag.getReportTag()))
-                .toList();
-
-        List<ReportInsightResponse> insightResponses = insights.stream()
-                .map(insight -> new ReportInsightResponse(insight.getId(), insight.getInsightContent()))
-                .toList();
-
-        return new CreateChatReportResponse(
-                chatReport.getId(),
-                chatReport.getTitle(),
-                chatReport.getMessageCount(),
-                chatReport.getDepth(),
-                chatReport.getDurationMinutes(),
-                chatReport.getSummaryContent(),
-                tagResponses,
-                insightResponses,
-                chatReport.getCreatedAt().toLocalDate()
-        );
+        return CreateChatReportResponse.from(chatReport, reportTags, insights);
     }
 
     @Transactional
