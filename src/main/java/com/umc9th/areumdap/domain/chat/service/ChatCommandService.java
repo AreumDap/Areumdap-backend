@@ -40,6 +40,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -290,7 +291,8 @@ public class ChatCommandService {
         chatReportRepository.save(chatReport);
 
         // ReportTag 생성 및 저장
-        List<ReportTag> reportTags = summaryContent.keywords().stream()
+        List<String> keywords = Optional.ofNullable(summaryContent.keywords()).orElse(List.of());
+        List<ReportTag> reportTags = keywords.stream()
                 .map(keyword -> ReportTag.builder()
                         .chatReport(chatReport)
                         .reportTag(keyword)
@@ -299,7 +301,8 @@ public class ChatCommandService {
         reportTagRepository.saveAll(reportTags);
 
         // ReportInsightContent 생성 및 저장
-        List<ReportInsightContent> insights = summaryContent.discoveries().stream()
+        List<String> discoveries = Optional.ofNullable(summaryContent.discoveries()).orElse(List.of());
+        List<ReportInsightContent> insights = discoveries.stream()
                 .map(discovery -> ReportInsightContent.builder()
                         .chatReport(chatReport)
                         .insightContent(discovery)
