@@ -9,4 +9,6 @@ public interface ChatReportRepository extends JpaRepository<ChatReport, Long> {
 
     Optional<ChatReport> findByIdAndUserChatThread_User_Id(Long reportId, Long userId);
 
+    Optional<ChatReport> findByUserChatThread_Id(Long threadId);
+
 }
