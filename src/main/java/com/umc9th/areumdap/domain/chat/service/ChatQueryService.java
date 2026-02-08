@@ -13,12 +13,14 @@ import com.umc9th.areumdap.domain.mission.dto.response.MissionSummaryResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportInsightResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportTagResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ChatQueryService {
@@ -83,7 +85,12 @@ public class ChatQueryService {
                 .map(ChatHistoryResponse::from)
                 .toList();
 
-        return GetChatHistoriesResponse.of(threadId, histories);
+        Long reportId = chatReportRepository
+                .findByUserChatThread_Id(threadId)
+                .map(ChatReport::getId)
+                .orElse(null);
+
+        return GetChatHistoriesResponse.of(threadId, reportId, histories);
     }
 
 }
