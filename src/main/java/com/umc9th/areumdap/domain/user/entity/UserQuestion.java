@@ -41,6 +41,10 @@ public class UserQuestion extends BaseEntity {
     @Builder.Default
     private Boolean used = false;
 
+    @Column(name = "is_saved", nullable = false)
+    @Builder.Default
+    private Boolean saved = false;
+
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
