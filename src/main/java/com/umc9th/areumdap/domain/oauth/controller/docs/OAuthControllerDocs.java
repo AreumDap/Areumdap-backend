@@ -3,6 +3,7 @@ package com.umc9th.areumdap.domain.oauth.controller.docs;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.domain.auth.dto.response.LoginResponse;
 import com.umc9th.areumdap.domain.oauth.dto.request.OAuthKakaoLoginRequest;
+import com.umc9th.areumdap.domain.oauth.dto.request.OAuthNaverLoginRequest;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthKakaoLoginUrlResponse;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthNaverLoginUrlResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,15 +53,14 @@ public interface OAuthControllerDocs {
     })
     ResponseEntity<ApiResponse<OAuthNaverLoginUrlResponse>> getOAuthNaverLoginUrl();
 
-    @GetMapping("/naver/login")
+    @PostMapping("/naver/login")
     @Operation(summary = "네이버 로그인 콜백", description = "네이버 로그인 콜백 후 JWT 발급")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "네이버 로그인 성공", content = @Content(schema = @Schema(implementation = LoginResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이미 해당 이메일로 회원가입을 한 경우", content = @Content(schema = @Schema(implementation = LoginResponse.class)))
     })
     ResponseEntity<ApiResponse<LoginResponse>> oAuthNaverLogin(
-            @RequestParam String code,
-            @RequestParam String state
+            @Valid @RequestBody OAuthNaverLoginRequest oauthNaverLoginRequest
     );
 
 }
