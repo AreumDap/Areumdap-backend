@@ -73,6 +73,7 @@ public class UserQuestionCommandService {
                 .chatHistory(chatHistory)
                 .content(chatHistory.getContent())       // 즉석 질문 본문
                 .used(false)
+                .saved(true)
                 .build();
 
         userQuestionRepository.save(userQuestion);
