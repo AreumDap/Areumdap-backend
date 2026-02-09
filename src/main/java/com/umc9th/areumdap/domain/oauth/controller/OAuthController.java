@@ -72,12 +72,11 @@ public class OAuthController implements OAuthControllerDocs {
     }
 
     @Override
-    @GetMapping("/naver/login")
+    @PostMapping("/naver/login")
     public ResponseEntity<ApiResponse<LoginResponse>> oAuthNaverLogin(
-            @RequestParam String code,
-            @RequestParam String state
+            @Valid @RequestBody OAuthNaverLoginRequest oauthNaverLoginRequest
     ) {
-        LoginResponse response = oauthNaverService.naverLogin(new OAuthNaverLoginRequest(code, state));
+        LoginResponse response = oauthNaverService.naverLogin(oauthNaverLoginRequest);
         return ApiResponse.success(SuccessStatus.NAVER_LOGIN_SUCCESS, response);
     }
 
