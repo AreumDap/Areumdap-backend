@@ -16,7 +16,7 @@ public class Device extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "token", length = 512, nullable = false)
+    @Column(name = "token", length = 512, nullable = false, unique = true)
     private String token;
 
     @Column(name = "os_type", length = 512, nullable = false)
@@ -25,13 +25,17 @@ public class Device extends BaseEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    public void updateDevice(String deviceToken, String osType) {
-        this.token = deviceToken;
+    public void updateDevice(Long userId, String osType) {
+        this.userId = userId;
         this.osType = osType;
     }
 
-    public void changeUserId(Long userId) {
-        this.userId = userId;
+    public static Device create(Long userId, String token, String osType) {
+        return Device.builder()
+                .userId(userId)
+                .token(token)
+                .osType(osType)
+                .build();
     }
 
 }

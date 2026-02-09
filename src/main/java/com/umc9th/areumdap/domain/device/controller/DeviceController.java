@@ -19,10 +19,10 @@ public class DeviceController implements DeviceControllerDocs {
     private final DeviceCommandService deviceCommandService;
 
     @Override
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<ApiResponse<Void>> registerDevice(
             @AuthenticationPrincipal Long userId,
-            @Valid  @RequestBody RegisterDeviceRequest registerDeviceRequest
+            @Valid @RequestBody RegisterDeviceRequest registerDeviceRequest
     ) {
         deviceCommandService.registerDevice(userId, registerDeviceRequest);
         return ApiResponse.success(SuccessStatus.REGISTER_DEVICE_SUCCESS);

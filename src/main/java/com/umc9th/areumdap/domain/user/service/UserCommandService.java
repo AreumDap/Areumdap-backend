@@ -35,7 +35,6 @@ public class UserCommandService {
                         .age(age)
                         .email(email)
                         .password(password)
-                        .device(null)
                         .deleted(false)
                         .build()
         );
