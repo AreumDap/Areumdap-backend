@@ -54,7 +54,7 @@ public interface OAuthControllerDocs {
     ResponseEntity<ApiResponse<OAuthNaverLoginUrlResponse>> getOAuthNaverLoginUrl();
 
     @PostMapping("/naver/login")
-    @Operation(summary = "네이버 로그인 콜백", description = "네이버 로그인 콜백 후 JWT 발급")
+    @Operation(summary = "네이버 로그인", description = "네이버 로그인 처리 후 JWT 토큰 발급")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "네이버 로그인 성공", content = @Content(schema = @Schema(implementation = LoginResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이미 해당 이메일로 회원가입을 한 경우", content = @Content(schema = @Schema(implementation = LoginResponse.class)))

@@ -3,7 +3,7 @@ spring:
     job:
       enabled: false
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
 
   application:
     name: areumdap-be
