@@ -56,13 +56,11 @@ public class CharacterCommandService {
         try {
             Character character = characterRepository.save(Character.create(user, request.characterSeason(), keywords));
             String imageUrl = characterImageResolver.resolve(character.getCharacterSeason(), character.getLevel());
-
             characterHistoryRepository.save(new CharacterHistory(character, character.getLevel()));
             return new RegisterCharacterResponse(character.getId(), imageUrl);
         } catch (DataIntegrityViolationException e) {
             throw new GeneralException(ErrorStatus.CHARACTER_ALREADY_EXISTS);
         }
-
     }
 
     // 캐릭터 성장 히스토리 업데이트
@@ -71,13 +69,11 @@ public class CharacterCommandService {
         Character character = getCharacterByUser(user);
 
         HistorySummaryResponse response = chatbotService.generateHistorySummary(userId);
-
         character.updateHistorySummary(
                 response.pastDescription(),
                 response.currentDescription()
         );
     }
-
 
     // 캐릭터 XP 추가 (성장 가능 시 XP 추가 불가)
     public void addXpIfPossible(User user, int amount) {
