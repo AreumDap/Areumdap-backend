@@ -20,20 +20,21 @@ public class NotificationService {
             String token,
             String title,
             String body,
-            Map<String, String> data
-    ) {
-        Message message = Message.builder()
+            Map<String, String> data) {
+        Message.Builder messageBuilder = Message.builder()
                 .setToken(token)
                 .setNotification(
                         Notification.builder()
                                 .setTitle(title)
                                 .setBody(body)
-                                .build()
-                )
-                .putAllData(data)
-                .build();
+                                .build());
+
+        if (data != null) {
+            messageBuilder.putAllData(data);
+        }
+
         try {
-            return FirebaseMessaging.getInstance().send(message);
+            return FirebaseMessaging.getInstance().send(messageBuilder.build());
         } catch (Exception e) {
             log.error("알림 전송 중 오류 발생: {}", e.getMessage());
             throw new RuntimeException(e);
