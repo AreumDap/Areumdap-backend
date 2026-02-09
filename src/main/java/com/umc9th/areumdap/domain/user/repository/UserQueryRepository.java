@@ -4,6 +4,7 @@ import com.umc9th.areumdap.domain.notification.dto.response.NotificationTargetUs
 import com.umc9th.areumdap.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -21,5 +22,5 @@ public interface UserQueryRepository extends JpaRepository<User, Long> {
         AND u.notificationEnabled = true
         AND u.notificationTime = :time
     """)
-    List<NotificationTargetUser> findNotificationTargets(LocalTime time);
+    List<NotificationTargetUser> findNotificationTargets(@Param("time") LocalTime time);
 }

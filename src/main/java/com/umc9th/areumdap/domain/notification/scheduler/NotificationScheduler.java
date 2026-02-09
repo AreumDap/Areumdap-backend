@@ -37,23 +37,19 @@ public class NotificationScheduler {
 
         try {
             UserQuestion question = resolveTodayQuestion(target.userId());
-
             Map<String, String> data = Map.of("content", question.getContent());
-
             notificationService.sendPushAlarm(
                     target.deviceToken(),
                     "오늘의 철학",
                     "오늘의 철학 질문을 시작해 보아요!",
                     data
             );
-
         } catch (Exception e) {
             log.error("알림 전송 실패 userId={}", target.userId(), e);
         }
     }
 
     private UserQuestion resolveTodayQuestion(Long userId) {
-
         List<UserQuestion> todayQuestions = questionQueryService.getTodayQuestions(userId);
         if (!todayQuestions.isEmpty())
             return todayQuestions.get(0);
