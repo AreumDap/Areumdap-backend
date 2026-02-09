@@ -1,21 +1,16 @@
 package com.umc9th.areumdap.domain.notification.scheduler;
 
-import com.umc9th.areumdap.common.exception.GeneralException;
-import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.notification.dto.response.NotificationTargetUser;
 import com.umc9th.areumdap.domain.notification.service.NotificationService;
 import com.umc9th.areumdap.domain.question.service.QuestionCommandService;
 import com.umc9th.areumdap.domain.question.service.QuestionQueryService;
-import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
-import com.umc9th.areumdap.domain.user.repository.UserRepository;
+import com.umc9th.areumdap.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,51 +18,51 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class NotificationScheduler {
-    private final UserRepository userRepository;
+    private final UserQueryService userQueryService;
     private final NotificationService notificationService;
     private final QuestionCommandService questionCommandService;
     private final QuestionQueryService questionQueryService;
 
     @Scheduled(cron = "0 * * * * *") // 매 분 0초마다 실행
     public void sendScheduledNotifications() {
-        LocalTime now = LocalTime
-                .now(ZoneId.of("Asia/Seoul"))
-                .withSecond(0)
-                .withNano(0);
+        List<NotificationTargetUser> targets =
+                userQueryService.findUsersToNotify();
 
-        List<User> users = userRepository.findUsersToNotify(now);
+        targets.forEach(this::processNotification);
+    }
 
-        for (User user : users) {
-            if (user.getDevice() == null || user.getDevice().getToken() == null)
-                continue;
+    private void processNotification(NotificationTargetUser target) {
+        if (target.deviceToken() == null)
+            return;
 
-            try {
-                // 오늘 배정된 질문 확인
-                List<UserQuestion> todayQuestions = questionQueryService.getTodayQuestions(user.getId());
-                UserQuestion targetQuestion;
+        try {
+            UserQuestion question = resolveTodayQuestion(target.userId());
 
-                if (todayQuestions.isEmpty()) {
-                    // 질문이 없으면 새로 배정
-                    List<UserQuestion> newQuestions = questionCommandService.assignRandomQuestions(user.getId());
-                    if (newQuestions.isEmpty()) {
-                        continue;
-                    }
-                    targetQuestion = newQuestions.get(0);
-                } else {
-                    targetQuestion = todayQuestions.get(0);
-                }
-                Map<String, String> data = new HashMap<>();
-                data.put("content", targetQuestion.getContent());
+            Map<String, String> data = Map.of("content", question.getContent());
 
-                notificationService.sendPushAlarm(
-                        user.getDevice().getToken(),
-                        "오늘의 철학",
-                        "오늘의 철학 질문을 시작해 보아요!",
-                        data);
-            } catch (Exception e) {
-                throw new GeneralException(ErrorStatus.NOTIFICATION_SENDING_INTERNAL_SERVER_ERROR);
-            }
+            notificationService.sendPushAlarm(
+                    target.deviceToken(),
+                    "오늘의 철학",
+                    "오늘의 철학 질문을 시작해 보아요!",
+                    data
+            );
+
+        } catch (Exception e) {
+            log.error("알림 전송 실패 userId={}", target.userId(), e);
         }
+    }
+
+    private UserQuestion resolveTodayQuestion(Long userId) {
+
+        List<UserQuestion> todayQuestions = questionQueryService.getTodayQuestions(userId);
+        if (!todayQuestions.isEmpty())
+            return todayQuestions.get(0);
+
+        List<UserQuestion> newQuestions = questionCommandService.assignRandomQuestions(userId);
+        if (newQuestions.isEmpty())
+            throw new IllegalStateException("질문 생성 실패 userId=" + userId);
+
+        return newQuestions.get(0);
     }
 
 }

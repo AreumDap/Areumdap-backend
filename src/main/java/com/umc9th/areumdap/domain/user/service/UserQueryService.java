@@ -2,6 +2,7 @@ package com.umc9th.areumdap.domain.user.service;
 
 import com.umc9th.areumdap.common.exception.GeneralException;
 import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.notification.dto.response.NotificationTargetUser;
 import com.umc9th.areumdap.domain.user.dto.response.GetUserProfileResponse;
 import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.repository.UserQueryRepository;
@@ -9,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,6 +48,15 @@ public class UserQueryService {
     public User getUserByIdAndDeletedFalse(Long userId) {
         return userQueryRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    // 알림을 보낼 유저 리스트 조회
+    public List<NotificationTargetUser> findUsersToNotify() {
+        LocalTime now = LocalTime
+                .now(ZoneId.of("Asia/Seoul"))
+                .withSecond(0)
+                .withNano(0);
+        return userQueryRepository.findNotificationTargets(now);
     }
 
 }

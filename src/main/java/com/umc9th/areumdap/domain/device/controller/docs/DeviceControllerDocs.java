@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name = "Device", description = "기기 관련 API")
 public interface DeviceControllerDocs {
 
-    @PostMapping
+    @PostMapping("")
     @Operation(summary = "기기 토큰 값, 종류 등록")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "기기 정보 등록 성공", content = @Content()),
@@ -25,4 +25,5 @@ public interface DeviceControllerDocs {
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody RegisterDeviceRequest registerDeviceRequest
     );
+
 }
