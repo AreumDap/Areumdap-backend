@@ -17,6 +17,7 @@ public interface UserQuestionRepository extends JpaRepository<UserQuestion,Long>
     @Query("""
         DELETE FROM UserQuestion uq
         WHERE uq.used = false
+          AND uq.saved = false
           AND uq.id NOT IN (
               SELECT t.userQuestion.id FROM UserChatThread t
           )
