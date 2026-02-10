@@ -94,12 +94,7 @@ public class User extends BaseEntity {
     public void withdraw() {
         this.deleted = true;
         this.deletedAt = LocalDateTime.now();
-        this.email = null;
-        this.password = null;
         this.refreshToken = null;
-        this.name = null;
-        this.birth = null;
-        this.age = null;
     }
 
     // 프로필 업데이트
@@ -138,6 +133,10 @@ public class User extends BaseEntity {
     public void restore(){
         this.deleted = false;
         this.deletedAt = null;
+        this.onboardingCompleted = false;
+        this.notificationEnabled = false;
+        this.notificationTime = null;
+        this.email = null;
     }
 
     // 소셜 로그인 유저 생성
