@@ -11,12 +11,13 @@ import com.umc9th.areumdap.domain.user.entity.User;
 import com.umc9th.areumdap.domain.user.enums.OAuthProvider;
 import com.umc9th.areumdap.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -44,13 +45,13 @@ public class UserCommandService {
     // 소셜 유저 등록 or 찾기
     public User getOrRegisterUser(String oauthId, OAuthProvider provider, String name, String email) {
         return userRepository
-                .findByOauthIdAndOauthProvider(oauthId,provider)
+                .findByOauthIdAndOauthProvider(oauthId, provider)
                 .map(user -> {
                     reactivateIfDeleted(user);
                     user.updateProfile(name, email);
                     return user;
                 })
-                .orElseGet(() -> registerSocialUser(oauthId,provider,name,email));
+                .orElseGet(() -> registerSocialUser(oauthId, provider, name, email));
     }
 
     // 유저 온보딩 저장
@@ -90,7 +91,9 @@ public class UserCommandService {
 
     // 회원탈퇴 시 소프트 delete 방식 적용
     public void withdraw(User user) {
+        log.info("탈퇴전 유저의 정보 : {}{}", user.isDeleted(), user.getDeletedAt());
         user.withdraw();
+        log.info("탈퇴된 유저의 정보 : {}{}", user.isDeleted(), user.getDeletedAt());
     }
 
     // 로그아웃 시 RefreshToken 제거
@@ -111,7 +114,7 @@ public class UserCommandService {
 
     // 소셜 로그인 유저가 탈퇴했다가 다시 로그인 하는 경우 탈퇴 정책 복구
     private void reactivateIfDeleted(User user) {
-        if(user.isDeleted())
+        if (user.isDeleted())
             user.restore();
     }
 
@@ -119,7 +122,7 @@ public class UserCommandService {
     private User registerSocialUser(String oauthId, OAuthProvider provider, String name, String email) {
         validateEmailDuplication(email);
 
-        User user = User.createSocialUser(oauthId,provider,name,email);
+        User user = User.createSocialUser(oauthId, provider, name, email);
         return userRepository.save(user);
     }
 
