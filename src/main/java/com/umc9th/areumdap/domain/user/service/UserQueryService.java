@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -57,6 +58,10 @@ public class UserQueryService {
                 .withSecond(0)
                 .withNano(0);
         return userQueryRepository.findNotificationTargets(now);
+    }
+
+    public User getUserByEmail(String email) {
+        return userQueryRepository.findByEmail(email).orElse(null);
     }
 
 }
