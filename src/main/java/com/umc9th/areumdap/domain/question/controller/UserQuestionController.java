@@ -45,4 +45,14 @@ public class UserQuestionController implements UserQuestionControllerDocs {
         );
     }
 
+    @Override
+    @DeleteMapping("/{userQuestionId}")
+    public ResponseEntity<ApiResponse<Void>> deleteQuestion(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long userQuestionId
+    ) {
+        userQuestionCommandService.deleteUserQuestion(userId, userQuestionId);
+        return ApiResponse.success(SuccessStatus.DELETE_QUESTION_SUCCESS, null);
+    }
+
 }
