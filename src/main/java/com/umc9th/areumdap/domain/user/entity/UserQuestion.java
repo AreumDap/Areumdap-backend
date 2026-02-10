@@ -64,4 +64,12 @@ public class UserQuestion extends BaseEntity {
         this.chatHistory = null;
     }
 
+    public void markAsUnsaved() {
+        this.saved = false;
+    }
+
+    public void clearParentQuestion() {
+        this.parentQuestion = null;
+    }
+
 }

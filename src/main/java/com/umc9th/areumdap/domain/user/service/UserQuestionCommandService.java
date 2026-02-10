@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -77,6 +79,30 @@ public class UserQuestionCommandService {
                 .build();
 
         userQuestionRepository.save(userQuestion);
+    }
+
+    public void deleteUserQuestion(Long userId, Long userQuestionId) {
+
+        // 저장된 질문 조회 + 소유자 검증 + saved=true 검증
+        UserQuestion userQuestion = userQuestionRepository
+                .findByIdAndUser_IdAndSavedTrue(userQuestionId, userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_QUESTION_NOT_FOUND));
+
+        // 대화 스레드에 사용 중인 경우 → 논리 삭제 (saved = false)
+        if (Boolean.TRUE.equals(userQuestion.getUsed())) {
+            userQuestion.markAsUnsaved();
+            return;
+        }
+
+        // 자식 질문의 parentQuestion 참조 해제
+        List<UserQuestion> children = userQuestionRepository
+                .findByParentQuestion_Id(userQuestionId);
+        for (UserQuestion child : children) {
+            child.clearParentQuestion();
+        }
+
+        // 물리 삭제
+        userQuestionRepository.delete(userQuestion);
     }
 
 }

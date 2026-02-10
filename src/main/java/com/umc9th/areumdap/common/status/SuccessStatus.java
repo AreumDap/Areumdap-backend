@@ -58,6 +58,7 @@ public enum SuccessStatus implements BaseStatus {
      *  Question
      */
     CREATE_QUESTION_SUCCESS(HttpStatus.CREATED,"QUES_201","질문 저장 성공"),
+    DELETE_QUESTION_SUCCESS(HttpStatus.OK,"QUES_200","저장된 질문 삭제 성공"),
     GET_ALL_SAVED_QUESTION_SUCCESS(HttpStatus.OK,"QUES_200","저장된 질문 조회 성공"),
 
     /**
