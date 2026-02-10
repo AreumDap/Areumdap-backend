@@ -9,7 +9,7 @@ spring:
     name: areumdap-be
 
   profiles:
-    default: dev
+    default: prod
 
   jpa:
     open-in-view: false
