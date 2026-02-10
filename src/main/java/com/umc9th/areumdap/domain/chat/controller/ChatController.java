@@ -3,10 +3,10 @@ package com.umc9th.areumdap.domain.chat.controller;
 import com.umc9th.areumdap.common.response.ApiResponse;
 import com.umc9th.areumdap.common.status.SuccessStatus;
 import com.umc9th.areumdap.domain.chat.controller.docs.ChatControllerDocs;
+import com.umc9th.areumdap.domain.chat.dto.request.CreateChatReportRequest;
+import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.UserChatThreadCursorRequest;
-import com.umc9th.areumdap.domain.chat.dto.response.GetChatHistoriesResponse;
-import com.umc9th.areumdap.domain.chat.dto.response.GetChatReportResponse;
-import com.umc9th.areumdap.domain.chat.dto.response.UserChatThreadCursorResponse;
+import com.umc9th.areumdap.domain.chat.dto.response.*;
 import com.umc9th.areumdap.domain.chat.service.ChatCommandService;
 import com.umc9th.areumdap.domain.chat.service.ChatQueryService;
 import com.umc9th.areumdap.domain.chat.service.UserChatThreadQueryService;
@@ -24,6 +24,17 @@ public class ChatController implements ChatControllerDocs {
     private final ChatQueryService chatQueryService;
     private final ChatCommandService chatCommandService;
     private final UserChatThreadQueryService userChatThreadQueryService;
+
+    @Override
+    @PostMapping("/thread")
+    public ResponseEntity<ApiResponse<CreateChatThreadResponse>> createChatThread(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody CreateChatThreadRequest request
+
+    ) {
+        CreateChatThreadResponse response = chatCommandService.createChatThread(userId, request);
+        return ApiResponse.success(SuccessStatus.CREATE_CHAT_THREAD_SUCCESS, response);
+    }
 
     @Override
     @GetMapping("/threads")
@@ -51,6 +62,16 @@ public class ChatController implements ChatControllerDocs {
     }
 
     @Override
+    @PostMapping("/report")
+    public ResponseEntity<ApiResponse<CreateChatReportResponse>> createChatReport(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody CreateChatReportRequest request
+    ) {
+        CreateChatReportResponse response = chatCommandService.createChatReport(userId, request);
+        return ApiResponse.success(SuccessStatus.CREATE_CHAT_REPORT_SUCCESS, response);
+    }
+
+    @Override
     @GetMapping("/reports/{reportId}")
     public ResponseEntity<ApiResponse<GetChatReportResponse>> getChatReport(
             @AuthenticationPrincipal Long userId,
@@ -61,6 +82,16 @@ public class ChatController implements ChatControllerDocs {
                 SuccessStatus.GET_CHAT_REPORT_SUCCESS,
                 chatQueryService.getChatReport(userId, reportId)
         );
+    }
+
+    @Override
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<Void>> deleteChatThread(
+            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userChatThreadId
+    ) {
+        chatCommandService.deleteChatThread(userId, userChatThreadId);
+        return ApiResponse.success(SuccessStatus.DELETE_CHAT_THREAD_SUCCESS);
     }
 
     @Override
