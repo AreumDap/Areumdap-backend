@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
 
@@ -31,6 +32,7 @@ public interface ChatbotControllerDocs {
             @AuthenticationPrincipal Long userId
     );
 
+    @PostMapping
     @Operation(summary = "채팅 메시지 생성", description = "사용자 메시지를 전송하고 AI 응답을 받습니다")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "메시지 전송 성공", content = @Content(schema = @Schema(implementation = SendChatMessageResponse.class))),
@@ -43,6 +45,7 @@ public interface ChatbotControllerDocs {
             @Valid @RequestBody SendChatMessageRequest request
     );
 
+    @PostMapping("/summary")
     @Operation(summary = "대화 요약 생성", description = "대화 스레드의 전체 대화 내역을 기반으로 AI 요약을 생성합니다")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "대화 요약 생성 성공", content = @Content(schema = @Schema(implementation = ChatSummaryResponse.class))),
