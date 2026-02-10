@@ -1,13 +1,14 @@
 package com.umc9th.areumdap.domain.chat.controller.docs;
 
 import com.umc9th.areumdap.common.response.ApiResponse;
+import com.umc9th.areumdap.domain.chat.dto.request.CreateChatReportRequest;
+import com.umc9th.areumdap.domain.chat.dto.request.CreateChatThreadRequest;
 import com.umc9th.areumdap.domain.chat.dto.request.UserChatThreadCursorRequest;
-import com.umc9th.areumdap.domain.chat.dto.response.GetChatHistoriesResponse;
-import com.umc9th.areumdap.domain.chat.dto.response.GetChatReportResponse;
-import com.umc9th.areumdap.domain.chat.dto.response.UserChatThreadCursorResponse;
+import com.umc9th.areumdap.domain.chat.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -17,6 +18,18 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Chat", description = "채팅 API")
 public interface ChatControllerDocs {
+
+    @PostMapping("/thread")
+    @Operation(summary = "채팅방 생성", description = "새로운 채팅 스레드를 생성하고 첫 질문을 저장합니다. userQuestionId가 null인 경우 랜덤 인사 메시지로 대화를 시작합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "채팅 스레드 생성 성공",  content = @Content(schema = @Schema(implementation = CreateChatThreadResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음", content = @Content())
+    })
+    ResponseEntity<ApiResponse<CreateChatThreadResponse>> createChatThread(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody CreateChatThreadRequest request
+    );
 
     @Operation(
             summary = "채팅방 목록 조회",
@@ -53,6 +66,21 @@ public interface ChatControllerDocs {
             @Valid @ModelAttribute UserChatThreadCursorRequest cursor
     );
 
+    @PostMapping("/report")
+    @Operation(summary = "채팅 레포트 생성", description = "대화 요약을 기반으로 채팅 레포트를 생성합니다. 먼저 /api/chatbot/summary로 요약을 생성한 후 호출해야 합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "채팅 레포트 생성 성공", content = @Content(schema = @Schema(implementation = CreateChatReportResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "대화 요약이 존재하지 않는 경우", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "채팅 스레드 접근 권한 없음", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "채팅 스레드를 찾을 수 없음", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이미 레포트가 존재하는 경우", content = @Content())
+    })
+    ResponseEntity<ApiResponse<CreateChatReportResponse>> createChatReport(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody CreateChatReportRequest request
+    );
+
     @GetMapping("/reports/{reportId}")
     @Operation(summary = "채팅 레포트 조회")
     @ApiResponses(value = {
@@ -66,7 +94,7 @@ public interface ChatControllerDocs {
     );
 
     @GetMapping("/threads/{threadId}")
-    @Operation(summary = "채팅 기록 조회")
+    @Operation(summary = "채팅 메세지 조회")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "채팅 기록 조회 성공", content = @Content()),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값이 올바르지 않은 경우", content = @Content()),
@@ -74,6 +102,18 @@ public interface ChatControllerDocs {
     ResponseEntity<ApiResponse<GetChatHistoriesResponse>> getChatHistories(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long threadId
+    );
+
+    @DeleteMapping
+    @Operation(summary = "채팅 스레드 삭제", description = "채팅 스레드와 관련 데이터를 삭제합니다")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "대화 스레드 삭제 성공", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "채팅 스레드 접근 권한 없음", content = @Content()),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "채팅 스레드를 찾을 수 없음", content = @Content())
+    })
+    ResponseEntity<ApiResponse<Void>> deleteChatThread(
+            @AuthenticationPrincipal Long userId,
+            @RequestParam Long userChatThreadId
     );
 
     @PatchMapping("/threads/{threadId}/favorite")
