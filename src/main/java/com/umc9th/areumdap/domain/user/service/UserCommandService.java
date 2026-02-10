@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -42,22 +43,14 @@ public class UserCommandService {
 
     // 소셜 유저 등록 or 찾기
     public User getOrRegisterUser(String oauthId, OAuthProvider provider, String name, String email) {
-        User user = userRepository.findByOauthIdAndOauthProvider(oauthId, provider)
-                .orElseGet(() -> {
-                    if (userRepository.existsByEmailAndDeletedFalse(email)) {
-                        throw new GeneralException(ErrorStatus.EMAIL_ALREADY_EXISTS);
-                    }
-                    return userRepository.save(User.builder()
-                            .oauthId(oauthId)
-                            .oauthProvider(provider)
-                            .name(name)
-                            .email(email)
-                            .deleted(false)
-                            .build());
-                });
-
-        user.updateProfile(name, email);
-        return user;
+        return userRepository
+                .findByOauthIdAndOauthProvider(oauthId,provider)
+                .map(user -> {
+                    reactivateIfDeleted(user);
+                    user.updateProfile(name, email);
+                    return user;
+                })
+                .orElseGet(() -> registerSocialUser(oauthId,provider,name,email));
     }
 
     // 유저 온보딩 저장
@@ -114,6 +107,27 @@ public class UserCommandService {
     public User getUser(Long userId) {
         return userRepository.findByIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    // 소셜 로그인 유저가 탈퇴했다가 다시 로그인 하는 경우 탈퇴 정책 복구
+    private void reactivateIfDeleted(User user) {
+        if(user.isDeleted())
+            user.restore();
+    }
+
+    // 소셜 로그인 유저 등록
+    private User registerSocialUser(String oauthId, OAuthProvider provider, String name, String email) {
+        validateEmailDuplication(email);
+
+        User user = User.createSocialUser(oauthId,provider,name,email);
+        return userRepository.save(user);
+    }
+
+    // 중복 이메일 검사
+    private void validateEmailDuplication(String email) {
+        if (userRepository.existsByEmailAndDeletedFalse(email)) {
+            throw new GeneralException(ErrorStatus.EMAIL_ALREADY_EXISTS);
+        }
     }
 
 }
