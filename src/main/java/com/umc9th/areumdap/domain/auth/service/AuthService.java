@@ -45,11 +45,18 @@ public class AuthService {
 
     // 회원가입
     public void signUp(SignUpRequest request) {
-        userQueryService.checkEmailNotExists(request.email());
-        emailVerificationService.validateEmailVerified(request.email());
+        User existingUser = userQueryService.getUserByEmail(request.email());
 
-        String encodedPassword = passwordEncoder.encode(request.password());
-        userCommandService.registerUser(request.name(), request.birth(), request.email(), encodedPassword);
+        if (existingUser != null) {
+            if (existingUser.isDeleted()) {
+                reactivateEmailUser(existingUser, request);
+                return;
+            }
+            throw new GeneralException(ErrorStatus.EMAIL_ALREADY_EXISTS);
+        }
+
+        emailVerificationService.validateEmailVerified(request.email());
+        registerNewUser(request);
     }
 
     // 회원탈퇴
@@ -81,7 +88,7 @@ public class AuthService {
         Claims claims = jwtService.validateRefreshToken(refreshToken);
         User user = userQueryService.getUserByIdAndDeletedFalse(Long.parseLong(claims.getSubject()));
 
-        if(!refreshTokenHasher.matches(refreshToken, user.getRefreshToken()))
+        if (!refreshTokenHasher.matches(refreshToken, user.getRefreshToken()))
             throw new GeneralException(ErrorStatus.REFRESH_TOKEN_MISMATCH);
 
         String newAccessToken = jwtService.generateAccessToken(user);
@@ -95,6 +102,23 @@ public class AuthService {
     private void validatePasswordMatch(String inputPassword, String storedPassword) {
         if (!passwordEncoder.matches(inputPassword, storedPassword))
             throw new GeneralException(ErrorStatus.INVALID_PASSWORD);
+    }
+
+    // 이메일 유저 복구
+    private void reactivateEmailUser(User user, SignUpRequest request) {
+        user.restore();
+        user.updateEmailProfile(request.name(), request.birth(), request.email());
+        user.updatePassword(passwordEncoder.encode(request.password()));
+    }
+
+    private void registerNewUser(SignUpRequest request) {
+        String encodedPassword = passwordEncoder.encode(request.password());
+        userCommandService.registerUser(
+                request.name(),
+                request.birth(),
+                request.email(),
+                encodedPassword
+        );
     }
 
 }

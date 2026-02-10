@@ -95,7 +95,6 @@ public class User extends BaseEntity {
         this.deleted = true;
         this.deletedAt = LocalDateTime.now();
         this.refreshToken = null;
-        this.email = null;
     }
 
     // 프로필 업데이트
@@ -122,10 +121,12 @@ public class User extends BaseEntity {
         return (long) (currentYear - birth.getYear() + 1); // 한국 나이
     }
 
+
     public void completeOnboarding() {
         this.onboardingCompleted = true;
     }
 
+    // 닉네임 업데이트
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
@@ -148,6 +149,18 @@ public class User extends BaseEntity {
                 .email(email)
                 .deleted(false)
                 .build();
+    }
+
+    // 비밀번호 업데이트
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    // 프로필 업데이트
+    public void updateEmailProfile(String name, LocalDate birth, String email) {
+        this.name = name;
+        this.birth = birth;
+        this.email = email;
     }
 
 }
