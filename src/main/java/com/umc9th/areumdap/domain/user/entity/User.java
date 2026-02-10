@@ -95,6 +95,7 @@ public class User extends BaseEntity {
         this.deleted = true;
         this.deletedAt = LocalDateTime.now();
         this.refreshToken = null;
+        this.email = null;
     }
 
     // 프로필 업데이트
@@ -136,7 +137,6 @@ public class User extends BaseEntity {
         this.onboardingCompleted = false;
         this.notificationEnabled = false;
         this.notificationTime = null;
-        this.email = null;
     }
 
     // 소셜 로그인 유저 생성
