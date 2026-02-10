@@ -3,8 +3,8 @@ package com.umc9th.areumdap.domain.chatbot.builder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.umc9th.areumdap.domain.chat.entity.ChatReport;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
-import jakarta.annotation.PostConstruct;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -34,9 +34,9 @@ public class HistorySummaryPromptBuilder {
     StringBuilder summaryBlock = new StringBuilder();
 
     chatThreads.forEach(thread -> {
-      String summary = thread.getChatReport().getSummaryContent();
+      ChatReport chatReport = thread.getChatReport();
 
-      if (summary == null || summary.isBlank()) {
+      if (chatReport == null || chatReport.getSummaryContent().isBlank()) {
         return;
       }
 
@@ -44,7 +44,7 @@ public class HistorySummaryPromptBuilder {
           .append("- ")
           .append(thread.getUpdatedAt().format(DATE_FORMATTER))
           .append(": ")
-          .append(summary)
+          .append(chatReport.getSummaryContent())
           .append("\n");
     });
 
