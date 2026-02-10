@@ -2,7 +2,6 @@ package com.umc9th.areumdap.domain.user.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
-import com.umc9th.areumdap.domain.device.entity.Device;
 import com.umc9th.areumdap.domain.user.enums.OAuthProvider;
 import com.umc9th.areumdap.domain.user.enums.Sex;
 import jakarta.persistence.*;
@@ -133,6 +132,23 @@ public class User extends BaseEntity {
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    // 탈퇴 복구
+    public void restore(){
+        this.deleted = false;
+        this.deletedAt = null;
+    }
+
+    // 소셜 로그인 유저 생성
+    public static User createSocialUser(String oauthId, OAuthProvider provider, String name, String email){
+        return User.builder()
+                .oauthId(oauthId)
+                .oauthProvider(provider)
+                .name(name)
+                .email(email)
+                .deleted(false)
+                .build();
     }
 
 }
