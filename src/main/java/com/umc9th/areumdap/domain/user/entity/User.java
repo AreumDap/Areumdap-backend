@@ -121,7 +121,7 @@ public class User extends BaseEntity {
         return (long) (currentYear - birth.getYear() + 1); // 한국 나이
     }
 
-
+    // 온보딩 완료여부 체크
     public void completeOnboarding() {
         this.onboardingCompleted = true;
     }

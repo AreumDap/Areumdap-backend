@@ -24,10 +24,12 @@ public class EmailVerification extends BaseEntity {
     @Column(name = "verification_code", length = 6, nullable = false)
     private String verificationCode;
 
+    // 인증 코드 업데이트
     public void updateVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
     }
 
+    // 인증 여부 업데이트
     public void updateIsVerified(boolean verified) {
         this.verified = verified;
     }

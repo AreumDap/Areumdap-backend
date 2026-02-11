@@ -28,11 +28,11 @@ public class Mission extends BaseEntity {
     private UserChatThread userChatThread;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tag", columnDefinition = "tag_enum",nullable = false)
+    @Column(name = "tag", columnDefinition = "tag_enum", nullable = false)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Tag tag;
 
-    @Column(name = "title",nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
@@ -41,14 +41,14 @@ public class Mission extends BaseEntity {
     @Column(name = "tip", nullable = false, columnDefinition = "TEXT")
     private String tip;
 
-    @Column(name = "duedate",nullable = false)
+    @Column(name = "duedate", nullable = false)
     private LocalDateTime dueDate;
 
-    @Column(name = "reward",nullable = false)
+    @Column(name = "reward", nullable = false)
     private Long reward;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "mission_status", columnDefinition = "mission_status_enum",nullable = false)
+    @Column(name = "mission_status", columnDefinition = "mission_status_enum", nullable = false)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private MissionStatus missionStatus;
 

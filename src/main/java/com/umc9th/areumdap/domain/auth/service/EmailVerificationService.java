@@ -33,7 +33,7 @@ public class EmailVerificationService {
                                 registerEmailVerification(email, verificationCode)
                 );
 
-        eventPublisher.publishEvent( new EmailVerificationMessageRequest(email, verificationCode));
+        eventPublisher.publishEvent(new EmailVerificationMessageRequest(email, verificationCode));
     }
 
     // 이메일 인증 코드 확인
@@ -77,13 +77,13 @@ public class EmailVerificationService {
     // 인증 코드 만료 검증(5분)
     private void validateCodeExpiration(LocalDateTime updatedAt) {
         LocalDateTime now = LocalDateTime.now();
-        if(updatedAt.isBefore(now.minusMinutes(5)))
+        if (updatedAt.isBefore(now.minusMinutes(5)))
             throw new GeneralException(ErrorStatus.VERIFICATION_CODE_EXPIRED);
     }
 
     // 인증 코드 일치 여부 검증
     private void validateVerificationCode(String storedCode, String inputCode) {
-        if(!storedCode.equals(inputCode))
+        if (!storedCode.equals(inputCode))
             throw new GeneralException(ErrorStatus.INVALID_VERIFICATION_CODE);
     }
 
@@ -97,7 +97,7 @@ public class EmailVerificationService {
 
     // 인증 코드 생성(6자리)
     private String createEmailVerificationCode() {
-        int code = random.nextInt(900000)+100000;
+        int code = random.nextInt(900000) + 100000;
         return String.valueOf(code);
     }
 

@@ -130,7 +130,12 @@ public enum ErrorStatus implements BaseStatus {
      * ChatBot
      */
     CHATBOT_RESPONSE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"CHATBOT_500", "챗봇 응답 생성에 실패했습니다"),
-    QUESTION_BANK_NOT_ENOUGH(HttpStatus.UNPROCESSABLE_ENTITY, "CHATBOT_422", "배정 가능한 질문이 부족합니다.");
+    QUESTION_BANK_NOT_ENOUGH(HttpStatus.UNPROCESSABLE_ENTITY, "CHATBOT_422", "배정 가능한 질문이 부족합니다."),
+
+    /**
+     * Device
+    */
+    DEVICE_TOKEN_CONFLICT(HttpStatus.CONFLICT, "DEVICE_409", "디바이스 등록 오류");
 
     private final HttpStatus httpStatus;
     private final String code;

@@ -1,5 +1,7 @@
 package com.umc9th.areumdap.domain.device.service;
 
+import com.umc9th.areumdap.common.exception.GeneralException;
+import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.device.dto.request.RegisterDeviceRequest;
 import com.umc9th.areumdap.domain.device.entity.Device;
 import com.umc9th.areumdap.domain.device.repository.DeviceRepository;
@@ -28,7 +30,7 @@ public class DeviceCommandService {
                 deviceRepository.save(device);
             } catch (DataIntegrityViolationException e) {
                 Device device = deviceRepository.findByToken(request.deviceToken())
-                        .orElseThrow(() ->new RuntimeException("Device token conflict"));
+                        .orElseThrow(() ->new GeneralException(ErrorStatus.DEVICE_TOKEN_CONFLICT));
                 device.updateDevice(userId, request.osType());
             }
         } else {

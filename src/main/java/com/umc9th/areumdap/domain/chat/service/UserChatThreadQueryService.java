@@ -9,7 +9,6 @@ import com.umc9th.areumdap.domain.chat.dto.response.GetUserChatThreadResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.UserChatThreadCursorResponse;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.chat.repository.UserChatThreadQueryRepository;
-import com.umc9th.areumdap.domain.chat.repository.UserChatThreadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,11 +21,10 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class UserChatThreadQueryService {
 
-    private final UserChatThreadQueryRepository repository;
-    private final UserChatThreadRepository userChatThreadRepository;
+    private final UserChatThreadQueryRepository userChatThreadQueryRepository;
 
     public List<UserChatThread> findByUserId(Long userId) {
-        return this.userChatThreadRepository.findByUserId(userId);
+        return this.userChatThreadQueryRepository.findByUserId(userId);
     }
 
     public UserChatThreadCursorResponse getThreads(
@@ -68,8 +66,8 @@ public class UserChatThreadQueryService {
 
     private List<UserChatThread> fetchFirst(Long userId, boolean favorite, PageRequest pageable) {
         return favorite
-                ? repository.findFavoriteLatest(userId, pageable)
-                : repository.findLatest(userId, pageable);
+                ? userChatThreadQueryRepository.findFavoriteLatest(userId, pageable)
+                : userChatThreadQueryRepository.findLatest(userId, pageable);
     }
 
     private List<UserChatThread> fetchNext(
@@ -79,7 +77,8 @@ public class UserChatThreadQueryService {
             Long cursorId,
             PageRequest pageable) {
         return favorite
-                ? repository.findFavoriteLatestWithCursor(userId, cursorTime, cursorId, pageable)
-                : repository.findLatestWithCursor(userId, cursorTime, cursorId, pageable);
+                ? userChatThreadQueryRepository.findFavoriteLatestWithCursor(userId, cursorTime, cursorId, pageable)
+                : userChatThreadQueryRepository.findLatestWithCursor(userId, cursorTime, cursorId, pageable);
     }
+
 }

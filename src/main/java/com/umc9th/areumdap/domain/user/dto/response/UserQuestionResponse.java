@@ -16,7 +16,6 @@ public record UserQuestionResponse(
 ) {
 
     public static UserQuestionResponse from(UserQuestion userQuestion) {
-
         Long chatThreadId = null;
 
         if (userQuestion.getChatHistory() != null &&

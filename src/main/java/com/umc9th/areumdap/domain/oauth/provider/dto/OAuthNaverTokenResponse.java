@@ -20,5 +20,4 @@ public record OAuthNaverTokenResponse(
 
         @JsonProperty("error_description")
         String errorDescription
-) {
-}
+) {}

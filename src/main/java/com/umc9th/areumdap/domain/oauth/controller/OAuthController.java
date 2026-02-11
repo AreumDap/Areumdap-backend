@@ -10,16 +10,11 @@ import com.umc9th.areumdap.domain.oauth.dto.response.OAuthKakaoLoginUrlResponse;
 import com.umc9th.areumdap.domain.oauth.dto.response.OAuthNaverLoginUrlResponse;
 import com.umc9th.areumdap.domain.oauth.service.OAuthKakaoService;
 import com.umc9th.areumdap.domain.oauth.service.OAuthNaverService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
-@Slf4j
 @RestController
 @RequestMapping("/api/oauth")
 @RequiredArgsConstructor
@@ -42,26 +37,6 @@ public class OAuthController implements OAuthControllerDocs {
     ) {
         LoginResponse response = oAuthKakaoService.kakaoLogin(oauthKakaoLoginRequest);
         return ApiResponse.success(SuccessStatus.KAKAO_LOGIN_SUCCESS, response);
-    }
-
-    @Override
-    @GetMapping("/kakao/test/login")
-    public void kakaoTestCallback(
-            @RequestParam(required = false) String code,
-            @RequestParam(required = false) String error,
-            HttpServletResponse response
-    ) {
-        try {
-            response.setContentType("text/plain;charset=UTF-8");
-            response.getWriter().write(
-                    error != null
-                            ? "OAuth ERROR = " + error
-                            : "OAuth CODE = " + code
-            );
-        } catch (IOException e) {
-            log.warn("Kakao test callback response write failed", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
     }
 
     @Override

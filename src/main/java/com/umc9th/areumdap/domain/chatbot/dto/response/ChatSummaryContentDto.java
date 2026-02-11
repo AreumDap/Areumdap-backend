@@ -8,4 +8,5 @@ public record ChatSummaryContentDto(
         String reflectionDepth,
         List<String> keywords,
         List<String> discoveries
-) {}
+) {
+}

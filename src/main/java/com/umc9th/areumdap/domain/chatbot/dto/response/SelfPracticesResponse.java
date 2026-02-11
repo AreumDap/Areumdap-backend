@@ -12,5 +12,6 @@ public record SelfPracticesResponse(
             String tip,
             String duration,
             Long reward
-    ) {}
+    ) {
+    }
 }

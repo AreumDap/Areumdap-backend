@@ -78,5 +78,4 @@ public interface UserControllerDocs {
             @Valid @RequestBody UpdateUserNotificationSettingRequest updateUserNotificationSettingRequest
     );
 
-
 }

@@ -10,9 +10,6 @@ import java.util.List;
 public interface ChatHistoryRepository extends JpaRepository<ChatHistory, Long> {
 
     List<ChatHistory> findByUserChatThreadOrderByCreatedAtAsc(UserChatThread userChatThread);
-
-    List<ChatHistory> findByUserChatThreadIdOrderByCreatedAtAsc(Long threadId);
-
     long countByUserChatThreadIdAndSenderType(Long userChatThreadId, SenderType senderType);
 
 }

@@ -34,4 +34,5 @@ public record CharacterMissionDto(
                 mission.getMissionStatus() == MissionStatus.COMPLETED
         );
     }
+
 }

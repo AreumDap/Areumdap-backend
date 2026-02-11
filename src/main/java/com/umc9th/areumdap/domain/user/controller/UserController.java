@@ -46,7 +46,7 @@ public class UserController implements UserControllerDocs {
     @Override
     @PatchMapping("/birth")
     public ResponseEntity<ApiResponse<Void>> updateUserBirth(
-            @AuthenticationPrincipal  Long userId,
+            @AuthenticationPrincipal Long userId,
             @Valid @RequestBody UpdateUserBirthRequest updateUserBirthRequest
     ) {
         userCommandService.updateUserBirth(userId, updateUserBirthRequest);

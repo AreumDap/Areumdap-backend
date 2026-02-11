@@ -60,4 +60,5 @@ public class UserChatThread extends BaseEntity {
     public void updateSummary(String summary) {
         this.summary = summary;
     }
+
 }

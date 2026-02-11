@@ -30,7 +30,6 @@ public class ChatController implements ChatControllerDocs {
     public ResponseEntity<ApiResponse<CreateChatThreadResponse>> createChatThread(
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody CreateChatThreadRequest request
-
     ) {
         CreateChatThreadResponse response = chatCommandService.createChatThread(userId, request);
         return ApiResponse.success(SuccessStatus.CREATE_CHAT_THREAD_SUCCESS, response);
@@ -43,10 +42,8 @@ public class ChatController implements ChatControllerDocs {
             @RequestParam(defaultValue = "false") boolean favorite,
             @Valid @ModelAttribute UserChatThreadCursorRequest cursor
     ) {
-        return ApiResponse.success(
-                SuccessStatus.GET_USER_CHAT_THREADS_SUCCESS,
-                userChatThreadQueryService.getThreads(userId, favorite, cursor)
-        );
+        UserChatThreadCursorResponse response = userChatThreadQueryService.getThreads(userId, favorite, cursor);
+        return ApiResponse.success(SuccessStatus.GET_USER_CHAT_THREADS_SUCCESS, response);
     }
 
     @Override
@@ -54,11 +51,9 @@ public class ChatController implements ChatControllerDocs {
     public ResponseEntity<ApiResponse<GetChatHistoriesResponse>> getChatHistories(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long threadId
-    ){
-        return ApiResponse.success(
-                SuccessStatus.GET_CHAT_HISTORIES_SUCCESS,
-                chatQueryService.getChatHistories(userId,threadId)
-        );
+    ) {
+        GetChatHistoriesResponse response = chatQueryService.getChatHistories(userId, threadId);
+        return ApiResponse.success(SuccessStatus.GET_CHAT_HISTORIES_SUCCESS, response);
     }
 
     @Override
@@ -77,11 +72,8 @@ public class ChatController implements ChatControllerDocs {
             @AuthenticationPrincipal Long userId,
             @PathVariable Long reportId
     ) {
-
-        return ApiResponse.success(
-                SuccessStatus.GET_CHAT_REPORT_SUCCESS,
-                chatQueryService.getChatReport(userId, reportId)
-        );
+        GetChatReportResponse response = chatQueryService.getChatReport(userId, reportId);
+        return ApiResponse.success(SuccessStatus.GET_CHAT_REPORT_SUCCESS, response);
     }
 
     @Override
@@ -103,4 +95,5 @@ public class ChatController implements ChatControllerDocs {
         chatCommandService.updateFavorite(userId, threadId);
         return ApiResponse.success(SuccessStatus.UPDATE_FAVORITE_SUCCESS);
     }
+
 }

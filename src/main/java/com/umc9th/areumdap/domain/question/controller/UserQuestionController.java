@@ -28,7 +28,7 @@ public class UserQuestionController implements UserQuestionControllerDocs {
             @PathVariable Long chatHistoryId
     ) {
         userQuestionCommandService.saveInstantQuestion(userId, chatHistoryId);
-        return ApiResponse.success(SuccessStatus.CREATE_QUESTION_SUCCESS,null);
+        return ApiResponse.success(SuccessStatus.CREATE_QUESTION_SUCCESS, null);
     }
 
     @Override
@@ -37,12 +37,8 @@ public class UserQuestionController implements UserQuestionControllerDocs {
             @AuthenticationPrincipal Long userId,
             @Valid @ModelAttribute CursorRequest request
     ) {
-        return ApiResponse.success(
-                SuccessStatus.GET_ALL_SAVED_QUESTION_SUCCESS,
-                questionQueryService.getSavedQuestionsWithCursor(
-                        userId, request
-                )
-        );
+        UserQuestionCursorResponse response = questionQueryService.getSavedQuestionsWithCursor(userId, request);
+        return ApiResponse.success(SuccessStatus.GET_ALL_SAVED_QUESTION_SUCCESS, response);
     }
 
     @Override

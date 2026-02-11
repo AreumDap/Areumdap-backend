@@ -9,6 +9,8 @@ public record CursorRequest(
         Tag tag,
         OffsetDateTime cursorTime,
         Long cursorId,
+
         @Min(1)
         Integer size
-){}
+) {
+}

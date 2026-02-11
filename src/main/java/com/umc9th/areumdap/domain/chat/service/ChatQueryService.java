@@ -6,9 +6,9 @@ import com.umc9th.areumdap.domain.chat.dto.response.ChatHistoryResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.GetChatHistoriesResponse;
 import com.umc9th.areumdap.domain.chat.dto.response.GetChatReportResponse;
 import com.umc9th.areumdap.domain.chat.entity.ChatReport;
-import com.umc9th.areumdap.domain.chat.repository.ChatHistoryRepository;
-import com.umc9th.areumdap.domain.chat.repository.ChatReportRepository;
-import com.umc9th.areumdap.domain.chat.repository.UserChatThreadRepository;
+import com.umc9th.areumdap.domain.chat.repository.ChatHistoryQueryRepository;
+import com.umc9th.areumdap.domain.chat.repository.ChatReportQueryRepository;
+import com.umc9th.areumdap.domain.chat.repository.UserChatThreadQueryRepository;
 import com.umc9th.areumdap.domain.mission.dto.response.MissionSummaryResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportInsightResponse;
 import com.umc9th.areumdap.domain.report.dto.response.ReportTagResponse;
@@ -19,19 +19,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
 @Slf4j
+@Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ChatQueryService {
 
-    private final ChatReportRepository chatReportRepository;
-    private final UserChatThreadRepository userChatThreadRepository;
-    private final ChatHistoryRepository chatHistoryRepository;
+    private final ChatReportQueryRepository chatReportQueryRepository;
+    private final UserChatThreadQueryRepository userChatThreadQueryRepository;
+    private final ChatHistoryQueryRepository chatHistoryQueryRepository;
 
     public GetChatReportResponse getChatReport(Long userId, Long reportId) {
-
-        ChatReport report = chatReportRepository
+        ChatReport report = chatReportQueryRepository
                 .findByIdAndUserChatThread_User_Id(reportId, userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_REPORT_NOT_FOUND));
 
@@ -74,18 +73,17 @@ public class ChatQueryService {
     }
 
     public GetChatHistoriesResponse getChatHistories(Long userId, Long threadId) {
-
-        userChatThreadRepository
+        userChatThreadQueryRepository
                 .findByIdAndUser_IdAndUser_DeletedFalse(threadId, userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_THREAD_ACCESS_DENIED));
 
-        List<ChatHistoryResponse> histories = chatHistoryRepository
+        List<ChatHistoryResponse> histories = chatHistoryQueryRepository
                 .findByUserChatThreadIdOrderByCreatedAtAsc(threadId)
                 .stream()
                 .map(ChatHistoryResponse::from)
                 .toList();
 
-        Long reportId = chatReportRepository
+        Long reportId = chatReportQueryRepository
                 .findByUserChatThread_Id(threadId)
                 .map(ChatReport::getId)
                 .orElse(null);

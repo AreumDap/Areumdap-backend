@@ -113,5 +113,6 @@ public interface UserQuestionQueryRepository extends JpaRepository<UserQuestion,
             @Param("userId") Long userId,
             @Param("tag") Tag tag
     );
+
 }
 
