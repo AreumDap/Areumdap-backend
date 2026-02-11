@@ -77,7 +77,6 @@ public class UserQuestionCommandService {
                 .used(false)
                 .saved(true)
                 .build();
-
         userQuestionRepository.save(userQuestion);
     }
 

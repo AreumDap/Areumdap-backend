@@ -48,6 +48,7 @@ public class UserQuestion extends BaseEntity {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    // 태그 가져오기
     public Tag getTag() {
         return questionBank.getTag();
     }

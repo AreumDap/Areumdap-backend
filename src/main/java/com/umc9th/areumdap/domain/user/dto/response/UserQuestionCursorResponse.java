@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record UserQuestionCursorResponse(
-        long totalCount,                       // ✅ 태그 기준 전체 개수
+        long totalCount,                       // 태그 기준 전체 개수
         List<UserQuestionResponse> questions,
         LocalDateTime nextCursorTime,
         Long nextCursorId,
@@ -35,4 +35,5 @@ public record UserQuestionCursorResponse(
                 false
         );
     }
+
 }

@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,13 +25,6 @@ public class UserQueryService {
     public GetUserProfileResponse getUserProfile(Long userId) {
         User user = getUserByIdAndDeletedFalse(userId);
         return GetUserProfileResponse.from(user);
-    }
-
-    // 이메일 중복 검사
-    public void checkEmailNotExists(String email) {
-        if (userQueryRepository.findByEmail(email).isPresent()) {
-            throw new GeneralException(ErrorStatus.EMAIL_ALREADY_EXISTS);
-        }
     }
 
     // 로그인 시 회원 탈퇴 여부 검사 및 User 반환
@@ -60,6 +52,7 @@ public class UserQueryService {
         return userQueryRepository.findNotificationTargets(now);
     }
 
+    // 이메일로 유저 조회
     public User getUserByEmail(String email) {
         return userQueryRepository.findByEmail(email).orElse(null);
     }

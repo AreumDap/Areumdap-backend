@@ -33,4 +33,5 @@ public record GetUserProfileResponse(
                 user.getNotificationTime()
         );
     }
+
 }
