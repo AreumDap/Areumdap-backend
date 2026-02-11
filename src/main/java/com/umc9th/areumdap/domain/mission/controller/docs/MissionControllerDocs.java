@@ -110,4 +110,5 @@ public interface MissionControllerDocs {
             @AuthenticationPrincipal Long userId,
             @PathVariable(name = "missionId") Long missionId
     );
+
 }

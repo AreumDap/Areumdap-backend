@@ -66,12 +66,8 @@ public class MissionController implements MissionControllerDocs {
             @AuthenticationPrincipal Long userId,
             @Valid @ModelAttribute CursorRequest request
     ) {
-        return ApiResponse.success(
-                SuccessStatus.GET_ALL_COMPLETED_MISSION_SUCCESS,
-                missionQueryService.getCompletedMissionsWithCursor(
-                        userId, request
-                )
-        );
+        MissionCursorResponse response = missionQueryService.getCompletedMissionsWithCursor(userId, request);
+        return ApiResponse.success(SuccessStatus.GET_ALL_COMPLETED_MISSION_SUCCESS, response);
     }
 
     @Override

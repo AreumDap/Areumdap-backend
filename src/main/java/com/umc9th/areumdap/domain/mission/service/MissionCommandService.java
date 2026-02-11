@@ -26,11 +26,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MissionCommandService {
 
+    private final ChatbotService chatbotService;
     private final MissionRepository missionRepository;
     private final CharacterCommandService characterCommandService;
+
     private final UserRepository userRepository;
     private final UserChatThreadRepository userChatThreadRepository;
-    private final ChatbotService chatbotService;
     private final TransactionTemplate transactionTemplate;
 
     public CreateMissionResponse createMissions(Long userId, Long userChatThreadId) {
