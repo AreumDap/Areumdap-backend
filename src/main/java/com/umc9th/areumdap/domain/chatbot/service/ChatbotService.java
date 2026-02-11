@@ -51,7 +51,8 @@ public class ChatbotService {
 
     private static final String SESSION_END_MARKER = "[SESSION_END]";
 
-    public record ChatbotResponseResult(String content, boolean sessionEnd) {}
+    public record ChatbotResponseResult(String content, boolean sessionEnd) {
+    }
 
 
     @PostConstruct
@@ -193,4 +194,5 @@ public class ChatbotService {
 
         return raw.substring(start, end + 1);
     }
+
 }

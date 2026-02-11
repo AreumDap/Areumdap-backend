@@ -29,10 +29,8 @@ public class ChatbotController implements ChatbotControllerDocs {
     public ResponseEntity<ApiResponse<GetChatbotRecommendsResponse>> getChatbotRecommend(
             @AuthenticationPrincipal Long userId
     ) {
-        return ApiResponse.success(
-                SuccessStatus.GET_CHATBOT_RECOMMEND_SUCCESS,
-                chatbotQueryService.getRecommendQuestions(userId)
-        );
+        GetChatbotRecommendsResponse response = chatbotQueryService.getRecommendQuestions(userId);
+        return ApiResponse.success(SuccessStatus.GET_CHATBOT_RECOMMEND_SUCCESS, response);
     }
 
     @Override
@@ -40,7 +38,7 @@ public class ChatbotController implements ChatbotControllerDocs {
     public ResponseEntity<ApiResponse<SendChatMessageResponse>> sendChatResponse(
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody SendChatMessageRequest request
-    ){
+    ) {
         SendChatMessageResponse response = chatCommandService.sendChatMessage(userId, request);
         return ApiResponse.success(SuccessStatus.SEND_CHAT_MESSAGE_SUCCESS, response);
     }
