@@ -38,10 +38,11 @@ public class NotificationScheduler {
         try {
             UserQuestion question = resolveTodayQuestion(target.userId());
             Map<String, String> data = Map.of("content", question.getContent());
+            log.info("푸시 알림 전송 userId={}", target.userId());
             notificationCommandService.sendPushAlarm(
                     target.deviceToken(),
-                    "오늘의 철학",
-                    "오늘의 철학 질문을 시작해 보아요!",
+                    "아름답",
+                    question.getContent(),
                     data
             );
         } catch (Exception e) {
