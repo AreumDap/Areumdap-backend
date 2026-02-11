@@ -64,6 +64,7 @@ public class ChatCommandService {
     private final UserRepository userRepository;
     private final UserQuestionRepository userQuestionRepository;
     private final QuestionBankRepository questionBankRepository;
+
     private final ChatbotService chatbotAiService;
     private final ChatCacheService chatCacheService;
     private final TransactionTemplate transactionTemplate;
@@ -345,4 +346,5 @@ public class ChatCommandService {
 
         chatCacheService.invalidateCache(userChatThreadId);
     }
+
 }

@@ -10,7 +10,6 @@ public record ChatHistoryResponse(
         String content,
         SenderType senderType,
         LocalDateTime createdAt
-
 ) {
     public static ChatHistoryResponse from(ChatHistory history) {
         return new ChatHistoryResponse(

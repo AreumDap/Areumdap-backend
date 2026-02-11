@@ -4,4 +4,5 @@ public record SendChatMessageResponse(
         String content,
         Long userChatThreadId,
         boolean isSessionEnd
-) {}
+) {
+}

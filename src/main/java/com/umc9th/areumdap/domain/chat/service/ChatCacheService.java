@@ -79,4 +79,5 @@ public class ChatCacheService {
             log.warn("Failed to invalidate cache for thread: {}", threadId, e);
         }
     }
+
 }

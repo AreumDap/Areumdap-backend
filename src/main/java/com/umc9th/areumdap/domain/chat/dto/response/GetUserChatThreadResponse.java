@@ -17,7 +17,7 @@ public record GetUserChatThreadResponse(
         boolean favorite
 ) {
     public static GetUserChatThreadResponse from(UserChatThread thread) {
-        if (thread.getUserQuestion() == null){
+        if (thread.getUserQuestion() == null) {
             throw new GeneralException(ErrorStatus.USER_QUESTION_NOT_FOUND);
         }
         return new GetUserChatThreadResponse(

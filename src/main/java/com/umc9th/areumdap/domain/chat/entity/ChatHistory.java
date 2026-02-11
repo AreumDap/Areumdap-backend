@@ -27,7 +27,7 @@ public class ChatHistory extends BaseEntity {
     private UserChatThread userChatThread;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "sender_type", columnDefinition = "sender_type_enum",nullable = false)
+    @Column(name = "sender_type", columnDefinition = "sender_type_enum", nullable = false)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private SenderType senderType;
 

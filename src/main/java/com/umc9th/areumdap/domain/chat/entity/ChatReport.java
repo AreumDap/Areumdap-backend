@@ -44,4 +44,5 @@ public class ChatReport extends BaseEntity {
 
     @OneToMany(mappedBy = "chatReport", fetch = FetchType.LAZY)
     private List<ReportInsightContent> insights;
+
 }

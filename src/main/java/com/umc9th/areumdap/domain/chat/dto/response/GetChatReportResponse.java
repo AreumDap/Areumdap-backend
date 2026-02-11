@@ -17,6 +17,5 @@ public record GetChatReportResponse(
         List<ReportInsightResponse> insightContents,
         List<MissionSummaryResponse> missions,
         LocalDate createdAt
-
 ) {
 }

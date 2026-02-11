@@ -9,7 +9,7 @@ public record UserChatThreadCursorResponse(
         Long nextCursorId,
         boolean hasNext
 ) {
-    public static UserChatThreadCursorResponse empty(){
+    public static UserChatThreadCursorResponse empty() {
         return new UserChatThreadCursorResponse(
                 List.of(),
                 null,

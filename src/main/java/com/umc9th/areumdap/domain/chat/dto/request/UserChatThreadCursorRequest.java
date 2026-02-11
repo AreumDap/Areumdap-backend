@@ -7,6 +7,7 @@ import java.time.OffsetDateTime;
 public record UserChatThreadCursorRequest(
         OffsetDateTime cursorTime,
         Long cursorId,
+
         @Min(1)
         int size
 ) {
