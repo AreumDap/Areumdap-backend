@@ -1,7 +1,7 @@
 package com.umc9th.areumdap.domain.notification.scheduler;
 
 import com.umc9th.areumdap.domain.notification.dto.response.NotificationTargetUser;
-import com.umc9th.areumdap.domain.notification.service.NotificationService;
+import com.umc9th.areumdap.domain.notification.service.NotificationCommandService;
 import com.umc9th.areumdap.domain.question.service.QuestionCommandService;
 import com.umc9th.areumdap.domain.question.service.QuestionQueryService;
 import com.umc9th.areumdap.domain.user.entity.UserQuestion;
@@ -14,12 +14,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class NotificationScheduler {
     private final UserQueryService userQueryService;
-    private final NotificationService notificationService;
+    private final NotificationCommandService notificationCommandService;
     private final QuestionCommandService questionCommandService;
     private final QuestionQueryService questionQueryService;
 
@@ -38,7 +38,7 @@ public class NotificationScheduler {
         try {
             UserQuestion question = resolveTodayQuestion(target.userId());
             Map<String, String> data = Map.of("content", question.getContent());
-            notificationService.sendPushAlarm(
+            notificationCommandService.sendPushAlarm(
                     target.deviceToken(),
                     "오늘의 철학",
                     "오늘의 철학 질문을 시작해 보아요!",
