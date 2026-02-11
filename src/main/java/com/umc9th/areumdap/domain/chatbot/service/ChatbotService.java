@@ -45,6 +45,7 @@ public class ChatbotService {
     private final ChatHistoryRepository chatHistoryRepository;
     private final ChatCacheService chatCacheService;
     private String systemPrompt;
+    private String finalPrompt;
     private final UserChatThreadQueryService userChatThreadQueryService;
     private final ObjectMapper objectMapper;
 
@@ -57,11 +58,18 @@ public class ChatbotService {
     public void init() throws IOException {
         ClassPathResource resource = new ClassPathResource("prompts/chatbot-system-prompt.txt");
         this.systemPrompt = resource.getContentAsString(StandardCharsets.UTF_8);
+
+        ClassPathResource finalResource = new ClassPathResource("prompts/chatbot-final-prompt.txt");
+        this.finalPrompt = finalResource.getContentAsString(StandardCharsets.UTF_8);
     }
 
     public ChatbotResponseResult generateResponse(UserChatThread chatThread, String userMessage) {
+        return generateResponse(chatThread, userMessage, false);
+    }
+
+    public ChatbotResponseResult generateResponse(UserChatThread chatThread, String userMessage, boolean isFinalRound) {
         List<Message> messages = new ArrayList<>();
-        messages.add(new SystemMessage(systemPrompt));
+        messages.add(new SystemMessage(isFinalRound ? finalPrompt : systemPrompt));
 
         //Redis 캐시에서 먼저 조회
         List<ChatMessageCache> cachedHistories = chatCacheService.getChatHistories(chatThread.getId());

@@ -152,8 +152,14 @@ public class ChatCommandService {
             return thread;
         });
 
+        // 트랜잭션 1 이후, 해당 스레드의 USER 메시지 수 카운트
+        long userMessageCount = chatHistoryRepository.countByUserChatThreadIdAndSenderType(
+                chatThread.getId(), SenderType.USER);
+        boolean isFinalRound = (userMessageCount % 10 == 0);
+
         // AI 응답 생성 (트랜잭션 외부 - DB 커넥션 점유 X)
-        ChatbotResponseResult result = chatbotAiService.generateResponse(chatThread, request.content());
+        // 10의 배수일 때 chatbot-final-prompt로 마무리 응답 생성
+        ChatbotResponseResult result = chatbotAiService.generateResponse(chatThread, request.content(), isFinalRound);
 
         // 트랜잭션 2: AI 응답 저장
         transactionTemplate.executeWithoutResult(status -> {
@@ -169,7 +175,10 @@ public class ChatCommandService {
         chatCacheService.addMessage(chatThread.getId(), request.content(), SenderType.USER);
         chatCacheService.addMessage(chatThread.getId(), result.content(), SenderType.BOT);
 
-        return new SendChatMessageResponse(result.content(), chatThread.getId(), result.sessionEnd());
+        // 10의 배수이면 강제 세션 종료 (AI가 [SESSION_END]를 빠뜨려도 보장)
+        boolean finalSessionEnd = result.sessionEnd() || isFinalRound;
+
+        return new SendChatMessageResponse(result.content(), chatThread.getId(), finalSessionEnd);
     }
 
     public ChatSummaryResponse generateSummary(Long userId, ChatSummaryRequest request) {
