@@ -17,6 +17,5 @@ public record OAuthKakaoTokenResponse(
 
         @JsonProperty("refresh_token_expires_in")
         Integer refreshTokenExpiresIn
-
 ) {
 }
