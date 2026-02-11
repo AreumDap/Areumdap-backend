@@ -111,6 +111,7 @@ public class AuthService {
         user.updatePassword(passwordEncoder.encode(request.password()));
     }
 
+    // 새로운 유저 등록
     private void registerNewUser(SignUpRequest request) {
         String encodedPassword = passwordEncoder.encode(request.password());
         userCommandService.registerUser(
