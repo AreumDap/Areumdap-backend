@@ -58,6 +58,7 @@ public class Character extends BaseEntity {
     @Column(name = "keywords", columnDefinition = "text[]")
     private List<String> keywords;
 
+    // 캐릭터 객체 생성
     public Character(User user) {
         this.user = user;
         this.level = 1;
@@ -65,6 +66,7 @@ public class Character extends BaseEntity {
         this.goalXp = CharacterLevel.LEVEL_1.getGoalXp();
     }
 
+    // 레벨업
     public void tryLevelUp() {
         if (this.isMaxLevel()) {
             throw new GeneralException(ErrorStatus.CHARACTER_ALREADY_MAX_LEVEL);
@@ -80,14 +82,17 @@ public class Character extends BaseEntity {
         this.goalXp = nextGoalXp;
     }
 
+    // 경험치 증가
     public void addXp(int amount) {
         this.currentXp += amount;
     }
 
+    // 최고 레벨인지 검사
     public boolean isMaxLevel() {
         return this.level >= CharacterLevel.LEVEL_4.getLevel();
     }
 
+    // 성장 요약 업데이트
     public void updateHistorySummary(String pastDescription, String presentDescription) {
         this.pastDescription = pastDescription;
         this.presentDescription = presentDescription;

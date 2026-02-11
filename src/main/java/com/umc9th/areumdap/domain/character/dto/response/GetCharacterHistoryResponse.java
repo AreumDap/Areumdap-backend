@@ -15,11 +15,11 @@ public record GetCharacterHistoryResponse(
         @Schema(description = "성장 히스토리 목록")
         List<CharacterHistoryDto> historyList
 ) {
-        public static GetCharacterHistoryResponse from(Character character, List<CharacterHistoryDto> historyList) {
-                return new GetCharacterHistoryResponse(
-                        character.getPastDescription(),
-                        character.getPresentDescription(),
-                        historyList
-                );
-        }
+    public static GetCharacterHistoryResponse from(Character character, List<CharacterHistoryDto> historyList) {
+        return new GetCharacterHistoryResponse(
+                character.getPastDescription(),
+                character.getPresentDescription(),
+                historyList
+        );
+    }
 }

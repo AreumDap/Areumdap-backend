@@ -23,6 +23,7 @@ public class CharacterHistory extends BaseEntity {
     @Column(name = "level", nullable = false)
     private Integer level;
 
+    // 캐릭터 히스토리 객체 생성
     public CharacterHistory(Character character, Integer level) {
         this.character = character;
         this.level = level;

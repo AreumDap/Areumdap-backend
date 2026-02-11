@@ -9,11 +9,11 @@ import com.umc9th.areumdap.domain.character.dto.response.CharacterMissionDto;
 import com.umc9th.areumdap.domain.character.entity.Character;
 import com.umc9th.areumdap.domain.character.entity.CharacterHistory;
 import com.umc9th.areumdap.domain.character.enums.CharacterSeason;
+import com.umc9th.areumdap.domain.character.repository.CharacterQueryRepository;
 import com.umc9th.areumdap.domain.character.resolver.CharacterImageResolver;
 import com.umc9th.areumdap.domain.mission.entity.Mission;
 import com.umc9th.areumdap.domain.character.enums.CharacterLevel;
 import com.umc9th.areumdap.domain.mission.repository.MissionQueryRepository;
-import com.umc9th.areumdap.domain.character.repository.CharacterRepository;
 import com.umc9th.areumdap.domain.character.repository.CharacterHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ import java.util.List;
 public class CharacterQueryService {
 
     private final CharacterImageResolver characterImageResolver;
-    private final CharacterRepository characterRepository;
+    private final CharacterQueryRepository characterQueryRepository;
     private final MissionQueryRepository missionQueryRepository;
     private final CharacterHistoryRepository characterHistoryRepository;
 
@@ -64,7 +64,7 @@ public class CharacterQueryService {
 
     // 유저 아이디로 캐릭터 조회
     public Character getCharacterByUserId(Long userId) {
-        return characterRepository.findByUserId(userId)
+        return characterQueryRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHARACTER_NOT_FOUND));
     }
 

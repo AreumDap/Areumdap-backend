@@ -1,7 +1,6 @@
 package com.umc9th.areumdap.domain.character.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import com.umc9th.areumdap.domain.character.entity.Character;
 
 public record GetCharacterGrowthResponse(
         @Schema(description = "캐릭터 ID", example = "1")
@@ -22,7 +21,9 @@ public record GetCharacterGrowthResponse(
         @Schema(description = "다음 레벨까지 필요한 XP", example = "80")
         int requiredXpForNextLevel
 ) {
-    public static GetCharacterGrowthResponse of(Long characterId,Integer previousLevel, Integer currentLevel, int currentXp, int requiredXpForNextLevel) {
+    public static GetCharacterGrowthResponse of(
+            Long characterId, Integer previousLevel, Integer currentLevel, int currentXp, int requiredXpForNextLevel
+    ) {
         return new GetCharacterGrowthResponse(
                 characterId,
                 "아름이",

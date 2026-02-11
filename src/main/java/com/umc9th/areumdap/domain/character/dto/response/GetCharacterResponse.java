@@ -30,7 +30,9 @@ public record GetCharacterResponse(
         @Schema(description = "캐릭터 이미지")
         String imageUrl
 ) {
-    public static GetCharacterResponse from(Character character, boolean canLevelUp, List<CharacterMissionDto> missions, String imageUrl) {
+    public static GetCharacterResponse from(
+            Character character, boolean canLevelUp, List<CharacterMissionDto> missions, String imageUrl
+    ) {
         return new GetCharacterResponse(
                 character.getId(),
                 "아름이",
