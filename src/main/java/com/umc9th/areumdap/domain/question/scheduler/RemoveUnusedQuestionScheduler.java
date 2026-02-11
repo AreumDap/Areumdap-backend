@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class RemoveUnusedQuestionScheduler {
+
     private final JobLauncher jobLauncher;
     private final Job removeUnusedQuestionsJob;
 
@@ -29,4 +30,5 @@ public class RemoveUnusedQuestionScheduler {
             log.error("미사용 질문 제거 배치 실행 실패", e);
         }
     }
+
 }
