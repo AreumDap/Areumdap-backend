@@ -25,11 +25,13 @@ public class Device extends BaseEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    // 디바이스 정보 업데이트
     public void updateDevice(Long userId, String osType) {
         this.userId = userId;
         this.osType = osType;
     }
 
+    // 디바이스 객체 생성
     public static Device create(Long userId, String token, String osType) {
         return Device.builder()
                 .userId(userId)
