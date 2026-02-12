@@ -42,6 +42,7 @@ public class UserQuestion extends BaseEntity {
     private ChatHistory chatHistory;
 
     @OneToMany(mappedBy = "userQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<UserChatThread> userChatThreads = new ArrayList<>();
 
     @Column(name = "is_used", nullable = false)

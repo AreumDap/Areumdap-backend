@@ -83,6 +83,7 @@ public class User extends BaseEntity {
     private List<UserChatThread> userChatThreads = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<UserQuestion> userQuestions = new ArrayList<>();
 
     @OneToOne(mappedBy = "user",

@@ -62,6 +62,7 @@ public class Character extends BaseEntity {
     @OneToMany(mappedBy = "character",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @Builder.Default
     private List<CharacterHistory> histories = new ArrayList<>();
 
 
