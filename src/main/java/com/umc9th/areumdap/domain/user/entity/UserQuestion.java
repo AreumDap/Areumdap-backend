@@ -2,10 +2,14 @@ package com.umc9th.areumdap.domain.user.entity;
 
 import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.domain.chat.entity.ChatHistory;
+import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.mission.enums.Tag;
 import com.umc9th.areumdap.domain.question.entity.QuestionBank;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "user_question", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "chat_history_id"})
@@ -36,6 +40,10 @@ public class UserQuestion extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_history_id")
     private ChatHistory chatHistory;
+
+    @OneToMany(mappedBy = "userQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserChatThread> userChatThreads = new ArrayList<>();
 
     @Column(name = "is_used", nullable = false)
     @Builder.Default

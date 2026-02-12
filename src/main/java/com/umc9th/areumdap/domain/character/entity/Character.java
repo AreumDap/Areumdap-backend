@@ -11,6 +11,7 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "character")
@@ -57,6 +58,13 @@ public class Character extends BaseEntity {
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "keywords", columnDefinition = "text[]")
     private List<String> keywords;
+
+    @OneToMany(mappedBy = "character",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @Builder.Default
+    private List<CharacterHistory> histories = new ArrayList<>();
+
 
     // 캐릭터 객체 생성
     public Character(User user) {
