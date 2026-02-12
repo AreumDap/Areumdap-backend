@@ -27,4 +27,8 @@ public class QuestionQueryService {
         return userQuestionQueryRepository.findByUserIdAndCreatedAtBetween(userId, start, end, PageRequest.of(0, 5));
     }
 
+    public List<UserQuestion> getAssignedQuestions(Long userId) { // 미사용 배정 질문 조회
+        return userQuestionQueryRepository.findAssignedQuestions(userId);
+    }
+
 }

@@ -19,19 +19,23 @@ public class ChatbotQueryService {
     private final QuestionQueryService questionQueryService;
     private final QuestionCommandService questionCommandService;
 
-    @Transactional
-    public GetChatbotRecommendsResponse getRecommendQuestions(Long userId) {
-        List<UserQuestion> todayQuestions = questionQueryService.getTodayQuestions(userId);
+    public GetChatbotRecommendsResponse getAssignedQuestions(Long userId) {
+        List<UserQuestion> assignedQuestions = questionQueryService.getAssignedQuestions(userId);
 
-        if (todayQuestions.size() < 5) {
-            todayQuestions = questionCommandService.assignRandomQuestions(userId);
-        }
-
-        List<GetChatbotRecommendResponse> responses = todayQuestions.stream()
+        List<GetChatbotRecommendResponse> responses = assignedQuestions.stream()
                 .map(GetChatbotRecommendResponse::from)
                 .toList();
 
         return new GetChatbotRecommendsResponse(responses);
+    }
+
+    @Transactional
+    public void assignRecommendQuestions(Long userId) {
+        List<UserQuestion> todayQuestions = questionQueryService.getTodayQuestions(userId);
+
+        if (todayQuestions.size() < 5) {
+            questionCommandService.assignRandomQuestions(userId);
+        }
     }
 
 }

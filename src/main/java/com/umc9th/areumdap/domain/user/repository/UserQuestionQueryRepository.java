@@ -90,6 +90,15 @@ public interface UserQuestionQueryRepository extends JpaRepository<UserQuestion,
             Pageable pageable // service에서 개수 설정
     );
 
+    @Query("SELECT uq FROM UserQuestion uq " +
+            "LEFT JOIN FETCH uq.questionBank qb " +
+            "WHERE uq.user.id = :userId " +
+            "AND uq.used = false " +
+            "AND uq.saved = false " +
+            "AND uq.parentQuestion IS NULL " +
+            "ORDER BY uq.createdAt DESC")
+    List<UserQuestion> findAssignedQuestions(@Param("userId") Long userId);
+
     // tag 없는 경우
     @Query("""
                 SELECT COUNT(uq)
