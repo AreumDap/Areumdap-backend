@@ -1,0 +1,41 @@
+package com.umc9th.areumdap.domain.chatbot.service;
+
+import com.umc9th.areumdap.domain.chatbot.dto.response.GetChatbotRecommendResponse;
+import com.umc9th.areumdap.domain.chatbot.dto.response.GetChatbotRecommendsResponse;
+import com.umc9th.areumdap.domain.question.service.QuestionCommandService;
+import com.umc9th.areumdap.domain.question.service.QuestionQueryService;
+import com.umc9th.areumdap.domain.user.entity.UserQuestion;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class ChatbotQueryService {
+
+    private final QuestionQueryService questionQueryService;
+    private final QuestionCommandService questionCommandService;
+
+    public GetChatbotRecommendsResponse getAssignedQuestions(Long userId) {
+        List<UserQuestion> assignedQuestions = questionQueryService.getAssignedQuestions(userId);
+
+        List<GetChatbotRecommendResponse> responses = assignedQuestions.stream()
+                .map(GetChatbotRecommendResponse::from)
+                .toList();
+
+        return new GetChatbotRecommendsResponse(responses);
+    }
+
+    @Transactional
+    public void assignRecommendQuestions(Long userId) {
+        List<UserQuestion> todayQuestions = questionQueryService.getTodayQuestions(userId);
+
+        if (todayQuestions.size() < 5) {
+            questionCommandService.assignRandomQuestions(userId);
+        }
+    }
+
+}

@@ -35,3 +35,15 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Application.yml ###
+application-dev.yml
+application-prod.yml
+
+### .env ###
+.env
+.env.prod
+
+### .json ###
+firebase-service-account.json
+google-services.json

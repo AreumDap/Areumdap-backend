@@ -1,0 +1,65 @@
+package com.umc9th.areumdap.domain.chatbot.controller;
+
+import com.umc9th.areumdap.common.response.ApiResponse;
+import com.umc9th.areumdap.common.status.SuccessStatus;
+import com.umc9th.areumdap.domain.chat.dto.request.ChatSummaryRequest;
+import com.umc9th.areumdap.domain.chat.dto.request.SendChatMessageRequest;
+import com.umc9th.areumdap.domain.chat.dto.response.ChatSummaryResponse;
+import com.umc9th.areumdap.domain.chat.dto.response.SendChatMessageResponse;
+import com.umc9th.areumdap.domain.chat.service.ChatCommandService;
+import com.umc9th.areumdap.domain.chatbot.controller.docs.ChatbotControllerDocs;
+import com.umc9th.areumdap.domain.chatbot.dto.response.GetChatbotRecommendsResponse;
+import com.umc9th.areumdap.domain.chatbot.service.ChatbotQueryService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+@RequestMapping("/api/chatbot")
+@RestController
+@RequiredArgsConstructor
+public class ChatbotController implements ChatbotControllerDocs {
+
+    private final ChatbotQueryService chatbotQueryService;
+    private final ChatCommandService chatCommandService;
+
+    @Override
+    @PostMapping("/recommend")
+    public ResponseEntity<ApiResponse<Void>> getChatbotRecommend(
+            @AuthenticationPrincipal Long userId
+    ) {
+        chatbotQueryService.assignRecommendQuestions(userId);
+        return ApiResponse.success(SuccessStatus.GET_CHATBOT_RECOMMEND_SUCCESS, null);
+    }
+
+    @Override
+    @GetMapping("/assigned")
+    public ResponseEntity<ApiResponse<GetChatbotRecommendsResponse>> getAssignedQuestions(
+            @AuthenticationPrincipal Long userId
+    ) {
+        GetChatbotRecommendsResponse response = chatbotQueryService.getAssignedQuestions(userId);
+        return ApiResponse.success(SuccessStatus.GET_ASSIGNED_QUESTION_SUCCESS, response);
+    }
+
+    @Override
+    @PostMapping
+    public ResponseEntity<ApiResponse<SendChatMessageResponse>> sendChatResponse(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody SendChatMessageRequest request
+    ) {
+        SendChatMessageResponse response = chatCommandService.sendChatMessage(userId, request);
+        return ApiResponse.success(SuccessStatus.SEND_CHAT_MESSAGE_SUCCESS, response);
+    }
+
+    @Override
+    @PostMapping("/summary")
+    public ResponseEntity<ApiResponse<ChatSummaryResponse>> generateSummary(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody ChatSummaryRequest request //userChatThreadId
+    ) {
+        ChatSummaryResponse response = chatCommandService.generateSummary(userId, request);
+        return ApiResponse.success(SuccessStatus.GENERATE_CHAT_SUMMARY_SUCCESS, response);
+    }
+
+}

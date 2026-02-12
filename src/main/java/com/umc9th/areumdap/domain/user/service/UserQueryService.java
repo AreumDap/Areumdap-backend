@@ -1,0 +1,60 @@
+package com.umc9th.areumdap.domain.user.service;
+
+import com.umc9th.areumdap.common.exception.GeneralException;
+import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.notification.dto.response.NotificationTargetUser;
+import com.umc9th.areumdap.domain.user.dto.response.GetUserProfileResponse;
+import com.umc9th.areumdap.domain.user.entity.User;
+import com.umc9th.areumdap.domain.user.repository.UserQueryRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.List;
+
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class UserQueryService {
+
+    private final UserQueryRepository userQueryRepository;
+
+    // 유저 프로필 조회
+    public GetUserProfileResponse getUserProfile(Long userId) {
+        User user = getUserByIdAndDeletedFalse(userId);
+        return GetUserProfileResponse.from(user);
+    }
+
+    // 로그인 시 회원 탈퇴 여부 검사 및 User 반환
+    public User getUserByEmailAndDeletedFalse(String email) {
+        User user = userQueryRepository.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.EMAIL_NOT_FOUND2));
+        if (user.isDeleted()) {
+            throw new GeneralException(ErrorStatus.USER_ALREADY_DELETED);
+        }
+        return user;
+    }
+
+    // 유저 아이디 + 삭제 여부로 유저 정보 가져오기
+    public User getUserByIdAndDeletedFalse(Long userId) {
+        return userQueryRepository.findByIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    // 알림을 보낼 유저 리스트 조회
+    public List<NotificationTargetUser> findUsersToNotify() {
+        LocalTime now = LocalTime
+                .now(ZoneId.of("Asia/Seoul"))
+                .withSecond(0)
+                .withNano(0);
+        return userQueryRepository.findNotificationTargets(now);
+    }
+
+    // 이메일로 유저 조회
+    public User getUserByEmail(String email) {
+        return userQueryRepository.findByEmail(email).orElse(null);
+    }
+
+}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>이메일 인증</title>
+</head>
+<body
+        style="
+      margin: 0;
+      padding: 0;
+      background-color: #fcfcfc;
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', Dotum,
+        '돋움', sans-serif;
+    "
+>
+<table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td align="center">
+            <table
+                    width="600"
+                    cellpadding="0"
+                    cellspacing="0"
+                    style="
+              max-width: 600px;
+              margin: 40px auto;
+              background-color: #ffffff;
+              border-radius: 12px;
+              box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            "
+            >
+                <tr>
+                    <td style="padding: 48px 36px">
+                        <h2
+                                style="
+                    margin: 0 0 16px 0;
+                    font-size: 22px;
+                    font-weight: 600;
+                    color: #222222;
+                  "
+                        >
+                            이메일 인증 코드를 확인해주세요.
+                        </h2>
+                        <p
+                                style="
+                    margin: 0 0 32px 0;
+                    font-size: 15px;
+                    line-height: 1.6;
+                    color: #9d9d9d;
+                  "
+                        >
+                            안녕하세요.<br />
+                            <strong style="color: #f46880">아름답</strong>에 함께해주셔서
+                            감사합니다.<br />
+                            아래 인증 코드를 입력하면, 당신만의 기록을 시작할 수 있어요.
+                        </p>
+
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td
+                                        align="center"
+                                        style="
+                        padding: 28px 20px;
+                        background-color: #f5f5f5;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                      "
+                                >
+                                    <div
+                                            style="
+                          font-size: 13px;
+                          color: #a0a0a0;
+                          margin-bottom: 10px;
+                        "
+                                    >
+                                        이메일 인증 코드
+                                    </div>
+                                    <span
+                                            style="
+                          font-size: 34px;
+                          font-weight: 700;
+                          color: #f46880;
+                          letter-spacing: 10px;
+                        "
+                                            th:text="${verificationCode}"
+                                    >
+                        123456
+                      </span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p
+                                style="
+                    margin: 32px 0 0 0;
+                    font-size: 13px;
+                    line-height: 1.5;
+                    color: #a0a0a0;
+                  "
+                        >
+                            · 인증 코드는
+                            <strong style="color: #222222">5분간</strong>
+                            유효합니다.<br />
+                            · 본인이 요청하지 않은 메일이라면, 별도의 조치 없이
+                            무시해주세요.
+                        </p>
+
+                        <p style="margin-top: 36px; font-size: 12px; color: #a0a0a0">
+                            ⓒ 아름답: 질문을 통해 나를 알아가는 여정
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -8,6 +8,7 @@ group = 'com.umc9th'
 version = '0.0.1-SNAPSHOT'
 description = 'areumdap-be'
 
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -22,22 +23,82 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:0.8.1"
+    }
 }
 
 dependencies {
     // Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Springdoc OpenAPI (Swagger)
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0"
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
     // JPA
-//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // PostgreSQL
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Email
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // JWT 라이브러리 (jjwt)
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+    // Apache Commons Codec
+    implementation 'commons-codec:commons-codec:1.20.0'
+
+    //OAuth
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // WebClient
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    //Aws
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.2.1")
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-sqs"
+
+    // AOP
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    implementation "org.springframework.boot:spring-boot-starter-json"
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+
+    //FCM
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
+    // Actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    
+    // Spring-ai
+    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+
+    // Spring Batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 }
 
 tasks.named('test') {

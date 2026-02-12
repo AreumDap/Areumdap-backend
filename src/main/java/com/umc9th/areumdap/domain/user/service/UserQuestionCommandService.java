@@ -1,0 +1,132 @@
+package com.umc9th.areumdap.domain.user.service;
+
+import com.umc9th.areumdap.common.exception.GeneralException;
+import com.umc9th.areumdap.common.status.ErrorStatus;
+import com.umc9th.areumdap.domain.chat.entity.ChatHistory;
+import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
+import com.umc9th.areumdap.domain.chat.repository.ChatHistoryRepository;
+import com.umc9th.areumdap.domain.question.entity.QuestionBank;
+import com.umc9th.areumdap.domain.user.entity.UserQuestion;
+import com.umc9th.areumdap.domain.user.repository.UserQuestionRepository;
+import com.umc9th.areumdap.domain.user.entity.User;
+import com.umc9th.areumdap.domain.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class UserQuestionCommandService {
+
+    private final ChatHistoryRepository chatHistoryRepository;
+    private final UserRepository userRepository;
+    private final UserQuestionRepository userQuestionRepository;
+
+    public void saveInstantQuestion(Long userId, Long chatHistoryId) {
+
+        // ChatHistory 조회
+        ChatHistory chatHistory = chatHistoryRepository.findById(chatHistoryId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_HISTORY_NOT_FOUND));
+
+        // 해당 채팅 스레드 소유자 검증
+        UserChatThread thread = chatHistory.getUserChatThread();
+        if (thread == null || thread.getUser() == null || thread.getUser().getId() == null) {
+            throw new GeneralException(ErrorStatus.CHAT_THREAD_NOT_FOUND);
+        }
+        if (!thread.getUser().getId().equals(userId)) {
+            throw new GeneralException(ErrorStatus.FORBIDDEN);
+        }
+
+        // 중복 저장 방지 (같은 chatHistory로 1번만 저장)
+        if (userQuestionRepository.existsByUser_IdAndChatHistory_Id(userId, chatHistoryId)) {
+            throw new GeneralException(ErrorStatus.ALREADY_SAVED_QUESTION);
+        }
+
+        // 유저 엔티티 조회
+        User user = userRepository.findByIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        /*
+         * 질문 계보 결정
+         * - thread가 UserQuestion에서 시작된 경우 → parentQuestion 존재
+         * - thread가 QuestionBank에서 시작된 경우 → parentQuestion 없음
+         */
+        UserQuestion parentQuestion = thread.getUserQuestion(); // nullable
+        QuestionBank questionBank;
+
+        if (parentQuestion != null) {
+            // UserQuestion → UserQuestion 파생
+            questionBank = parentQuestion.getQuestionBank();
+        } else {
+            // QuestionBank → UserQuestion
+            questionBank = thread.getQuestionBank();
+            if (questionBank == null) {
+                throw new GeneralException(ErrorStatus.QUESTION_BANK_NOT_FOUND);
+            }
+        }
+
+        String questionContent = extractQuestion(chatHistory.getContent());
+
+        if (questionContent == null) {
+            throw new GeneralException(ErrorStatus.INVALID_QUESTION_FORMAT);
+        }
+
+
+        UserQuestion userQuestion = UserQuestion.builder()
+                .user(user)
+                .questionBank(questionBank)              // 루트 Bank 유지
+                .parentQuestion(parentQuestion)
+                .chatHistory(chatHistory)
+                .content(questionContent)       // 추출된 의문 문장만 저장
+                .used(false)
+                .saved(true)
+                .build();
+        userQuestionRepository.save(userQuestion);
+    }
+
+    private String extractQuestion(String text) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+
+        String[] sentences = text.split("(?<=[.?!])");
+
+        for (int i = sentences.length - 1; i >= 0; i--) {
+            String trimmed = sentences[i].trim();
+            if (trimmed.endsWith("?")) {
+                return trimmed;
+            }
+        }
+
+        return null; // 질문 없음
+    }
+
+
+    public void deleteUserQuestion(Long userId, Long userQuestionId) {
+
+        // 저장된 질문 조회 + 소유자 검증 + saved=true 검증
+        UserQuestion userQuestion = userQuestionRepository
+                .findByIdAndUser_IdAndSavedTrue(userQuestionId, userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_QUESTION_NOT_FOUND));
+
+        // 대화 스레드에 사용 중인 경우 → 논리 삭제 (saved = false)
+        if (Boolean.TRUE.equals(userQuestion.getUsed())) {
+            userQuestion.markAsUnsaved();
+            return;
+        }
+
+        // 자식 질문의 parentQuestion 참조 해제
+        List<UserQuestion> children = userQuestionRepository
+                .findByParentQuestion_Id(userQuestionId);
+        for (UserQuestion child : children) {
+            child.clearParentQuestion();
+        }
+
+        // 물리 삭제
+        userQuestionRepository.delete(userQuestion);
+    }
+
+}

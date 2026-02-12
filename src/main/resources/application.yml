@@ -1,3 +1,29 @@
 spring:
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: never
+
   application:
     name: areumdap-be
+
+  profiles:
+    default: prod
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+springdoc:
+  swagger-ui:
+    tagsSorter: alpha
+    operationsSorter: method
