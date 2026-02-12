@@ -4,6 +4,7 @@ import com.umc9th.areumdap.common.base.BaseEntity;
 import com.umc9th.areumdap.domain.chat.entity.UserChatThread;
 import com.umc9th.areumdap.domain.user.enums.OAuthProvider;
 import com.umc9th.areumdap.domain.user.enums.Sex;
+import com.umc9th.areumdap.domain.character.entity.Character;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -80,6 +81,14 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<UserChatThread> userChatThreads = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserQuestion> userQuestions = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Character character;
 
     public void updateRefreshToken(String newRefreshToken) {
         this.refreshToken = newRefreshToken;
