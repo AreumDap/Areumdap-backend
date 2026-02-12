@@ -19,6 +19,16 @@ public class ChatbotQueryService {
     private final QuestionQueryService questionQueryService;
     private final QuestionCommandService questionCommandService;
 
+    public GetChatbotRecommendsResponse getAssignedQuestions(Long userId) {
+        List<UserQuestion> assignedQuestions = questionQueryService.getAssignedQuestions(userId);
+
+        List<GetChatbotRecommendResponse> responses = assignedQuestions.stream()
+                .map(GetChatbotRecommendResponse::from)
+                .toList();
+
+        return new GetChatbotRecommendsResponse(responses);
+    }
+
     @Transactional
     public GetChatbotRecommendsResponse getRecommendQuestions(Long userId) {
         List<UserQuestion> todayQuestions = questionQueryService.getTodayQuestions(userId);

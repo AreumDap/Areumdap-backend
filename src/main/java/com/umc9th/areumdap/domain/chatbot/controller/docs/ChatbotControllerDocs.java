@@ -32,6 +32,16 @@ public interface ChatbotControllerDocs {
             @AuthenticationPrincipal Long userId
     );
 
+    @GetMapping("/assigned")
+    @Operation(summary = "배정된 질문 조회", description = "사용자에게 배정된 질문 중 아직 사용되지 않은 질문만 조회합니다. (used=false, saved=false, parent=null)")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "배정된 질문 조회 성공", content = @Content(schema = @Schema(implementation = GetChatbotRecommendsResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "유저가 존재하지 않는 경우", content = @Content())
+    })
+    ResponseEntity<ApiResponse<GetChatbotRecommendsResponse>> getAssignedQuestions(
+            @AuthenticationPrincipal Long userId
+    );
+
     @PostMapping
     @Operation(summary = "채팅 메시지 생성", description = "사용자 메시지를 전송하고 AI 응답을 받습니다")
     @ApiResponses(value = {

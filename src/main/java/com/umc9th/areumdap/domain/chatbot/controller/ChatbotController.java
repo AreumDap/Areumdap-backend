@@ -34,6 +34,15 @@ public class ChatbotController implements ChatbotControllerDocs {
     }
 
     @Override
+    @GetMapping("/assigned")
+    public ResponseEntity<ApiResponse<GetChatbotRecommendsResponse>> getAssignedQuestions(
+            @AuthenticationPrincipal Long userId
+    ) {
+        GetChatbotRecommendsResponse response = chatbotQueryService.getAssignedQuestions(userId);
+        return ApiResponse.success(SuccessStatus.GET_ASSIGNED_QUESTION_SUCCESS, response);
+    }
+
+    @Override
     @PostMapping
     public ResponseEntity<ApiResponse<SendChatMessageResponse>> sendChatResponse(
             @AuthenticationPrincipal Long userId,
