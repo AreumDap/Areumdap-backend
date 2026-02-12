@@ -52,6 +52,7 @@ public enum ErrorStatus implements BaseStatus {
     /**
      * AI
      */
+    SUMMARY_DATA_NOT_EXISTS(HttpStatus.BAD_REQUEST, "AI_400", "요약에 필요한 데이터가 존재하지 않습니다."),
     AI_RESPONSE_NOT_JSON(HttpStatus.INTERNAL_SERVER_ERROR,  "AI_500", "AI 응답이 JSON 형식이 아님"),
     AI_RESPONSE_NOT_PARSE(HttpStatus.INTERNAL_SERVER_ERROR, "AI_500", "AI 응답 파싱 실패"),
     ILLEGAL_AI_TAG(HttpStatus.INTERNAL_SERVER_ERROR, "AI_500", "잘못된 AI태그 반환"),

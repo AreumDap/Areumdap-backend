@@ -40,6 +40,10 @@ public class HistorySummaryPromptBuilder {
                     .append("\n");
         });
 
+        if(summaryBlock.isEmpty()) {
+            return null;
+        }
+
         return SYSTEM_PROMPT.replace(
                 "{{session_summary}}",
                 summaryBlock);
