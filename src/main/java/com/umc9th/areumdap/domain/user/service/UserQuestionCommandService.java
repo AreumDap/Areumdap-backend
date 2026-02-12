@@ -68,17 +68,42 @@ public class UserQuestionCommandService {
             }
         }
 
+        String questionContent = extractQuestion(chatHistory.getContent());
+
+        if (questionContent == null) {
+            throw new GeneralException(ErrorStatus.INVALID_QUESTION_FORMAT);
+        }
+
+
         UserQuestion userQuestion = UserQuestion.builder()
                 .user(user)
                 .questionBank(questionBank)              // 루트 Bank 유지
                 .parentQuestion(parentQuestion)
                 .chatHistory(chatHistory)
-                .content(chatHistory.getContent())       // 즉석 질문 본문
+                .content(questionContent)       // 추출된 의문 문장만 저장
                 .used(false)
                 .saved(true)
                 .build();
         userQuestionRepository.save(userQuestion);
     }
+
+    private String extractQuestion(String text) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+
+        String[] sentences = text.split("(?<=[.?!])");
+
+        for (int i = sentences.length - 1; i >= 0; i--) {
+            String trimmed = sentences[i].trim();
+            if (trimmed.endsWith("?")) {
+                return trimmed;
+            }
+        }
+
+        return null; // 질문 없음
+    }
+
 
     public void deleteUserQuestion(Long userId, Long userQuestionId) {
 
