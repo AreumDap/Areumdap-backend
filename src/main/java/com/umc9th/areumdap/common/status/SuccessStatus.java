@@ -72,7 +72,7 @@ public enum SuccessStatus implements BaseStatus {
     /**
      * ChatBot
      */
-    GET_CHATBOT_RECOMMEND_SUCCESS(HttpStatus.OK, "CHATBOT_200", "AI 대화 질문 추천 조회 성공"),
+    GET_CHATBOT_RECOMMEND_SUCCESS(HttpStatus.OK, "CHATBOT_200", "AI 대화 질문 배정 성공"),
     GET_ASSIGNED_QUESTION_SUCCESS(HttpStatus.OK, "CHATBOT_200", "배정된 질문 조회 성공"),
 
     /**

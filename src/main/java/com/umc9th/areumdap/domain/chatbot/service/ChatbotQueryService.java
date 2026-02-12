@@ -30,18 +30,12 @@ public class ChatbotQueryService {
     }
 
     @Transactional
-    public GetChatbotRecommendsResponse getRecommendQuestions(Long userId) {
+    public void assignRecommendQuestions(Long userId) {
         List<UserQuestion> todayQuestions = questionQueryService.getTodayQuestions(userId);
 
         if (todayQuestions.size() < 5) {
-            todayQuestions = questionCommandService.assignRandomQuestions(userId);
+            questionCommandService.assignRandomQuestions(userId);
         }
-
-        List<GetChatbotRecommendResponse> responses = todayQuestions.stream()
-                .map(GetChatbotRecommendResponse::from)
-                .toList();
-
-        return new GetChatbotRecommendsResponse(responses);
     }
 
 }
