@@ -25,7 +25,7 @@ public interface UserQuestionControllerDocs {
 
     @GetMapping
     @Operation(
-            summary = "저장한 질문 목록 조회 (커서 페이징)",
+            summary = "저장된 질문 조회",
             description = """
                     커서 기반 무한 스크롤 방식으로 저장한 질문 목록을 조회합니다.
 
