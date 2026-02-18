@@ -43,7 +43,8 @@ public class SecurityConfig {
             "/api/auth/email-verification/confirm",
             "/api/auth/signup",
             "/api/auth/login",
-            "/api/auth/token/reissue"
+            "/api/auth/token/reissue",
+            "/api/auth/test/login"
     };
 
     /** 소셜 인증(카카오, 네이버) 관련 경로 */

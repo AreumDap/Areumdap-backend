@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -98,6 +100,32 @@ public class AuthService {
         return new ReissueAccessTokenResponse(newAccessToken, newRefreshToken);
     }
 
+    // 테스트 계정 생성 및 로그인
+    public LoginResponse testLogin() {
+
+        // 1. 현재 test 계정 개수 조회
+        long count = userQueryService.countTestUsers();
+        int nextNumber = (int) (count + 1);
+
+        String name = "유저" + nextNumber;
+        String email = "test" + nextNumber + "@gmail.com";
+        String password = "test" + nextNumber;
+        LocalDate birth = LocalDate.of(2002, 5, 29);
+
+        // 2. 혹시 이미 존재하면 재사용
+        User user = userQueryService.getUserByEmailAndOauthProvider(email);
+        if (user == null) {
+            user = registerNewUser(SignUpRequest.from(name, birth, email, password));
+        }
+
+        // 3. 토큰 발급
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        userCommandService.updateRefreshToken(user, refreshTokenHasher.hash(refreshToken));
+        return LoginResponse.from(user, accessToken, refreshToken);
+    }
+
     // 비밀번호 검증
     private void validatePasswordMatch(String inputPassword, String storedPassword) {
         if (!passwordEncoder.matches(inputPassword, storedPassword))
@@ -112,9 +140,9 @@ public class AuthService {
     }
 
     // 새로운 유저 등록
-    private void registerNewUser(SignUpRequest request) {
+    private User registerNewUser(SignUpRequest request) {
         String encodedPassword = passwordEncoder.encode(request.password());
-        userCommandService.registerUser(
+        return userCommandService.registerUser(
                 request.name(),
                 request.birth(),
                 request.email(),

@@ -28,4 +28,7 @@ public record SignUpRequest(
         )
         String password
 ) {
+        public static SignUpRequest from(String name, LocalDate birth, String email, String password) {
+                return new SignUpRequest(name, birth, email, password);
+        }
 }

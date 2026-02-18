@@ -89,4 +89,10 @@ public class AuthController implements AuthControllerDocs {
         return ApiResponse.success(SuccessStatus.REISSUE_TOKEN_SUCCESS, response);
     }
 
+    @Override
+    @PostMapping("/test/login")
+    public ResponseEntity<ApiResponse<LoginResponse>> testLogin() {
+        LoginResponse response = authService.testLogin();
+        return ApiResponse.success(SuccessStatus.LOGIN_SUCCESS, response);
+    }
 }
