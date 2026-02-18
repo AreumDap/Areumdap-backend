@@ -144,6 +144,9 @@ public class ChatbotService {
     public HistorySummaryResponse generateHistorySummary(Long userId) {
         List<UserChatThread> userChatThreads = userChatThreadQueryService.findByUserId(userId);
         String prompt = HistorySummaryPromptBuilder.build(userChatThreads);
+        if(prompt == null) {
+            throw new GeneralException(ErrorStatus.SUMMARY_DATA_NOT_EXISTS);
+        }
 
         String raw = chatClient.call(prompt);
 
