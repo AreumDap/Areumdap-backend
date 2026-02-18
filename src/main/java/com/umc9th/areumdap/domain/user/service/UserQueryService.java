@@ -5,6 +5,7 @@ import com.umc9th.areumdap.common.status.ErrorStatus;
 import com.umc9th.areumdap.domain.notification.dto.response.NotificationTargetUser;
 import com.umc9th.areumdap.domain.user.dto.response.GetUserProfileResponse;
 import com.umc9th.areumdap.domain.user.entity.User;
+import com.umc9th.areumdap.domain.user.enums.OAuthProvider;
 import com.umc9th.areumdap.domain.user.repository.UserQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,17 @@ public class UserQueryService {
     // 이메일로 유저 조회
     public User getUserByEmail(String email) {
         return userQueryRepository.findByEmail(email).orElse(null);
+    }
+
+    public long countTestUsers() {
+        return userQueryRepository
+                .countByEmailStartingWithAndOauthProvider("test", OAuthProvider.EMAIL);
+    }
+
+    public User getUserByEmailAndOauthProvider(String email) {
+        return userQueryRepository
+                .findByEmailAndOauthProvider(email, OAuthProvider.EMAIL)
+                .orElse(null);
     }
 
 }

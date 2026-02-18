@@ -27,9 +27,9 @@ public class UserCommandService {
     private final CharacterRepository characterRepository;
 
     // 유저 등록
-    public void registerUser(String name, LocalDate birth, String email, String password) {
+    public User registerUser(String name, LocalDate birth, String email, String password) {
         Long age = (long) (LocalDate.now().getYear() - birth.getYear() + 1);
-        userRepository.save(
+        return userRepository.save(
                 User.builder()
                         .oauthProvider(OAuthProvider.EMAIL)
                         .name(name)

@@ -101,4 +101,10 @@ public interface AuthControllerDocs {
             @RequestHeader("Authorization") String token
     );
 
+    @PostMapping("/test")
+    @Operation(summary = "데모데이 전용")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "로그인 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+    })
+    ResponseEntity<ApiResponse<LoginResponse>> testLogin();
 }
